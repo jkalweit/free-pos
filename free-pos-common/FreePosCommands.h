@@ -7,7 +7,7 @@ class FreePosCommands
 {
 
 public:
-    static const QString MENU_GETCATEGORIES;
+    static const QString MENU_GET_CATEGORIES;
 };
 
 #endif // FREEPOSCOMMANDS_H

@@ -1,4 +1,4 @@
 #include "FreePosCommands.h"
 
 
-const QString FreePosCommands::MENU_GETCATEGORIES = "MenuGetCategories";
+const QString FreePosCommands::MENU_GET_CATEGORIES = "MenuGetCategories";
