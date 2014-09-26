@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include "SimpleServer.h"
+#include "FreePosCommand.h"
 #include "MenuCategory.h"
 
 class FreePosServer : public SimpleServer

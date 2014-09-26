@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QSqlQuery>
 #include <QSqlError>
-#include "FreePosCommands.h"
+
 
 FreePosServer::FreePosServer(QObject *parent) :
     SimpleServer(parent)
@@ -49,7 +49,6 @@ MenuCategory* FreePosServer::getMenuCategory(quint32 id) {
         return new MenuCategory(this, query.value(0).toInt(), query.value(1).toString());
     } else
         return nullptr;
-
 }
 
 void FreePosServer::addMenuItem(quint32 menucategory, QString name) {
@@ -67,26 +66,26 @@ void FreePosServer::addTestData() {
     addMenuItem(1, "Miller Light");
     addMenuItem(1, "Coors Light");
 
-    MenuCategory *category = getMenuCategory(1);
-    QTextStream d(stdout);
-    if(category) {
-        d << "   Got category2: ";
-        d << *category << endl;
+    //MenuCategory *category = getMenuCategory(1);
+//    QTextStream d(stdout);
+//    if(category) {
+//        d << "   Got category2: ";
+//        d << *category << endl;
 
-        d << "Serialzed: " << category->serialize() << endl;
-        d << "Deserialzed: " << MenuCategory::deserialize(category->serialize(), this)->serialize() << endl;
-    } else {
-        d << "   ERROR: Could not get category.";
-    }
+//        d << "Serialzed: " << category->serialize() << endl;
+//        d << "Deserialzed: " << MenuCategory::deserialize(category->serialize(), this)->serialize() << endl;
+//    } else {
+//        d << "   ERROR: Could not get category.";
+//    }
 
-    QByteArray bytes;
-    QTextStream stream(bytes, QIODevice::ReadWrite);
-    stream << category->serialize() << endl;
-    stream.flush();
-    stream.seek(0);
-    MenuCategory cat2;
-    stream >> cat2;
-    d << "Cat2: " << cat2.serialize();
+//    QByteArray bytes;
+//    QTextStream stream(bytes, QIODevice::ReadWrite);
+//    stream << category->serialize() << endl;
+//    stream.flush();
+//    stream.seek(0);
+//    MenuCategory cat2;
+//    stream >> cat2;
+//    d << "Cat2: " << cat2.serialize();
 }
 
 bool FreePosServer::execQuery(QString sql) {
@@ -108,13 +107,40 @@ FreePosServer::~FreePosServer() {
 
 void FreePosServer::handleMessage(QString msg, std::function<void (QString)> reply)
 {
-    qDebug() << "Handling message in FreeBracketServer...";
+    qDebug() << "Handling message in FreePosServer...";
 
-    int delimit = msg.indexOf(":");
-    QString command = msg.mid(0, delimit);
-    QString payload = msg.mid(delimit+1, msg.length() - delimit);
+    FreePosCommand command;
+    QTextStream stream(&msg);
+    stream >> command;
 
-    if(command == FreePosCommands::MENU_GET_CATEGORIES) {
-        qDebug() << "Get Menu Categories.";
-    }
+    QTextStream out(stdout);
+
+    out << "Received command: " << command;
+
+    if(command.command() == FreePosCommand::MENU_GET_CATEGORIES) {        
+        qDebug() << "   Getting Menu Categories...";
+
+        QSqlQuery query(m_db);
+        if(!query.exec("SELECT id, name FROM MenuCategory")) {
+            qDebug() << "Error executing query: " << query.lastError();
+        }
+        QString replyMsg;
+        QTextStream stream(&replyMsg);
+        while(query.next()) {
+             stream << FreePosCommand::MENU_ADD_CATEGORY << ":" << MenuCategory(this, query.value(0).toInt(), query.value(1).toString());
+
+        }
+
+        QSqlQuery query2(m_db);
+        if(!query2.exec("SELECT id, menucategory, name FROM MenuItem")) {
+            qDebug() << "Error executing query: " << query.lastError();
+        }
+        while(query2.next()) {
+             stream << FreePosCommand::MENU_ADD_ITEM << ":" << MenuItem(this, query2.value(0).toInt(), query2.value(1).toInt(), query2.value(2).toString());
+
+        }
+
+        stream.flush();
+        reply(replyMsg);
+    }        
 }

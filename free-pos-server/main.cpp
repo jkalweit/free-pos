@@ -20,5 +20,12 @@ int main(int argc, char *argv[])
     server.createDb();
     server.addTestData();
 
+    if(server.listen(QHostAddress("127.0.0.1"), 1337)) {
+        qDebug() << "Listening...";
+    } else {
+        qDebug() << "Failed to listen on port.";
+    }
+
+
     return app.exec();
 }

@@ -14,11 +14,18 @@ TARGET = free-pos-common
 TEMPLATE = lib
 CONFIG += staticlib
 
-SOURCES += FreePosCommands.cpp \
-    MenuCategory.cpp
+SOURCES += \
+    MenuCategory.cpp \
+    FreePosCommand.cpp \
+    Menu.cpp \
+    MenuItem.cpp
 
-HEADERS += FreePosCommands.h \
-    MenuCategory.h
+HEADERS += \
+    MenuCategory.h \
+    FreePosCommand.h \
+    SimpleSerializable.h \
+    Menu.h \
+    MenuItem.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

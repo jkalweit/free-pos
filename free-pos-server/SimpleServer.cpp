@@ -41,13 +41,12 @@ void SimpleServer::sendData(QTcpSocket *client, QByteArray &data) {
 void SimpleServer::readyRead()
 {
     QTcpSocket *client = (QTcpSocket*)sender();
-    while(client->canReadLine())
-    {
+    while(client->canReadLine()) {
         QString msg = QString::fromUtf8(client->readLine()).trimmed();
         qDebug() << "Receieved msg:" << msg;
-
         handleMessage(msg, [&client](QString replyMsg) {
-            client->write(QString(replyMsg + "\n").toUtf8());
+            qDebug() << "   Sending reply: " << replyMsg;
+            client->write(QString(replyMsg).toUtf8());
         });
     }
 }

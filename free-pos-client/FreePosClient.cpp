@@ -2,10 +2,10 @@
 
 #include <QHostAddress>
 #include <QDebug>
-#include "FreePosCommands.h"
 
-FreePosClient::FreePosClient(QObject *parent) :
-    QObject(parent)
+
+FreePosClient::FreePosClient(Menu* menu, QObject *parent) :
+    QObject(parent), m_menu(menu)
 {
 }
 
@@ -69,22 +69,29 @@ void FreePosClient::parseMessage(QString msg) {
     QString command = msg.mid(0, delimit);
     QString payload = msg.mid(delimit+1, msg.length() - delimit);
 
-
-//    if(command == FreeBracketCommands::TEAMS_ADD) {
-//        m_bracket->addTeam(Team::deserialize(payload, this));
-//    } else if(command == FreeBracketCommands::TEAMS_DELETE) {
-//        quint8 id = payload.toInt();
-//        qDebug() << "Deleting team: " << id;
-//        m_bracket->deleteTeam(id);
+    if(command == FreePosCommand::MENU_ADD_CATEGORY) {
+        qDebug() << "Adding menu category: " << payload;
+        MenuCategory* category = MenuCategory::deserialize(payload, this);
+        m_menu->addCategory(category);
+    } else if(command == FreePosCommand::MENU_ADD_ITEM) {
+        MenuItem* item = MenuItem::deserialize(payload, this);
+        m_menu->addItem(item);
 //    } else if(command == FreeBracketCommands::BRACKET_START) {
 //        qDebug() << "Starting tournament.";
 //        m_bracket->startTournament();
-//    } else {
-//        qDebug() << "Unknown Command: " << msg;
-//    }
+    } else {
+        qDebug() << "Unknown Command: " << msg;
+    }
 }
 
 
 void FreePosClient::sendMessage(QString msg) {
     tcpSocket->write(QString(msg + "\n").toUtf8());
 }
+
+void FreePosClient::getMenuCategories() {
+    FreePosCommand command(FreePosCommand::MENU_GET_CATEGORIES);
+    tcpSocket->write(QString(command.serialize() + "\n").toUtf8());
+}
+
+
