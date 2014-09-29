@@ -3,8 +3,14 @@
 #include "MenuCategory.h"
 
 MenuCategory::MenuCategory(QObject *parent, quint32 id, QString name) :
-    QObject(parent), m_id(id), m_name(name)
+    QObject(parent), m_id(id), m_name(name), m_currentMenuItemId(0)
 {
+}
+
+MenuItem* MenuCategory::addMenuItem(QString name, QString type, float price) {
+    MenuItem* item = new MenuItem(this, ++m_currentMenuItemId, name, type, price);
+    addMenuItem(item);
+    return item;
 }
 
 void MenuCategory::addMenuItem(MenuItem *menuItem) {
@@ -13,7 +19,6 @@ void MenuCategory::addMenuItem(MenuItem *menuItem) {
 }
 
 QQmlListProperty<MenuItem> MenuCategory::menuItems() {
-    qDebug() << "MenuItems count: " << m_menuItems.size();
     return QQmlListProperty<MenuItem>(this, m_menuItems);
 }
 

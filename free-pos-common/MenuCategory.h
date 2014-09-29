@@ -16,6 +16,7 @@ public:
     explicit MenuCategory(QObject *parent = 0, quint32 id = 0, QString name = "");
 
     QQmlListProperty<MenuItem> menuItems();
+    Q_INVOKABLE MenuItem* addMenuItem(QString name, QString type, float price);
     void addMenuItem(MenuItem *menuItem);
 
     QString serialize() const;
@@ -34,7 +35,8 @@ public slots:
 private:
     quint32 m_id;
     QString m_name;
-    QList<MenuItem*> m_menuItems;
+    quint32 m_currentMenuItemId;
+    QList<MenuItem*> m_menuItems;    
 };
 
 #endif // MENUCATEGORY_H

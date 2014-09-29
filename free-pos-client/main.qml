@@ -59,7 +59,6 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            console.log("Show items: " + modelData.id)
                             menu.selectedCategory = modelData
                         }
                     }
@@ -83,7 +82,17 @@ ApplicationWindow {
                     Text {
                         text: modelData.name
                         color: "white"
-                        anchors.centerIn: parent
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                    }
+
+                    Text {
+                        text: modelData.price
+                        color: "white"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
                     }
 
                     MouseArea {

@@ -5,25 +5,29 @@
 #include <QSqlDatabase>
 #include "SimpleServer.h"
 #include "FreePosCommand.h"
-#include "MenuCategory.h"
+#include "Menu.h"
+#include "Reconciliation.h"
 
 class FreePosServer : public SimpleServer
 {
     Q_OBJECT
+    //Q_PROPERTY(Reconciliation currentRec MEMBER m_currentRec NOTIFY currentRecChanged)
 public:
-    ~FreePosServer();
+    //~FreePosServer();
 
     explicit FreePosServer(QObject *parent = 0);
-    Q_INVOKABLE void openDb(QString dbname = "");
-    Q_INVOKABLE void createDb();
+//    Q_INVOKABLE void openDb(QString dbname = "");
+//    Q_INVOKABLE void createDb();    
+    Q_INVOKABLE void setCurrentMenu(Menu* menu);
+    Q_INVOKABLE Menu* getCurrentMenu();
+    Q_INVOKABLE void setCurrentRec(Reconciliation* rec);
+    Q_INVOKABLE Reconciliation* getCurrentRec();
     Q_INVOKABLE void addTestData();
-
-    Q_INVOKABLE void addMenuCategory(QString name);
-    Q_INVOKABLE void addMenuItem(quint32 menucategory, QString name);
-
-    Q_INVOKABLE MenuCategory* getMenuCategory(quint32 id);
+//    Q_INVOKABLE MenuCategory* getMenuCategory(quint32 id);
 
 signals:
+    void currentMenuChanged(Menu*);
+    void currentRecChanged(Reconciliation*);    
 
 public slots:
 
@@ -31,8 +35,13 @@ protected:
     void handleMessage(QString msg, std::function<void (QString)> reply);
 
 private:
-    QSqlDatabase m_db;
-    bool execQuery(QString sql);
+    Menu *m_currentMenu;
+    Reconciliation *m_currentRec;
+
+//    QSqlDatabase m_db;
+//    int execInsert(QString sql);
+//    bool execQuery(QString sql);
+
 };
 
 #endif // FREEPOSSERVER_H

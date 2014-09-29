@@ -2,17 +2,14 @@
 #include <QDebug>
 #include "MenuItem.h"
 
-MenuItem::MenuItem(QObject *parent, quint32 id, quint32 menuCategoryId, QString name) :
-    QObject(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name)
+MenuItem::MenuItem(QObject *parent, quint32 id, QString name, QString type, float price) :
+    QObject(parent), m_id(id), m_name(name), m_type(type), m_price(price)
 {
 }
 
-quint32 MenuItem::menuCategoryId() {
-    return m_menuCategoryId;
-}
-
 QString MenuItem::serialize() const {
-    return QString::number(m_id) + ":" + QString::number(m_menuCategoryId) + ":" + m_name;
+    //m_name.replace(":", "");
+    return QString::number(m_id) + ":" + m_name + ":" + m_type + ":" + QString::number(m_price);
 }
 
 MenuItem* MenuItem::deserialize(QString serialized, QObject *parent)
@@ -20,10 +17,11 @@ MenuItem* MenuItem::deserialize(QString serialized, QObject *parent)
     QStringList split = serialized.split(":");
 
     quint32 id = split[0].toInt();
-    quint32 menuCategoryId = split[1].toInt();
-    QString name = split[2];
+    QString name = split[1];
+    QString type = split[2];
+    float price = split[3].toFloat();
 
-    MenuItem *obj = new MenuItem(parent, id, menuCategoryId, name);
+    MenuItem *obj = new MenuItem(parent, id, name, type, price);
     qDebug() << "    deserialized: " << obj->serialize();
     return obj;
 }
@@ -42,8 +40,9 @@ QTextStream& operator>>(QTextStream& stream, MenuItem& obj) {
     }
     MenuItem* obj2 = MenuItem::deserialize(line);
     obj.m_id = obj2->m_id;
-    obj.m_menuCategoryId = obj2->m_menuCategoryId;
     obj.m_name = obj2->m_name;
+    obj.m_type = obj2->m_type;
+    obj.m_price = obj2->m_price;
 
     return stream;
 }

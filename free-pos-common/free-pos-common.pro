@@ -18,14 +18,22 @@ SOURCES += \
     MenuCategory.cpp \
     FreePosCommand.cpp \
     Menu.cpp \
-    MenuItem.cpp
+    MenuItem.cpp \
+    Customer.cpp \
+    Ticket.cpp \
+    Reconciliation.cpp \
+    OrderItem.cpp
 
 HEADERS += \
     MenuCategory.h \
     FreePosCommand.h \
     SimpleSerializable.h \
     Menu.h \
-    MenuItem.h
+    MenuItem.h \
+    Customer.h \
+    Ticket.h \
+    Reconciliation.h \
+    OrderItem.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

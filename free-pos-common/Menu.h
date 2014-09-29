@@ -15,10 +15,11 @@ class Menu : public QObject
 public:
     explicit Menu(QObject *parent = 0);
 
+    Q_INVOKABLE MenuCategory* addCategory(QString name);
     void addCategory(MenuCategory *category);
     QQmlListProperty<MenuCategory> categories();
 
-    void addItem(MenuItem* item);
+    //void addItem(MenuItem* item);
 
     MenuCategory* selectedCategory();
     void setSelectedCategory(MenuCategory *category);
@@ -30,6 +31,7 @@ signals:
 private:
     QList<MenuCategory*> m_categories;
     MenuCategory *m_selectedCategory;
+    quint32 m_currentCategoryId;
 };
 
 #endif // MENU_H
