@@ -175,12 +175,18 @@ void FreePosServer::addTestData() {
     customer = ticket->addCustomer("Steve");
     customer->addOrderItem("Steak Bites - Large", "Food", 8.00, 0.5, "This is a note3.");
 
+    ticket = m_currentRec->addTicket("Deck");
+    ticket->addCustomer("Tina");
+
     MenuCategory* cat = m_currentMenu->addCategory("Bottle Beer");
     cat->addMenuItem("Bud Light", "Alcohol", 2.75);
     cat->addMenuItem("Miller Lite", "Alcohol", 2.75);
     cat->addMenuItem("Coors Light", "Alcohol", 2.75);
     m_currentMenu->addCategory("Draft Beer");
-    m_currentMenu->addCategory("Lunch Entrees");
+    cat = m_currentMenu->addCategory("Lunch Entrees");
+    cat->addMenuItem("Chicken Tenders", "Food", 9.00);
+    cat->addMenuItem("Cheeseburger", "Food", 9.00);
+
     m_currentMenu->addCategory("Lunch Sandwiches");
     m_currentMenu->addCategory("Lunch Sides");
 

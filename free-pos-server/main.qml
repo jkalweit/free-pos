@@ -11,6 +11,18 @@ ApplicationWindow {
 
     property var customerBeingEdited
     property bool showEditCustomerDialog: false
+//    property ListModel tableList: ListModel {
+//        ListElement { text: "Bar"; }
+//        ListElement { text: "Deck"; }
+//        ListElement { text: "1-1"; }
+//        ListElement { text: "1-2"; }
+//        ListElement { text: "1-3"; }
+//        ListElement { text: "1-4"; }
+//        ListElement { text: "1-5"; }
+//        ListElement { text: "1-6"; }
+//        ListElement { text: "1-7"; }
+//        ListElement { text: "1-8"; }
+//    }
 
 //    menuBar: MenuBar {
 //        Menu {
@@ -47,10 +59,9 @@ ApplicationWindow {
                 width: parent.width
                 placeholderText: qsTr("Customer name")
                 onAccepted: {
-                    //console.log("New ticket: " + newTicketName.text)
                     var ticket = rec.addTicket("Bar");
                     ticket.addCustomer(newCustomerName.text);
-                    newTicketName.text = "";
+                    newCustomerName.text = "";
                     rec.selectedTicket = ticket;
                 }
 
@@ -63,18 +74,23 @@ ApplicationWindow {
 
 
 
-
             Repeater {
                 model: rec.tickets
 
                 Rectangle {
-                    visible: modelData.name.indexOf(newCustomerName.text.toUpperCase()) > -1
+                    visible: {
+                        var filter = newCustomerName.text.trim().toUpperCase()
+                        if(filter.length === 0){
+                            return true;
+                        }
+                        return modelData.customerNames.toUpperCase().indexOf(filter) > -1;
+                    }
                     width: tickets.width
                     height: 25
-                    color:  rec.selectedTicket && (rec.selectedTicket.id == modelData.id) ? "#9999FF" : "#2222FF"
+                    color:  rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#9999FF" : "#2222FF"
                     Text {
-                        text: modelData.name + ": " + modelData.customerNames
-                        color: rec.selectedTicket && (rec.selectedTicket.id == modelData.id) ? "#000000" : "#DDDDDD"
+                        text: modelData.customerNames // modelData.longName
+                        color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#000000" : "#DDDDDD"
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 5
@@ -114,37 +130,19 @@ ApplicationWindow {
 
                 spacing: 10
 
-                Row {
-                    anchors.right: ticketInner.right
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: "Table: "
-                    }
+//                Row {
+//                    anchors.right: ticketInner.right
+//                    Text {
+//                        anchors.verticalCenter: parent.verticalCenter
+//                        text: "Table: "
+//                    }
 
-                    ComboBox {
-                        model: ListModel {
-                            id: model
-                            ListElement { text: "Bar"; }
-                            ListElement { text: "Deck"; }
-                            ListElement { text: "1-1"; }
-                            ListElement { text: "1-2"; }
-                            ListElement { text: "1-3"; }
-                            ListElement { text: "1-4"; }
-                            ListElement { text: "1-5"; }
-                            ListElement { text: "1-6"; }
-                            ListElement { text: "1-7"; }
-                            ListElement { text: "1-8"; }
-                        }
-                        onCurrentIndexChanged: {
-                            rec.selectedTicket.name = currentText;
-                        }
-                    }
-                }
-
-//                Text {
-//                    text: rec.selectedTicket ? rec.selectedTicket.name : ""
-//                    font.bold: true
-//                    font.pixelSize: 18
+//                    ComboBox {
+//                        model: tableList
+//                        onActivated: {
+//                            rec.selectedTicket.name = textAt(currentIndex);
+//                        }
+//                    }
 //                }
 
                 Column {
@@ -184,12 +182,15 @@ ApplicationWindow {
                                 spacing: 5
 
                                 Repeater {
+                                    id: orderItemsRepeater
                                     model: modelData.orderItems
 
                                     Rectangle {
                                         id: orderItem
                                         width: orderItems.width
                                         height: 20
+                                        //property alias flash: flashAnimation
+
                                         Text {
                                             anchors.left: parent.left
                                             anchors.leftMargin: 5
@@ -202,8 +203,20 @@ ApplicationWindow {
                                         }
                                         Text {
                                             anchors.right: parent.right
-                                            text: "$" + modelData.subTotal.toFixed(2);
+                                            text: modelData.subTotal.toFixed(2);
                                         }
+
+//                                        SequentialAnimation {
+//                                            id: flashAnimation
+//                                            PropertyAnimation { target: orderItem; properties: "color"; to: "#DD66FF"; duration: 100; }
+//                                            PropertyAnimation { target: orderItem; properties: "color"; to: "transparent"; duration: 100; }
+//                                        }
+
+//                                        Component.onCompleted: {
+//                                            console.log("onCompleted: " + modelData.id);
+//                                            this.flash.start();
+//                                        }
+
                                     }
 
 
@@ -450,41 +463,68 @@ ApplicationWindow {
 
 
         Rectangle {
+            id: editCustomerDialog
             visible: showEditCustomerDialog
             anchors.fill: parent
-            color: "#DD000000"
+            color: "#AAA000000"
 
-            Row {
-                anchors.centerIn: parent
+//            onVisibleChanged: {
+//                if(this.visible && rec.selectedTicket) {
 
-                Text {
-                    text: "Name: "
+//                }
+//            }
+
+            function close(save) {
+                if(save) {
+                    customerBeingEdited.name = editCustomerName.text;
                 }
+                showEditCustomerDialog = false;
+            }
 
-                TextField {
-                    id: editCustomerName
-                    text: customerBeingEdited ? customerBeingEdited.name : ""
-                    width: 150
-                    maximumLength: 25
-                    placeholderText: qsTr("Customer name")
-                    onAccepted: {
-                        customerBeingEdited.name = editCustomerName.text;
-                        showEditCustomerDialog = false;
+            Column {
+                anchors.centerIn: parent
+                spacing: 5
+                Row {
+
+                    Text {
+                        text: "Name: "
                     }
 
-                    onActiveFocusChanged: {
-                        if(this.focus){
-                            this.selectAll();
+                    TextField {
+                        id: editCustomerName
+                        text: customerBeingEdited ? customerBeingEdited.name : ""
+                        width: 150
+                        maximumLength: 25
+                        placeholderText: qsTr("Customer name")
+                        onAccepted: {
+                            editCustomerDialog.close(true);
+                        }
+
+                        onActiveFocusChanged: {
+                            if(this.focus){
+                                this.selectAll();
+                            }
+                        }
+                    }
+
+                    Button {
+                        text: "Ok"
+                        onClicked: {
+                            editCustomerDialog.close(true);
+                        }
+                    }
+                    Button {
+                        text: "Cancel"
+                        onClicked: {
+                            editCustomerDialog.close(false);
                         }
                     }
                 }
 
-                Button {
-                    text: "Ok"
-                    onClicked: {
-                        showEditCustomerDialog = false;
-                    }
-                }
+//                ComboBox {
+//                    id: editCustomerTableComboBox
+//                    model: tableList
+//                }
             }
         }
 

@@ -15,6 +15,7 @@ class Ticket : public QObject {
 //    Q_PROPERTY(quint32 reconciliationId MEMBER m_reconciliationId NOTIFY reconciliationIdChanged)
     Q_PROPERTY(QString name MEMBER m_name NOTIFY nameChanged)
     Q_PROPERTY(QString customerNames READ customerNames NOTIFY customerNamesChanged)
+    Q_PROPERTY(QString longName READ longName NOTIFY longNameChanged)
     Q_PROPERTY(QQmlListProperty<Customer> customers READ customers NOTIFY customersChanged)
 
     Q_PROPERTY(float foodTotal READ foodTotal NOTIFY foodTotalChanged)
@@ -25,6 +26,7 @@ public:
     explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "");
 
     QString customerNames();
+    QString longName();
 
     Q_INVOKABLE Customer* addCustomer(QString name);
     void addCustomer(Customer *customer);
@@ -47,6 +49,7 @@ signals:
     void nameChanged(QString);
     void customersChanged(QQmlListProperty<Customer>);
     void customerNamesChanged(QString);
+    void longNameChanged(QString);
 
     void foodTotalChanged(float);
     void taxTotalChanged(float);
@@ -62,6 +65,7 @@ private:
 
 private slots:
     void fireTotalsChanged();
+    void fireNamesChanged();
 };
 
 

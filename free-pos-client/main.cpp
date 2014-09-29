@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-    client.connectToServer("127.0.0.1", 1337);
+    //client.connectToServer("127.0.0.1", 1337);
+    client.connectToServer("192.168.10.73", 1337);
     client.getMenuCategories();
 
     return app.exec();

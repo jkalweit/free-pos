@@ -7,6 +7,8 @@
 Ticket::Ticket(QObject *parent, quint32 id, QString name) :
     QObject(parent), m_id(id), m_name(name), m_currentCustomerId(0)
 {
+    connect(this, SIGNAL(nameChanged(QString)),
+            this, SLOT(fireNamesChanged()));
 }
 
 QString Ticket::customerNames() {
@@ -20,11 +22,20 @@ QString Ticket::customerNames() {
     return name;
 }
 
+QString Ticket::longName() {
+    return m_name + ": " + customerNames();
+}
+
 void Ticket::fireTotalsChanged() {
     foodTotalChanged(foodTotal());
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
+}
+
+void Ticket::fireNamesChanged() {
+    customerNamesChanged(customerNames());
+    longNameChanged(longName());
 }
 
 Customer* Ticket::addCustomer(QString name) {
@@ -34,6 +45,8 @@ Customer* Ticket::addCustomer(QString name) {
 }
 
 void Ticket::addCustomer(Customer *customer) {
+    connect(customer, SIGNAL(nameChanged(QString)),
+            this, SLOT(fireNamesChanged()));
     connect(customer, SIGNAL(foodTotalChanged(float)),
             this, SLOT(fireTotalsChanged()));
     connect(customer, SIGNAL(taxTotalChanged(float)),
@@ -41,10 +54,11 @@ void Ticket::addCustomer(Customer *customer) {
     connect(customer, SIGNAL(barTotalChanged(float)),
             this, SLOT(fireTotalsChanged()));
     connect(customer, SIGNAL(totalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+            this, SLOT(fireTotalsChanged()));       
     m_customers.append(customer);
     customersChanged(customers());
     customerNamesChanged(customerNames());
+    longNameChanged(longName());
     fireTotalsChanged();
 }
 
