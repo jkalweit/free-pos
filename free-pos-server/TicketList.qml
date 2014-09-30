@@ -3,59 +3,111 @@ import QtQuick.Controls 1.2
 import FreePos 1.0 as FreePos
 
 
-Column {
+
+
+Rectangle {
     id: tickets
-    spacing: 2
+    property bool showPaid: false
 
-    TextField {
-        id: newCustomerName
-        maximumLength: 25
+    Column {
+        id: ticketsControls
         width: parent.width
-        placeholderText: qsTr("Customer name")
-        onAccepted: {
-            var ticket = rec.addTicket("Bar");
-            ticket.addCustomer(newCustomerName.text);
-            newCustomerName.text = "";
-            rec.selectedTicket = ticket;
+        spacing: 2
+
+        RectangleFlashButton {
+            text: tickets.showPaid ? "Hide Paid" : "Show Paid"
+            onClicked: tickets.showPaid = !tickets.showPaid
         }
 
-        onActiveFocusChanged: {
-            if(this.focus){
-                this.selectAll();
+
+        TextField {
+            id: newCustomerName
+            maximumLength: 25
+            width: parent.width
+            height: 50
+            placeholderText: qsTr("Customer name")
+            onAccepted: {
+                var ticket = rec.addTicket("Bar");
+                ticket.addCustomer(newCustomerName.text);
+                newCustomerName.text = "";
+                rec.selectedTicket = ticket;
+            }
+
+            onActiveFocusChanged: {
+                if(this.focus){
+                    this.selectAll();
+                }
             }
         }
+
+
+
+    //    Repeater {
+    //        model: rec.tickets
+
+    //        RectangleFlashButton {
+    //            text: modelData.customerNames
+    //            color:  {
+    //                //if(rec.selectedTicket && (rec.selectedTicket.id === modelData.id)) {
+    //                    return modelData.isPaid ? "#DDDDDD" : "#3333FF"
+    //                //}
+    //            }
+    //            border.color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "transparent"
+    //            border.width: 2
+    //            textColor: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#000000"
+    //            visible: {
+    //                if(!showPaid && modelData.isPaid)
+    //                    return false;
+    //                var filter = newCustomerName.text.trim().toUpperCase()
+    //                if(filter.length === 0){
+    //                    return true;
+    //                }
+    //                return modelData.customerNames.toUpperCase().indexOf(filter) > -1;
+    //            }
+    //            onBeforeFlash: {
+    //                rec.selectedTicket = modelData
+    //            }
+    //        }
+    //    }
     }
 
+    Flickable {
+        width: tickets.width
+        anchors.top: ticketsControls.bottom
+        anchors.bottom: tickets.bottom
+        contentWidth: ticketsInner.width
+        contentHeight: ticketsInner.height
+        clip: true
 
-
-    Repeater {
-        model: rec.tickets
-
-        Rectangle {
-            visible: {
-                var filter = newCustomerName.text.trim().toUpperCase()
-                if(filter.length === 0){
-                    return true;
-                }
-                return modelData.customerNames.toUpperCase().indexOf(filter) > -1;
-            }
+        Column {
+            id: ticketsInner
             width: tickets.width
-            height: 25
-            color:  rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#9999FF" : "#2222FF"
-            Text {
-                text: modelData.customerNames // modelData.longName
-                color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#000000" : "#DDDDDD"
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: 5
-            }
+            Repeater {
+                model: rec.tickets
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    rec.selectedTicket = modelData
+                RectangleFlashButton {
+                    text: modelData.customerNames
+                    flashColor: "#FFFFFF"
+                    color:  modelData.isPaid ? "#888888" : "#3333FF"
+                    border.color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#777777"
+                    border.width: 2
+                    textColor: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#000000"
+                    visible: {
+                        if(!tickets.showPaid && modelData.isPaid)
+                            return false;
+                        var filter = newCustomerName.text.trim().toUpperCase()
+                        if(filter.length === 0){
+                            return true;
+                        }
+                        return modelData.customerNames.toUpperCase().indexOf(filter) > -1;
+                    }
+                    onBeforeFlash: {
+                        rec.selectedTicket = modelData
+                    }
                 }
             }
         }
     }
+
+
 }

@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>TicketList.qml</file>
         <file>MenuView.qml</file>
+        <file>RectangleFlash.qml</file>
+        <file>RectangleFlashButton.qml</file>
     </qresource>
 </RCC>

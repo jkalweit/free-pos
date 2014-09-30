@@ -5,6 +5,18 @@
 #include <QSqlError>
 
 
+
+
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+
+
+
+
+
+
 FreePosServer::FreePosServer(QObject *parent) :
     SimpleServer(parent), m_currentMenu(nullptr), m_currentRec(nullptr)
 {    
@@ -154,15 +166,6 @@ Reconciliation* FreePosServer::getCurrentRec() {
 }
 
 void FreePosServer::addTestData() {
-//    addMenuCategory("Beer");
-//    addMenuCategory("Appetizers");
-//    addMenuCategory("Lunch Sandwiches");
-
-
-
-//    addMenuItem(1, "Bud Light", "Alcohol", 2.75);
-//    addMenuItem(1, "Miller Light", "Alcohol", 2.75);
-//    addMenuItem(1, "Coors Light", "Alcohol", 2.75);
 
     Ticket *ticket = m_currentRec->addTicket("1-1");
     ticket->addCustomer("Andrew");
@@ -177,23 +180,57 @@ void FreePosServer::addTestData() {
 
     ticket = m_currentRec->addTicket("Deck");
     ticket->addCustomer("Tina");
-
-    MenuCategory* cat = m_currentMenu->addCategory("Bottle Beer");
-    cat->addMenuItem("Bud Light", "Alcohol", 2.75);
-    cat->addMenuItem("Miller Lite", "Alcohol", 2.75);
-    cat->addMenuItem("Coors Light", "Alcohol", 2.75);
-    m_currentMenu->addCategory("Draft Beer");
-    cat = m_currentMenu->addCategory("Lunch Entrees");
-    cat->addMenuItem("Chicken Tenders", "Food", 9.00);
-    cat->addMenuItem("Cheeseburger", "Food", 9.00);
-
-    m_currentMenu->addCategory("Lunch Sandwiches");
-    m_currentMenu->addCategory("Lunch Sides");
-
     m_currentRec->setSelectedTicket(ticket);
-    m_currentMenu->setSelectedCategory(cat);
+
+    for(int i = 1; i <= 50; i++) {
+        ticket = m_currentRec->addTicket("Bar");
+        customer = ticket->addCustomer("Test Customer " + QString::number(i));
+        for(int j = 0; j < 1; j++) {
+            customer->addOrderItem("Test Food Item", "Food", 7.50, 1, "This is a note.");
+            customer->addOrderItem("Test Alcohol Item", "Alcohol", 2.75, 1, "This is a note.");
+        }
+    }
+
+
+//    MenuCategory* cat = m_currentMenu->addCategory("Bottle Beer");
+//    cat->addMenuItem("Bud Light", "Alcohol", 2.75);
+//    cat->addMenuItem("Miller Lite", "Alcohol", 2.75);
+//    cat->addMenuItem("Coors Light", "Alcohol", 2.75);
+//    m_currentMenu->addCategory("Draft Beer");
+//    cat = m_currentMenu->addCategory("Lunch Entrees");
+//    cat->addMenuItem("Chicken Tenders", "Food", 9.00);
+//    cat->addMenuItem("Cheeseburger", "Food", 9.00);
+
+//    m_currentMenu->addCategory("Lunch Sandwiches");
+//    m_currentMenu->addCategory("Lunch Sides");
+
+//    m_currentMenu->setSelectedCategory(cat);
 
     //int recId = addReconciliation("Test Rec");
+
+
+
+    QFile file("./menu.json");
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Could not open menu file" << endl;
+    }
+
+    QJsonDocument json = QJsonDocument::fromJson(file.readAll());
+    QJsonObject menu = json.object()["categories"].toObject();
+    QJsonObject catObj;
+    QJsonObject itemObj;
+    MenuCategory* newCat;
+    //    cat->addMenuItem("Bud Light", "Alcohol", 2.75);
+
+    for(QJsonValue cat : menu) {
+        catObj = cat.toObject();
+        //qDebug() << "Adding: " << catObj["name"].toString();
+        newCat = m_currentMenu->addCategory(catObj["name"].toString());
+        for(QJsonValue item : catObj["menuitems"].toObject()) {
+            itemObj = item.toObject();
+            newCat->addMenuItem(itemObj["name"].toString(), itemObj["class"].toString(), itemObj["price"].toString().toFloat());
+        }
+    }
 }
 
 

@@ -16,6 +16,15 @@ Ticket* Reconciliation::addTicket(QString name) {
 }
 
 void Reconciliation::addTicket(Ticket *ticket) {
+    connect(ticket, SIGNAL(foodTotalChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(ticket, SIGNAL(taxTotalChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(ticket, SIGNAL(barTotalChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(ticket, SIGNAL(totalChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+
     m_tickets.append(ticket);
     ticketsChanged(tickets());
 }
@@ -35,6 +44,41 @@ QQmlListProperty<Ticket> Reconciliation::tickets() {
     return QQmlListProperty<Ticket>(this, m_tickets);
 }
 
+
+float Reconciliation::foodTotal() {
+    float sum = 0;
+    for(Ticket *c : m_tickets) {\
+        sum += c->foodTotal();
+    }
+    return sum;
+}
+
+float Reconciliation::taxTotal() {
+    float sum = 0;
+    for(Ticket *c : m_tickets) {\
+        sum += c->taxTotal();
+    }
+    return sum;
+}
+
+float Reconciliation::barTotal() {
+    float sum = 0;
+    for(Ticket *c : m_tickets) {\
+        sum += c->barTotal();
+    }
+    return sum;
+}
+
+float Reconciliation::total() {
+    return foodTotal() + taxTotal() + barTotal();
+}
+
+void Reconciliation::fireTotalsChanged() {
+    foodTotalChanged(foodTotal());
+    taxTotalChanged(taxTotal());
+    barTotalChanged(barTotal());
+    totalChanged(total());
+}
 
 QString Reconciliation::serialize() const {
     return QString::number(m_id) + ":" + m_name;
