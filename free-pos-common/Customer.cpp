@@ -58,7 +58,7 @@ void Customer::fireTotalsChanged() {
 }
 
 OrderItem* Customer::addOrderItem(QString name, QString type, float price, float quantity, QString note) {
-    OrderItem* orderItem = new OrderItem(this, ++m_currentOrderItemId, name, type, price, quantity, note);
+    OrderItem* orderItem = new OrderItem(this, ++m_currentOrderItemId, name, type, price, quantity, note, false);
     addOrderItem(orderItem);
     return orderItem;
 }

@@ -2,13 +2,28 @@
 #include <QDebug>
 #include "OrderItem.h"
 
-OrderItem::OrderItem(QObject *parent, quint32 id, QString name, QString type, float price, float quantity, QString note) :
-    QObject(parent), m_id(id), m_name(name), m_type(type), m_price(price), m_quantity(quantity), m_note(note)
+OrderItem::OrderItem(QObject *parent, quint32 id, QString name, QString type, float price, float quantity, QString note, bool deleted) :
+    QObject(parent), m_id(id), m_name(name), m_type(type), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted)
 {
+    connect(this, SIGNAL(quantityChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(this, SIGNAL(priceChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(this, SIGNAL(deletedChanged(bool)),
+            this, SLOT(fireTotalsChanged()));
+}
+
+void OrderItem::fireTotalsChanged() {
+    subTotalChanged(subTotal());
+    taxChanged(tax());
+    totalChanged(total());
 }
 
 float OrderItem::subTotal() {
-    return (m_quantity * m_price);
+    if(m_deleted)
+        return 0;
+    else
+        return (m_quantity * m_price);
 }
 
 float OrderItem::tax() {
@@ -26,7 +41,7 @@ float OrderItem::total() {
 
 QString OrderItem::serialize() const {
     //m_name.replace(":", "");
-    return QString::number(m_id) + ":" + m_name + ":" + m_type + ":" + QString::number(m_price) + ":" + QString::number(m_quantity) + ":" + m_note;
+    return QString::number(m_id) + ":" + m_name + ":" + m_type + ":" + QString::number(m_price) + ":" + QString::number(m_quantity) + ":" + m_note + ":" + QString::number(m_deleted);
 }
 
 OrderItem* OrderItem::deserialize(QString serialized, QObject *parent)
@@ -39,8 +54,9 @@ OrderItem* OrderItem::deserialize(QString serialized, QObject *parent)
     float price = split[3].toFloat();
     float quantity = split[4].toFloat();
     QString note = split[5];
+    bool deleted = split[6].toInt();
 
-    OrderItem *obj = new OrderItem(parent, id, name, type, price, quantity, note);
+    OrderItem *obj = new OrderItem(parent, id, name, type, price, quantity, note, deleted);
     qDebug() << "    deserialized: " << obj->serialize();
     return obj;
 }
@@ -63,6 +79,7 @@ QTextStream& operator>>(QTextStream& stream, OrderItem& obj) {
     obj.m_price = obj2->m_price;
     obj.m_quantity = obj2->m_quantity;
     obj.m_note = obj2->m_note;
+    obj.m_deleted = obj2->m_deleted;
 
     return stream;
 }

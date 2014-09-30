@@ -1,42 +1,13 @@
 import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtGraphicalEffects 1.0
 import FreePos 1.0 as FreePos
 
 ApplicationWindow {
     visible: true
     width: 1020
     height: 480
-    title: qsTr("Free Pos")
+    title: qsTr("CY Pos")
 
-    property var customerBeingEdited
-    property bool showEditCustomerDialog: false
-//    property ListModel tableList: ListModel {
-//        ListElement { text: "Bar"; }
-//        ListElement { text: "Deck"; }
-//        ListElement { text: "1-1"; }
-//        ListElement { text: "1-2"; }
-//        ListElement { text: "1-3"; }
-//        ListElement { text: "1-4"; }
-//        ListElement { text: "1-5"; }
-//        ListElement { text: "1-6"; }
-//        ListElement { text: "1-7"; }
-//        ListElement { text: "1-8"; }
-//    }
-
-//    menuBar: MenuBar {
-//        Menu {
-//            title: qsTr("File")
-//            MenuItem {
-//                text: qsTr("&Open")
-//                onTriggered: console.log("Open action triggered");
-//            }
-//            MenuItem {
-//                text: qsTr("Exit")
-//                onTriggered: Qt.quit();
-//            }
-//        }
-//    }
 
     Rectangle {
         id: container
@@ -44,66 +15,13 @@ ApplicationWindow {
         anchors.fill: parent
 
 
-        Column {
-            id: tickets
+        TicketList {
+            id: ticketList
             anchors.left: parent.left
             anchors.leftMargin: 2
             anchors.top: parent.top
             anchors.topMargin: 2
             width: 200
-            spacing: 2
-
-            TextField {
-                id: newCustomerName
-                maximumLength: 25
-                width: parent.width
-                placeholderText: qsTr("Customer name")
-                onAccepted: {
-                    var ticket = rec.addTicket("Bar");
-                    ticket.addCustomer(newCustomerName.text);
-                    newCustomerName.text = "";
-                    rec.selectedTicket = ticket;
-                }
-
-                onActiveFocusChanged: {
-                    if(this.focus){
-                        this.selectAll();
-                    }
-                }
-            }
-
-
-
-            Repeater {
-                model: rec.tickets
-
-                Rectangle {
-                    visible: {
-                        var filter = newCustomerName.text.trim().toUpperCase()
-                        if(filter.length === 0){
-                            return true;
-                        }
-                        return modelData.customerNames.toUpperCase().indexOf(filter) > -1;
-                    }
-                    width: tickets.width
-                    height: 25
-                    color:  rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#9999FF" : "#2222FF"
-                    Text {
-                        text: modelData.customerNames // modelData.longName
-                        color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#000000" : "#DDDDDD"
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 5
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            rec.selectedTicket = modelData
-                        }
-                    }
-                }
-            }
         }
 
 
@@ -113,7 +31,7 @@ ApplicationWindow {
             color: "white"
             width: 400
             height: ticketInner.height + (ticketInner.anchors.margins * 2)
-            anchors.left: tickets.right
+            anchors.left: ticketList.right
             anchors.leftMargin: 5
             anchors.top: parent.top
             anchors.topMargin: 5
@@ -123,27 +41,9 @@ ApplicationWindow {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right                
-                anchors {
-                    margins: 40
-                    topMargin: 20
-                }
-
+                anchors.margins: 40
                 spacing: 10
 
-//                Row {
-//                    anchors.right: ticketInner.right
-//                    Text {
-//                        anchors.verticalCenter: parent.verticalCenter
-//                        text: "Table: "
-//                    }
-
-//                    ComboBox {
-//                        model: tableList
-//                        onActivated: {
-//                            rec.selectedTicket.name = textAt(currentIndex);
-//                        }
-//                    }
-//                }
 
                 Column {
                     id: customers
@@ -162,14 +62,12 @@ ApplicationWindow {
                                 id: customerName
                                 text: modelData.name
                                 font.bold: true                                
+                                font.pixelSize: 16
 
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        customerBeingEdited = modelData;
-                                        showEditCustomerDialog = true;
-                                        editCustomerName.forceActiveFocus();
-                                        editCustomerName.selectAll();
+                                        editCustomerDialog.show(modelData);
                                     }
                                 }
                             }
@@ -189,21 +87,30 @@ ApplicationWindow {
                                         id: orderItem
                                         width: orderItems.width
                                         height: 20
+                                        property var model: modelData
                                         //property alias flash: flashAnimation
 
                                         Text {
                                             anchors.left: parent.left
-                                            anchors.leftMargin: 5
-                                            text: modelData.quantity
+                                            anchors.leftMargin: 0
+                                            text: Number(modelData.quantity.toFixed(2))
+                                            font.strikeout: modelData.deleted
                                         }
                                         Text {
                                             anchors.left: parent.left
-                                            anchors.leftMargin: 30
+                                            anchors.leftMargin: 40
                                             text: modelData.name
+                                            font.strikeout: modelData.deleted
                                         }
                                         Text {
                                             anchors.right: parent.right
                                             text: modelData.subTotal.toFixed(2);
+                                            font.strikeout: modelData.deleted
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            onClicked: editOrderItemDialog.show(model)
                                         }
 
 //                                        SequentialAnimation {
@@ -227,308 +134,306 @@ ApplicationWindow {
 
                 }
 
-
-
-                Column {
-                    id: totals
-                    anchors.right: parent.right
-                    width: parent.width / 2
-                    spacing: 5
-                    Rectangle {
-                        width: parent.width
-                        height: 15
-                        Text {
-                            text: "Food:"
-                            anchors.left: parent.left
-                        }
-                        Text {
-                            text: rec.selectedTicket ? rec.selectedTicket.foodTotal.toFixed(2) : ""
-                            anchors.right: parent.right
-                        }
-                    }
-                    Rectangle {
-                        width: parent.width
-                        height: 15
-                        Text {
-                            text: "Tax:"
-                            anchors.left: parent.left
-                        }
-                        Text {
-                            text: rec.selectedTicket ? rec.selectedTicket.taxTotal.toFixed(2) : ""
-                            anchors.right: parent.right
-                        }
-                    }
-                    Rectangle {
-                        width: parent.width
-                        height: 15
-                        Text {
-                            text: "Bar:"
-                            anchors.left: parent.left
-                        }
-                        Text {
-                            text: rec.selectedTicket ? rec.selectedTicket.barTotal.toFixed(2) : ""
-                            anchors.right: parent.right
-                        }
-                    }
-                    Rectangle {
-                        width: parent.width
-                        height: 15
-                        Text {
-                            text: "Total:"                            
-                            anchors.left: parent.left
-                            font {
-                                bold: true
-                                pixelSize: 16
-                            }
-
-                        }
-                        Text {
-                            text: "$" + (rec.selectedTicket ? rec.selectedTicket.total.toFixed(2) : "")
-                            anchors.right: parent.right
-                            font {
-                                bold: true
-                                pixelSize: 16
-                            }
-                        }
-                    }
-                }
-            }
-
-
-        }
-
-        DropShadow {
-            visible: rec.selectedTicket
-            anchors.fill: ticket
-            horizontalOffset: 3
-            verticalOffset: 3
-            radius: 8.0
-            samples: 16
-            color: "#80000000"
-            source: ticket
-            fast: true
-        }
-
-
-        Column {
-            id: menuItems
-            visible: menu.selectedCategory
-            anchors.right: menuCategories.left
-            anchors.rightMargin: 2
-            anchors.top: parent.top
-            anchors.topMargin: 2
-            width: 200
-            spacing: 2
-
-            Row {
-                TextField {
-                    id: newMenuItemName
-                    maximumLength: 20
-                    width: menuItems.width - newMenuItemPrice.width
-                    placeholderText: qsTr("Menu item name")
-                    onAccepted: {
-                        if(menu.selectedCategory) {
-                            if(menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", newMenuItemPrice.text)) {
-                                newMenuItemName.text = "";
-                                newMenuItemPrice.text = "";
-                            }
-                        }
-                    }
-
-                    onActiveFocusChanged: {
-                        if(this.focus){
-                            this.selectAll();
-                        }
-                    }
-                }
-                TextField {
-                    id: newMenuItemPrice
-                    width: 75
-                    placeholderText: qsTr("Price")
-                    onAccepted: {
-                        if(menu.selectedCategory) {
-                            if(menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", newMenuItemPrice.text)) {
-                                newMenuItemName.text = "";
-                                newMenuItemPrice.text = "";
-                            }
-                        }
-                    }
-
-                    onActiveFocusChanged: {
-                        if(this.focus){
-                            this.selectAll();
-                        }
-                    }
-                }
-            }
-
-
-
-            Repeater {
-                model: menu.selectedCategory ? menu.selectedCategory.menuItems : 0
-
                 Rectangle {
-                    id: menuItemContainer
-                    width: menuItems.width
-                    height: 25
-                    color:  "#DD66FF"
-                    Text {
-                        text: modelData.name
-                        color: "#000000"
-                        anchors.verticalCenter: parent.verticalCenter
+                    width: parent.width
+                    height: totals.height
+
+                    Column {
+                        id: ticketControls
+                        width: parent.width / 2
                         anchors.left: parent.left
-                        anchors.leftMargin: 5
+
+                        Rectangle {
+                            width: parent.width
+                            height: paidText.height + 10
+
+                            Text{
+                                id: paidText
+                                text: rec.selectedTicket && rec.selectedTicket.isPaid ? "Paid: " + Qt.formatTime(rec.selectedTicket.paidStamp, "hh:mmAP") : "Unpaid"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    rec.selectedTicket.toggleIsPaid();
+                                }
+                            }
+                        }
                     }
-                    Text {
-                        text: modelData.price.toFixed(2)
-                        color: "#000000"
-                        anchors.verticalCenter: parent.verticalCenter
+
+                    Column {
+                        id: totals
                         anchors.right: parent.right
-                        anchors.rightMargin: 5
-                    }
+                        width: parent.width / 2
+                        spacing: 5
+                        Rectangle {
+                            width: parent.width
+                            height: 15
+                            Text {
+                                text: "Food:"
+                                anchors.left: parent.left
+                            }
+                            Text {
+                                text: rec.selectedTicket ? rec.selectedTicket.foodTotal.toFixed(2) : ""
+                                anchors.right: parent.right
+                            }
+                        }
+                        Rectangle {
+                            width: parent.width
+                            height: 15
+                            Text {
+                                text: "Tax:"
+                                anchors.left: parent.left
+                            }
+                            Text {
+                                text: rec.selectedTicket ? rec.selectedTicket.taxTotal.toFixed(2) : ""
+                                anchors.right: parent.right
+                            }
+                        }
+                        Rectangle {
+                            width: parent.width
+                            height: 15
+                            Text {
+                                text: "Bar:"
+                                anchors.left: parent.left
+                            }
+                            Text {
+                                text: rec.selectedTicket ? rec.selectedTicket.barTotal.toFixed(2) : ""
+                                anchors.right: parent.right
+                            }
+                        }
+                        Rectangle {
+                            width: parent.width
+                            height: 15
+                            Text {
+                                text: "Total:"
+                                anchors.left: parent.left
+                                font {
+                                    bold: true
+                                    pixelSize: 16
+                                }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            flash.start();
-                            if(rec.selectedTicket) {
-                                rec.selectedTicket.customers[0].addOrderItem(modelData.name, modelData.type, modelData.price, 1, "");
+                            }
+                            Text {
+                                text: "$" + (rec.selectedTicket ? rec.selectedTicket.total.toFixed(2) : "")
+                                anchors.right: parent.right
+                                font {
+                                    bold: true
+                                    pixelSize: 16
+                                }
                             }
                         }
                     }
 
-                    SequentialAnimation {
-                        id: flash
-                        PropertyAnimation { target: menuItemContainer; properties: "color"; to: "white"; duration: 25; }
-                        PropertyAnimation { target: menuItemContainer; properties: "color"; to: "#DD66FF"; duration: 25; }
-                    }
 
                 }
             }
+
         }
 
-        Column {
-            id: menuCategories
+        MenuView {
+            id: menuView
             anchors.right: parent.right
-            anchors.rightMargin: 2
             anchors.top: parent.top
-            anchors.topMargin: 2
-            width: 200
-            spacing: 2
-
-            TextField {
-                id: newMenuCategoryName
-                maximumLength: 32
-                width: parent.width
-                placeholderText: qsTr("Category name")
-                onAccepted: {
-                    menu.addCategory(newMenuCategoryName.text);
-                    newMenuCategoryName.text = ""
-                }
-
-                onActiveFocusChanged: {
-                    if(this.focus){
-                        this.selectAll();
-                    }
-                }
-            }
-
-
-
-
-            Repeater {
-                model: menu.categories
-
-                Rectangle {
-                    width: menuCategories.width
-                    height: 25
-                    color:  menu.selectedMenuCategory && menu.selectedMenuCategory.id == modelData.id ? "#DD66FF" : "#AA00DD"
-                    Text {
-                        text: modelData.name
-                        color: menu.selectedMenuCategory && menu.selectedMenuCategory.id == modelData.id ? "#000000" : "#DDDDDD"
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 5
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            menu.selectedCategory = modelData
-                        }
-                    }
-                }
-            }
+            width: 400
         }
 
 
         Rectangle {
             id: editCustomerDialog
-            visible: showEditCustomerDialog
+            visible: false
             anchors.fill: parent
-            color: "#AAA000000"
+            color: "#AA000000"
+            property var model
 
-//            onVisibleChanged: {
-//                if(this.visible && rec.selectedTicket) {
-
-//                }
-//            }
+            function show(customer) {
+                editCustomerDialog.model = customer
+                editCustomerDialog.visible = true
+                editCustomerName.forceActiveFocus();
+                editCustomerName.selectAll();
+            }
 
             function close(save) {
                 if(save) {
-                    customerBeingEdited.name = editCustomerName.text;
+                    editCustomerDialog.model.name = editCustomerName.text;
                 }
-                showEditCustomerDialog = false;
+                editCustomerDialog.visible = false;
             }
 
-            Column {
+            Rectangle {
+                width: editCustomerInner.width + 80
+                height: editCustomerInner.height + 80
                 anchors.centerIn: parent
-                spacing: 5
-                Row {
+                color: "#FFFFFF"
+                border.color: "#000000"
+                border.width: 2
+
+                Column {
+                    id: editCustomerInner
+                    anchors.centerIn: parent
+                    spacing: 20
 
                     Text {
-                        text: "Name: "
+                        text: "Edit Customer"
+                        font.bold: true
+                        font.pixelSize: 20
                     }
 
-                    TextField {
-                        id: editCustomerName
-                        text: customerBeingEdited ? customerBeingEdited.name : ""
-                        width: 150
-                        maximumLength: 25
-                        placeholderText: qsTr("Customer name")
-                        onAccepted: {
-                            editCustomerDialog.close(true);
+                    Column {
+
+                        Row {
+
+                            Text {
+                                text: "Name: "
+                            }
+
+
+                            TextField {
+                                id: editCustomerName
+                                text: editCustomerDialog.model ? editCustomerDialog.model.name : ""
+                                width: 150
+                                maximumLength: 25
+                                placeholderText: qsTr("Customer name")
+                                onAccepted: {
+                                    editCustomerDialog.close(true);
+                                }
+
+                                onActiveFocusChanged: {
+                                    if(this.focus){
+                                        this.selectAll();
+                                    }
+                                }
+                            }
+
+                            Button {
+                                text: "Ok"
+                                onClicked: {
+                                    editCustomerDialog.close(true);
+                                }
+                            }
+                            Button {
+                                text: "Cancel"
+                                onClicked: {
+                                    editCustomerDialog.close(false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: editOrderItemDialog
+            anchors.fill: parent
+            visible: false
+            color: "#AA000000"
+            property var model //OrderItem
+
+            function show(orderItem) {
+                editOrderItemDialog.model = orderItem;
+                editOrderItemDialog.visible = true;
+                editQuantity.forceActiveFocus();
+            }
+
+
+            function close(save) {
+                if(save) {
+                    editOrderItemDialog.model.quantity = Number(editQuantity.text);
+                    editOrderItemDialog.model.price = Number(editPrice.text);
+                }
+                editOrderItemDialog.visible = false;
+            }
+
+            Rectangle {
+                width: orderItemEditInner.width + 80
+                height: orderItemEditInner.height + 80
+                anchors.centerIn: parent
+                color: "#FFFFFF"
+                border.color: "#000000"
+                border.width: 2
+                Column {
+                    id: orderItemEditInner
+                    anchors.centerIn: parent
+                    spacing: 5
+
+                    Row {
+                        Text {
+                            width: 100
+                            text: "Quantity: "
                         }
 
-                        onActiveFocusChanged: {
-                            if(this.focus){
-                                this.selectAll();
+
+                        TextField {
+                            id: editQuantity
+                            text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.quantity.toFixed(2)) : ""
+                            inputMethodHints: Qt.ImhFormattedNumbersOnly
+                            width: 150
+                            maximumLength: 25
+                            placeholderText: qsTr("Quantity")
+                            onAccepted: {
+                                editOrderItemDialog.close(true);
+                            }
+
+                            onActiveFocusChanged: {
+                                if(this.focus){
+                                    this.selectAll();
+                                }
                             }
                         }
                     }
 
-                    Button {
-                        text: "Ok"
-                        onClicked: {
-                            editCustomerDialog.close(true);
+                    Row {
+
+                        Text {
+                            width: 100
+                            text: "Price: "
                         }
-                    }
-                    Button {
-                        text: "Cancel"
-                        onClicked: {
-                            editCustomerDialog.close(false);
+
+
+                        TextField {
+                            id: editPrice
+                            text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.price.toFixed(2)) : ""
+                            width: 150
+                            maximumLength: 25
+                            inputMethodHints: Qt.ImhFormattedNumbersOnly
+                            placeholderText: qsTr("Price")
+                            onAccepted: {
+                                editOrderItemDialog.close(true);
+                            }
+
+                            onActiveFocusChanged: {
+                                if(this.focus){
+                                    this.selectAll();
+                                }
+                            }
+                        }
+
+
+                        Button {
+                            text: "Ok"
+                            onClicked: {
+                                editOrderItemDialog.close(true);
+                            }
+                        }
+                        Button {
+                            text: "Cancel"
+                            onClicked: {
+                                editOrderItemDialog.close(false);
+                            }
+                        }
+                        Button {
+                            text: (editOrderItemDialog.model && editOrderItemDialog.model.deleted) ? "Un-Delete" : "Delete"
+                            onClicked: {
+                                editOrderItemDialog.model.deleted = !editOrderItemDialog.model.deleted;
+                                editOrderItemDialog.close(true);
+                            }
                         }
                     }
                 }
-
-//                ComboBox {
-//                    id: editCustomerTableComboBox
-//                    model: tableList
-//                }
             }
         }
-
-
 
 
 

@@ -1,7 +1,7 @@
 #ifndef TICKET_H
 #define TICKET_H
 
-
+#include <QDateTime>
 #include <QTextStream>
 #include <QList>
 #include <QObject>
@@ -17,16 +17,20 @@ class Ticket : public QObject {
     Q_PROPERTY(QString customerNames READ customerNames NOTIFY customerNamesChanged)
     Q_PROPERTY(QString longName READ longName NOTIFY longNameChanged)
     Q_PROPERTY(QQmlListProperty<Customer> customers READ customers NOTIFY customersChanged)
+    Q_PROPERTY(QDateTime paidStamp MEMBER m_paidStamp NOTIFY paidStampChanged)
+    Q_PROPERTY(bool isPaid READ isPaid NOTIFY isPaidChanged)
 
     Q_PROPERTY(float foodTotal READ foodTotal NOTIFY foodTotalChanged)
     Q_PROPERTY(float taxTotal READ taxTotal NOTIFY taxTotalChanged)
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 public:
-    explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "");
+    explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime paidStamp = QDateTime());
 
     QString customerNames();
     QString longName();
+    bool isPaid();
+    Q_INVOKABLE void toggleIsPaid();
 
     Q_INVOKABLE Customer* addCustomer(QString name);
     void addCustomer(Customer *customer);
@@ -47,6 +51,9 @@ signals:
     void idChanged(quint32);
 //    void reconciliationIdChanged(quint32);
     void nameChanged(QString);
+    void isPaidChanged(bool);
+    void paidStampChanged(QDateTime);
+
     void customersChanged(QQmlListProperty<Customer>);
     void customerNamesChanged(QString);
     void longNameChanged(QString);
@@ -61,7 +68,9 @@ private:
 //    quint32 m_reconciliationId;
     QString m_name;
     quint32 m_currentCustomerId;
+    QDateTime m_paidStamp;
     QList<Customer*> m_customers;
+
 
 private slots:
     void fireTotalsChanged();

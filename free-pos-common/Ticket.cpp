@@ -4,8 +4,8 @@
 #include <QDebug>
 
 
-Ticket::Ticket(QObject *parent, quint32 id, QString name) :
-    QObject(parent), m_id(id), m_name(name), m_currentCustomerId(0)
+Ticket::Ticket(QObject *parent, quint32 id, QString name, QDateTime paidStamp) :
+    QObject(parent), m_id(id), m_name(name), m_currentCustomerId(0), m_paidStamp(paidStamp)
 {
     connect(this, SIGNAL(nameChanged(QString)),
             this, SLOT(fireNamesChanged()));
@@ -24,6 +24,21 @@ QString Ticket::customerNames() {
 
 QString Ticket::longName() {
     return m_name + ": " + customerNames();
+}
+
+bool Ticket::isPaid() {
+    return !m_paidStamp.isNull();
+}
+
+void Ticket::toggleIsPaid() {
+    if(isPaid()) {
+        m_paidStamp = QDateTime();
+    } else {
+        m_paidStamp = QDateTime::currentDateTime();
+    }
+
+    isPaidChanged(isPaid());
+    paidStampChanged(m_paidStamp);
 }
 
 void Ticket::fireTotalsChanged() {
