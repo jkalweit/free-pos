@@ -9,5 +9,6 @@
         <file>EditOrderItemDialog.qml</file>
         <file>EditCurrentRecDialog.qml</file>
         <file>DialogModal.qml</file>
+        <file>TextFieldLabeled.qml</file>
     </qresource>
 </RCC>

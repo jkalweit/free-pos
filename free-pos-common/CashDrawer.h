@@ -24,7 +24,14 @@ class CashDrawer : public QObject
     // Calculated
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 public:
-    explicit CashDrawer(QObject *parent = 0, quint32 id = 0, QString name = "");
+    explicit CashDrawer(QObject *parent = 0, quint32 id = 0, QString name = ""
+            , quint16 c100s = 0
+            , quint16 c50s = 0
+            , quint16 c20s = 0
+            , quint16 c10s = 0
+            , quint16 c5s = 0
+            , quint16 c1s = 0
+            , float coins = 0);
 
     void setc100s(quint16 val);
     void setc50s(quint16 val);
@@ -48,7 +55,7 @@ signals:
     void c1sChanged(quint16);
     void coinsChanged(float);
 
-    void totalChanged();
+    void totalChanged(float);
 
 public slots:
 

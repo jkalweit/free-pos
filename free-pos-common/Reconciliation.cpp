@@ -4,9 +4,22 @@
 #include <QDebug>
 
 
-Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name) :
-    QObject(parent), m_id(id), m_name(name), m_currentTicketId(0), m_selectedTicket(nullptr)
+Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, CashDrawer *begginningDrawer, CashDrawer *endingDrawer) :
+    QObject(parent), m_id(id), m_name(name), m_beginningDrawer(begginningDrawer), m_endingDrawer(endingDrawer),
+    m_currentTicketId(0), m_selectedTicket(nullptr)
 {
+    if(m_beginningDrawer == nullptr)
+        m_beginningDrawer = new CashDrawer(this);
+    if(m_endingDrawer == nullptr)
+        m_endingDrawer = new CashDrawer(this);
+}
+
+CashDrawer* Reconciliation::beginningDrawer() {
+    return m_beginningDrawer;
+}
+
+CashDrawer* Reconciliation::endingDrawer() {
+    return m_endingDrawer;
 }
 
 Ticket* Reconciliation::addTicket(QString name) {

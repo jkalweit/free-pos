@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QQmlListProperty>
 #include "Ticket.h"
+#include "CashDrawer.h"
 
 class Reconciliation : public QObject {
 
@@ -19,8 +20,11 @@ class Reconciliation : public QObject {
     Q_PROPERTY(float taxTotal READ taxTotal NOTIFY taxTotalChanged)
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
+
+    Q_PROPERTY(CashDrawer *beginningDrawer READ beginningDrawer NOTIFY beginningDrawerChanged)
+    Q_PROPERTY(CashDrawer *endingDrawer READ endingDrawer NOTIFY endingDrawerChanged)
 public:
-    explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QString name = "");
+    explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QString name = "", CashDrawer *begginningDrawer = nullptr, CashDrawer *endingDrawer = nullptr);
 
     QQmlListProperty<Ticket> tickets();
     Q_INVOKABLE Ticket* addTicket(QString name);
@@ -33,6 +37,9 @@ public:
     float taxTotal();
     float barTotal();
     float total();
+
+    CashDrawer* beginningDrawer();
+    CashDrawer* endingDrawer();
 
     QString serialize() const;
     static Reconciliation* deserialize(QString serialized, QObject *parent = 0);
@@ -51,14 +58,19 @@ signals:
     void barTotalChanged(float);
     void totalChanged(float);
 
+    void beginningDrawerChanged(CashDrawer*);
+    void endingDrawerChanged(CashDrawer*);
 
 private:
     quint32 m_id;
     QString m_name;
 
+    CashDrawer *m_beginningDrawer;
+    CashDrawer *m_endingDrawer;
+
     quint32 m_currentTicketId;
     QList<Ticket*> m_tickets;
-    Ticket* m_selectedTicket;
+    Ticket* m_selectedTicket;    
 
 private slots:
     void fireTotalsChanged();

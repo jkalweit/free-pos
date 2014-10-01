@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<Ticket>("FreePos", 1, 0, "Ticket");
     qmlRegisterType<Customer>("FreePos", 1, 0, "Customer");
     qmlRegisterType<OrderItem>("FreePos", 1, 0, "OrderItem");
+    qmlRegisterType<CashDrawer>("FreePos", 1, 0, "CashDrawer");
 
     FreePosServer server;
     Menu menu(&server);

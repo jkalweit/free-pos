@@ -15,6 +15,8 @@ ApplicationWindow {
         anchors.fill: parent
 
 
+
+
         TicketList {
             id: ticketList
             anchors.left: parent.left

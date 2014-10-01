@@ -17,6 +17,7 @@ DialogModal {
     function close(save) {
         if(save) {
             rec.name = editName.text;
+            rec.beginningDrawer.c100s = Number(edit100s.text)
         }
         editCurrentRecDialog.visible = false;
     }
@@ -24,30 +25,45 @@ DialogModal {
     customContent: Column {
         spacing: 5
 
+        TextFieldLabeled {
+            id: editName
+            label: "Name:"
+            text: model ? model.name : ""
+            placeholderText: "Rec name"
+        }
+
+        TextFieldLabeled {
+            id: edit100s
+            label: "100s:"
+            text: model ? model.beginningDrawer.c100s : ""
+            placeholderText: "100s"
+        }
+
+//        Row {
+
+//            Text {
+//                text: "Name: "
+//            }
+
+
+//            TextField {
+//                id: editName
+//                text: model ? model.name : ""
+//                width: 150
+//                maximumLength: 25
+//                placeholderText: qsTr("Rec name")
+//                onAccepted: {
+//                    editCurrentRecDialog.close(true);
+//                }
+
+//                onActiveFocusChanged: {
+//                    if(this.focus){
+//                        this.selectAll();
+//                    }
+//                }
+//            }
+//        }
         Row {
-
-            Text {
-                text: "Name: "
-            }
-
-
-            TextField {
-                id: editName
-                text: model ? model.name : ""
-                width: 150
-                maximumLength: 25
-                placeholderText: qsTr("Rec name")
-                onAccepted: {
-                    editCurrentRecDialog.close(true);
-                }
-
-                onActiveFocusChanged: {
-                    if(this.focus){
-                        this.selectAll();
-                    }
-                }
-            }
-
             Button {
                 text: "Ok"
                 onClicked: {
