@@ -4,8 +4,8 @@
 #include <QDebug>
 
 
-Ticket::Ticket(QObject *parent, quint32 id, QString name, QDateTime paidStamp) :
-    QObject(parent), m_id(id), m_name(name), m_currentCustomerId(0), m_paidStamp(paidStamp)
+Ticket::Ticket(QObject *parent, quint32 id, QString name, QDateTime paidStamp, bool isTogo) :
+    QObject(parent), m_id(id), m_name(name), m_currentCustomerId(0), m_paidStamp(paidStamp), m_isTogo(isTogo)
 {
     connect(this, SIGNAL(nameChanged(QString)),
             this, SLOT(fireNamesChanged()));

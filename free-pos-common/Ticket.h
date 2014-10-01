@@ -18,6 +18,7 @@ class Ticket : public QObject {
     Q_PROPERTY(QString longName READ longName NOTIFY longNameChanged)
     Q_PROPERTY(QQmlListProperty<Customer> customers READ customers NOTIFY customersChanged)
     Q_PROPERTY(QDateTime paidStamp MEMBER m_paidStamp NOTIFY paidStampChanged)
+    Q_PROPERTY(bool isTogo MEMBER m_isTogo NOTIFY isTogoChanged)
     Q_PROPERTY(bool isPaid READ isPaid NOTIFY isPaidChanged)
 
     Q_PROPERTY(float foodTotal READ foodTotal NOTIFY foodTotalChanged)
@@ -25,7 +26,7 @@ class Ticket : public QObject {
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 public:
-    explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime paidStamp = QDateTime());
+    explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime paidStamp = QDateTime(), bool isTogo = false);
 
     QString customerNames();
     QString longName();
@@ -51,6 +52,7 @@ signals:
     void idChanged(quint32);
 //    void reconciliationIdChanged(quint32);
     void nameChanged(QString);
+    void isTogoChanged(bool);
     void isPaidChanged(bool);
     void paidStampChanged(QDateTime);
 
@@ -69,6 +71,7 @@ private:
     QString m_name;
     quint32 m_currentCustomerId;
     QDateTime m_paidStamp;
+    bool m_isTogo;
     QList<Customer*> m_customers;
 
 

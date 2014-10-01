@@ -45,6 +45,23 @@ ApplicationWindow {
                 anchors.margins: 40
                 spacing: 10
 
+                RectangleFlash {
+                    width: parent.width / 2
+                    height: togoText.height + 20
+                    anchors.right: parent.right
+                    flashColor: "#000000"
+                    onClicked: rec.selectedTicket.isTogo = !rec.selectedTicket.isTogo
+
+                    Text {
+                        id: togoText
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "Togo: " + (rec.selectedTicket && rec.selectedTicket.isTogo ? "YES" : "No")
+                        font.bold: rec.selectedTicket && rec.selectedTicket.isTogo
+                        font.pixelSize: rec.selectedTicket && rec.selectedTicket.isTogo ? 20 : 16
+                        color: rec.selectedTicket && rec.selectedTicket.isTogo ? "red" : "#000000"
+                    }
+                }
 
                 Column {
                     id: customers
@@ -123,6 +140,7 @@ ApplicationWindow {
                                                 anchors.leftMargin: 40
                                                 text: modelData.note
                                                 font.italic: true
+                                                font.strikeout: modelData.deleted
                                             }
 
                                         }
@@ -355,255 +373,22 @@ ApplicationWindow {
                     }
                 }
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: editCurrentRecDialog.show()
+            }
         }
 
-
-        Rectangle {
+        EditCustomerDialog {
             id: editCustomerDialog
-            visible: false
-            anchors.fill: parent
-            color: "#AA000000"
-            property var model
-
-            function show(customer) {
-                editCustomerDialog.model = customer
-                editCustomerDialog.visible = true
-                editCustomerName.forceActiveFocus();
-                editCustomerName.selectAll();
-            }
-
-            function close(save) {
-                if(save) {
-                    editCustomerDialog.model.name = editCustomerName.text;
-                }
-                editCustomerDialog.visible = false;
-            }
-
-            Rectangle {
-                width: editCustomerInner.width + 80
-                height: editCustomerInner.height + 80
-                anchors.centerIn: parent
-                color: "#FFFFFF"
-                border.color: "#000000"
-                border.width: 2
-
-                Column {
-                    id: editCustomerInner
-                    anchors.centerIn: parent
-                    spacing: 20
-
-                    Text {
-                        text: "Edit Customer"
-                        font.bold: true
-                        font.pixelSize: 20
-                    }
-
-                    Column {
-
-                        Row {
-
-                            Text {
-                                text: "Name: "
-                            }
-
-
-                            TextField {
-                                id: editCustomerName
-                                text: editCustomerDialog.model ? editCustomerDialog.model.name : ""
-                                width: 150
-                                maximumLength: 25
-                                placeholderText: qsTr("Customer name")
-                                onAccepted: {
-                                    editCustomerDialog.close(true);
-                                }
-
-                                onActiveFocusChanged: {
-                                    if(this.focus){
-                                        this.selectAll();
-                                    }
-                                }
-                            }
-
-                            Button {
-                                text: "Ok"
-                                onClicked: {
-                                    editCustomerDialog.close(true);
-                                }
-                            }
-                            Button {
-                                text: "Cancel"
-                                onClicked: {
-                                    editCustomerDialog.close(false);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
-        Rectangle {
+        EditOrderItemDialog {
             id: editOrderItemDialog
-            anchors.fill: parent
-            visible: false
-            color: "#AA000000"
-            property var model //OrderItem
+        }
 
-            function show(orderItem) {
-                editOrderItemDialog.model = orderItem;
-                editOrderItemDialog.visible = true;
-                editNote.forceActiveFocus();
-                editNote.cursorPosition = editNote.text.length;
-            }
-
-
-            function close(save) {
-                if(save) {
-                    editOrderItemDialog.model.quantity = Number(editQuantity.text);
-                    editOrderItemDialog.model.price = Number(editPrice.text);
-                    editOrderItemDialog.model.note = editNote.text.trim();
-                }
-                editOrderItemDialog.visible = false;
-            }
-
-            Rectangle {
-                width: orderItemEditInner.width + 80
-                height: orderItemEditInner.height + 80
-                anchors.centerIn: parent
-                color: "#FFFFFF"
-                border.color: "#000000"
-                border.width: 2
-                Column {
-                    id: orderItemEditInner
-                    anchors.centerIn: parent
-                    spacing: 20
-
-
-                    Text {
-                        text: "Edit Order Item"
-                        font.bold: true
-                        font.pixelSize: 20
-                    }
-
-                    Column {
-                        spacing: 5
-
-                        Row {
-                            Text {
-                                width: 100
-                                text: "Note: "
-                            }
-
-
-                            Rectangle {
-                                width: 250
-                                height: 100
-                                border.width: 1
-                                border.color: "#AAAAAA"
-
-                                TextEdit {
-                                    id: editNote
-                                    text: editOrderItemDialog.model ? editOrderItemDialog.model.note : ""
-                                    anchors.fill: parent
-                                    anchors.margins: 5
-        //                            onAccepted: {
-        //                                editOrderItemDialog.close(true);
-        //                            }
-
-
-                                    KeyNavigation.tab: editQuantity
-                                    KeyNavigation.backtab: editPrice
-                                    KeyNavigation.priority: KeyNavigation.BeforeItem
-
-                                    onActiveFocusChanged: {
-//                                        if(this.focus){
-//                                            this.selectAll();
-//                                        }
-                                    }
-
-
-                                }
-                            }
-                        }
-
-
-                        Row {
-                            Text {
-                                width: 100
-                                text: "Quantity: "
-                            }
-
-
-                            TextField {
-                                id: editQuantity
-                                text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.quantity.toFixed(2)) : ""
-                                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                width: 150
-                                maximumLength: 25
-                                placeholderText: qsTr("Quantity")
-
-                                onAccepted: {
-                                    editOrderItemDialog.close(true);
-                                }
-
-                                onActiveFocusChanged: {
-                                    if(this.focus){
-                                        this.selectAll();
-                                    }
-                                }
-                            }
-                        }
-
-                        Row {
-
-                            Text {
-                                width: 100
-                                text: "Price: "
-                            }
-
-
-                            TextField {
-                                id: editPrice
-                                text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.price.toFixed(2)) : ""
-                                width: 150
-                                maximumLength: 25
-                                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                placeholderText: qsTr("Price")
-                                onAccepted: {
-                                    editOrderItemDialog.close(true);
-                                }
-
-                                onActiveFocusChanged: {
-                                    if(this.focus){
-                                        this.selectAll();
-                                    }
-                                }
-                            }
-
-
-                            Button {
-                                text: "Ok"
-                                onClicked: {
-                                    editOrderItemDialog.close(true);
-                                }
-                            }
-                            Button {
-                                text: "Cancel"
-                                onClicked: {
-                                    editOrderItemDialog.close(false);
-                                }
-                            }
-                            Button {
-                                text: (editOrderItemDialog.model && editOrderItemDialog.model.deleted) ? "Un-Delete" : "Delete"
-                                onClicked: {
-                                    editOrderItemDialog.model.deleted = !editOrderItemDialog.model.deleted;
-                                    editOrderItemDialog.close(true);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        EditCurrentRecDialog {
+            id: editCurrentRecDialog        
         }
     }
 

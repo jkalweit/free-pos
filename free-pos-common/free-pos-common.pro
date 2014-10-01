@@ -22,7 +22,8 @@ SOURCES += \
     Customer.cpp \
     Ticket.cpp \
     Reconciliation.cpp \
-    OrderItem.cpp
+    OrderItem.cpp \
+    CashDrawer.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -33,7 +34,8 @@ HEADERS += \
     Customer.h \
     Ticket.h \
     Reconciliation.h \
-    OrderItem.h
+    OrderItem.h \
+    CashDrawer.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
