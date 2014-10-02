@@ -3,15 +3,20 @@ import QtQuick.Controls 1.2
 import FreePos 1.0 as FreePos
 
 Rectangle {
+    id: container
     color: "transparent"
+    property var menu
+    signal menuItemSelected(var menuItem)
+
     Rectangle {
         id: menuItems
-        visible: menu.selectedCategory
+        visible: menu ? menu.selectedCategory : false
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width / 2
         color: "#33FFFFFF"
+
 
         Column {
             id: menuItemControls
@@ -68,7 +73,7 @@ Rectangle {
             width: parent.width
             anchors.top: menuItemControls.bottom
             anchors.bottom: menuItems.bottom
-            model: menu.selectedCategory ? menu.selectedCategory.menuItems : 0
+            model: menu && menu.selectedCategory ? menu.selectedCategory.menuItems : 0
             clip: true
 
             delegate: RectangleFlash {
@@ -81,10 +86,9 @@ Rectangle {
                 border.color: "#777777"
 
                 onBeforeFlash: {
-                    if(rec.selectedTicket) {
-                        rec.selectedTicket.customers[0].addOrderItem(modelData.name, modelData.type, modelData.price, 1, "");
-                    }
+                    container.menuItemSelected(modelData);
                 }
+
 
                 Text {
                     id: menuItemName
@@ -142,7 +146,7 @@ Rectangle {
             width: parent.width
             anchors.top: menuCategoryControls.bottom
             anchors.bottom: menuCategories.bottom
-            model: menu.categories
+            model: container.menu ? container.menu.categories : 0
             clip: true
 
             delegate: RectangleFlashButton {

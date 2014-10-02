@@ -7,8 +7,11 @@
         <file>RectangleFlashButton.qml</file>
         <file>EditCustomerDialog.qml</file>
         <file>EditOrderItemDialog.qml</file>
-        <file>EditCurrentRecDialog.qml</file>
+        <file>EditRecDialog.qml</file>
         <file>DialogModal.qml</file>
         <file>TextFieldLabeled.qml</file>
+        <file>EditDrawer.qml</file>
+        <file>DialogModalMessage.qml</file>
+        <file>DialogModalConfirm.qml</file>
     </qresource>
 </RCC>

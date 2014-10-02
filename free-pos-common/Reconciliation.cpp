@@ -4,8 +4,12 @@
 #include <QDebug>
 
 
-Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, CashDrawer *begginningDrawer, CashDrawer *endingDrawer) :
-    QObject(parent), m_id(id), m_name(name), m_beginningDrawer(begginningDrawer), m_endingDrawer(endingDrawer),
+Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, QString note,
+                               QDateTime openedStamp, QDateTime closedStamp,
+                               CashDrawer *begginningDrawer, CashDrawer *endingDrawer) :
+    QObject(parent), m_id(id), m_name(name), m_note(note),
+    m_openedStamp(openedStamp), m_closedStamp(closedStamp),
+    m_beginningDrawer(begginningDrawer), m_endingDrawer(endingDrawer),
     m_currentTicketId(0), m_selectedTicket(nullptr)
 {
     if(m_beginningDrawer == nullptr)
@@ -23,7 +27,7 @@ CashDrawer* Reconciliation::endingDrawer() {
 }
 
 Ticket* Reconciliation::addTicket(QString name) {
-    Ticket *ticket = new Ticket(this, ++m_currentTicketId, name);
+    Ticket *ticket = new Ticket(this, ++m_currentTicketId, name, QDateTime::currentDateTime());
     addTicket(ticket);
     return ticket;
 }
@@ -91,6 +95,37 @@ void Reconciliation::fireTotalsChanged() {
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
+}
+
+bool Reconciliation::hasOpenTickets() {
+    for(Ticket *t : m_tickets) {
+        if(!t->isPaid()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Reconciliation::closeRec() {
+    if(!isOpen()) {
+        qDebug() << "Rec is already closed.";
+        return;
+    }
+
+    if(hasOpenTickets()) {
+        qDebug() << "Rec has open customers.";
+        return;
+    }
+
+    m_closedStamp = QDateTime::currentDateTime();
+    closedStampChanged(m_closedStamp);
+    isOpenChanged(isOpen());
+
+    qDebug() << "Closed rec: " << m_closedStamp.toString("MM/dd/yyyy hh:mmAP");
+}
+
+bool Reconciliation::isOpen() {
+    return m_closedStamp.isNull();
 }
 
 QString Reconciliation::serialize() const {

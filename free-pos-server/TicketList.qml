@@ -7,7 +7,8 @@ import FreePos 1.0 as FreePos
 
 Rectangle {
     id: tickets
-    property bool showPaid: false
+    property var rec
+    property bool showPaid: true
 
     Column {
         id: ticketsControls
@@ -15,7 +16,7 @@ Rectangle {
         spacing: 2
 
         RectangleFlashButton {
-            text: tickets.showPaid ? "Hide Paid" : "Show Paid"
+            text: "Paid Tickets: " + tickets.showPaid ? "Shown" : "Hidden"
             onClicked: tickets.showPaid = !tickets.showPaid
         }
 

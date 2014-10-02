@@ -7,18 +7,9 @@
 
 
 
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonValue>
-
-
-
-
-
 
 FreePosServer::FreePosServer(QObject *parent) :
-    SimpleServer(parent), m_currentMenu(nullptr), m_currentRec(nullptr)
+    SimpleServer(parent)
 {    
 }
 
@@ -146,93 +137,6 @@ void FreePosServer::handleMessage(QString msg, std::function<void (QString)> rep
 //              ");");
 //    execQuery("CREATE INDEX MenuItemMenuCategoryIndex ON MenuItem(menucategory);");
 //}
-
-void FreePosServer::setCurrentMenu(Menu *menu) {
-    m_currentMenu = menu;
-    currentMenuChanged(m_currentMenu);
-}
-
-Menu* FreePosServer::getCurrentMenu() {
-    return m_currentMenu;
-}
-
-void FreePosServer::setCurrentRec(Reconciliation *rec) {
-    m_currentRec = rec;
-    currentRecChanged(m_currentRec);
-}
-
-Reconciliation* FreePosServer::getCurrentRec() {
-    return m_currentRec;
-}
-
-void FreePosServer::addTestData() {
-
-    Ticket *ticket = m_currentRec->addTicket("1-1");
-    ticket->addCustomer("Andrew");
-    ticket = m_currentRec->addTicket("2-2");
-    ticket->addCustomer("Justin");
-    ticket = m_currentRec->addTicket("Bar");
-    Customer *customer = ticket->addCustomer("Larry");
-    customer->addOrderItem("Steak Bites - Small", "Food", 7.50, 2, "This is a note.");
-    customer->addOrderItem("Steak Bites - Small", "Food", 7.50, 1, "This is a note2.");
-    customer = ticket->addCustomer("Steve");
-    customer->addOrderItem("Steak Bites - Large", "Food", 8.00, 0.5, "This is a note3.");
-
-    ticket = m_currentRec->addTicket("Deck");
-    ticket->addCustomer("Tina");
-    m_currentRec->setSelectedTicket(ticket);
-
-    for(int i = 1; i <= 50; i++) {
-        ticket = m_currentRec->addTicket("Bar");
-        customer = ticket->addCustomer("Test Customer " + QString::number(i));
-        for(int j = 0; j < 1; j++) {
-            customer->addOrderItem("Test Food Item", "Food", 7.50, 1, "This is a note.");
-            customer->addOrderItem("Test Alcohol Item", "Alcohol", 2.75, 1, "This is a note.");
-        }
-    }
-
-
-//    MenuCategory* cat = m_currentMenu->addCategory("Bottle Beer");
-//    cat->addMenuItem("Bud Light", "Alcohol", 2.75);
-//    cat->addMenuItem("Miller Lite", "Alcohol", 2.75);
-//    cat->addMenuItem("Coors Light", "Alcohol", 2.75);
-//    m_currentMenu->addCategory("Draft Beer");
-//    cat = m_currentMenu->addCategory("Lunch Entrees");
-//    cat->addMenuItem("Chicken Tenders", "Food", 9.00);
-//    cat->addMenuItem("Cheeseburger", "Food", 9.00);
-
-//    m_currentMenu->addCategory("Lunch Sandwiches");
-//    m_currentMenu->addCategory("Lunch Sides");
-
-//    m_currentMenu->setSelectedCategory(cat);
-
-    //int recId = addReconciliation("Test Rec");
-
-
-
-    QFile file("./menu.json");
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Could not open menu file" << endl;
-    }
-
-    QJsonDocument json = QJsonDocument::fromJson(file.readAll());
-    QJsonObject menu = json.object()["categories"].toObject();
-    QJsonObject catObj;
-    QJsonObject itemObj;
-    MenuCategory* newCat;
-    //    cat->addMenuItem("Bud Light", "Alcohol", 2.75);
-
-    for(QJsonValue cat : menu) {
-        catObj = cat.toObject();
-        //qDebug() << "Adding: " << catObj["name"].toString();
-        newCat = m_currentMenu->addCategory(catObj["name"].toString());
-        for(QJsonValue item : catObj["menuitems"].toObject()) {
-            itemObj = item.toObject();
-            newCat->addMenuItem(itemObj["name"].toString(), itemObj["class"].toString(), itemObj["price"].toString().toFloat());
-        }
-    }
-}
-
 
 //bool FreePosServer::execQuery(QString sql) {
 //    qDebug() << "   Executing query: " << sql;

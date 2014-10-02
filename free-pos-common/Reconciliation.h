@@ -1,6 +1,7 @@
 #ifndef RECONCILIATION_H
 #define RECONCILIATION_H
 
+#include <QDateTime>
 #include <QTextStream>
 #include <QList>
 #include <QObject>
@@ -13,6 +14,10 @@ class Reconciliation : public QObject {
     Q_OBJECT
     Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
     Q_PROPERTY(QString name MEMBER m_name NOTIFY nameChanged)
+    Q_PROPERTY(QString note MEMBER m_note NOTIFY noteChanged)
+    Q_PROPERTY(QDateTime openedStamp MEMBER m_openedStamp NOTIFY openedStampChanged)
+    Q_PROPERTY(QDateTime closedStamp MEMBER m_closedStamp NOTIFY closedStampChanged)
+    Q_PROPERTY(bool isOpen READ isOpen NOTIFY isOpenChanged)
     Q_PROPERTY(Ticket *selectedTicket READ selectedTicket WRITE setSelectedTicket NOTIFY selectedTicketChanged)
     Q_PROPERTY(QQmlListProperty<Ticket> tickets READ tickets NOTIFY ticketsChanged)    
 
@@ -24,7 +29,9 @@ class Reconciliation : public QObject {
     Q_PROPERTY(CashDrawer *beginningDrawer READ beginningDrawer NOTIFY beginningDrawerChanged)
     Q_PROPERTY(CashDrawer *endingDrawer READ endingDrawer NOTIFY endingDrawerChanged)
 public:
-    explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QString name = "", CashDrawer *begginningDrawer = nullptr, CashDrawer *endingDrawer = nullptr);
+    explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QString name = "", QString note = "",
+                            QDateTime openedStamp = QDateTime(), QDateTime closedStamp = QDateTime(),
+                            CashDrawer *begginningDrawer = nullptr, CashDrawer *endingDrawer = nullptr);
 
     QQmlListProperty<Ticket> tickets();
     Q_INVOKABLE Ticket* addTicket(QString name);
@@ -41,6 +48,10 @@ public:
     CashDrawer* beginningDrawer();
     CashDrawer* endingDrawer();
 
+    Q_INVOKABLE bool hasOpenTickets();
+    Q_INVOKABLE void closeRec();
+    Q_INVOKABLE bool isOpen();
+
     QString serialize() const;
     static Reconciliation* deserialize(QString serialized, QObject *parent = 0);
 
@@ -50,6 +61,10 @@ public:
 signals:
     void idChanged(quint32);
     void nameChanged(QString);
+    void noteChanged(QString);
+    void openedStampChanged(QDateTime);
+    void closedStampChanged(QDateTime);
+    void isOpenChanged(bool);
     void ticketsChanged(QQmlListProperty<Ticket>);
     void selectedTicketChanged(Ticket*);
 
@@ -64,6 +79,9 @@ signals:
 private:
     quint32 m_id;
     QString m_name;
+    QString m_note;
+    QDateTime m_openedStamp;
+    QDateTime m_closedStamp;
 
     CashDrawer *m_beginningDrawer;
     CashDrawer *m_endingDrawer;

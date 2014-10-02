@@ -2,9 +2,12 @@ import QtQuick 2.3
 import QtQuick.Controls 1.2
 
 Row {
+    id: container
     property alias label: label.text
     property alias text: editText.text
     property alias placeholderText: editText.placeholderText
+    property alias textFieldWidth: editText.width
+    signal accepted
 
     function forceActiveFocus() {
         editText.forceActiveFocus();
@@ -19,10 +22,9 @@ Row {
     TextField {
         id: editText
         width: 150
-        maximumLength: 25
-        onAccepted: {
-            //editCurrentRecDialog.close(true);
-        }
+
+        onTextChanged: container.textChanged()
+        onAccepted: container.accepted()
 
         onActiveFocusChanged: {
             if(this.focus){

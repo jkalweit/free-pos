@@ -1,89 +1,42 @@
 import QtQuick 2.3
 import QtQuick.Controls 1.2
 
-Rectangle {
+DialogModal {
     id: editCustomerDialog
-    visible: false
-    anchors.fill: parent
-    color: "#AA000000"
+    title: "Edit Customer"
+    defaultFocus: editName
     property var model
 
-    Keys.onEscapePressed: this.close(false)
-
-    function show(customer) {
-        editCustomerDialog.model = customer
-        editCustomerDialog.visible = true
-        editCustomerName.forceActiveFocus();
-        editCustomerName.selectAll();
-    }
-
     function close(save) {
-        if(save) {
-            editCustomerDialog.model.name = editCustomerName.text;
+        if (save) {
+            editCustomerDialog.model.name = editName.text
         }
-        editCustomerDialog.visible = false;
+        editCustomerDialog.visible = false
     }
 
-    Rectangle {
-        width: editCustomerInner.width + 80
-        height: editCustomerInner.height + 80
-        anchors.centerIn: parent
-        color: "#FFFFFF"
-        border.color: "#000000"
-        border.width: 2
+    customContent: Column {
+        spacing: 5
 
-        Column {
-            id: editCustomerInner
-            anchors.centerIn: parent
-            spacing: 20
+        TextFieldLabeled {
+            id: editName
+            label: "Name:"
+            text: model ? model.name : ""
+            placeholderText: "Name"
+        }
 
-            Text {
-                text: "Edit Customer"
-                font.bold: true
-                font.pixelSize: 20
+        Row {
+            Button {
+                text: "Ok"
+                onClicked: {
+                    editCustomerDialog.close(true)
+                }
             }
-
-            Column {
-
-                Row {
-
-                    Text {
-                        text: "Name: "
-                    }
-
-
-                    TextField {
-                        id: editCustomerName
-                        text: editCustomerDialog.model ? editCustomerDialog.model.name : ""
-                        width: 150
-                        maximumLength: 25
-                        placeholderText: qsTr("Customer name")
-                        onAccepted: {
-                            editCustomerDialog.close(true);
-                        }
-
-                        onActiveFocusChanged: {
-                            if(this.focus){
-                                this.selectAll();
-                            }
-                        }
-                    }
-
-                    Button {
-                        text: "Ok"
-                        onClicked: {
-                            editCustomerDialog.close(true);
-                        }
-                    }
-                    Button {
-                        text: "Cancel"
-                        onClicked: {
-                            editCustomerDialog.close(false);
-                        }
-                    }
+            Button {
+                text: "Cancel"
+                onClicked: {
+                    editCustomerDialog.close(false)
                 }
             }
         }
     }
 }
-

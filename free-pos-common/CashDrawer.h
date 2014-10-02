@@ -70,7 +70,7 @@ private:
     quint16 m_c10s;
     quint16 m_c5s;
     quint16 m_c1s;
-    quint16 m_coins;
+    float m_coins;
 
 };
 

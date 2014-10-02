@@ -3,6 +3,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
+#include <QDateTime>
 #include "FreePosServer.h"
 #include "Menu.h"
 #include "MenuCategory.h"
@@ -23,29 +24,23 @@ int main(int argc, char *argv[])
     qmlRegisterType<OrderItem>("FreePos", 1, 0, "OrderItem");
     qmlRegisterType<CashDrawer>("FreePos", 1, 0, "CashDrawer");
 
-    FreePosServer server;
-    Menu menu(&server);
-    server.setCurrentMenu(&menu);
-    Reconciliation rec(&server, 1, "Test Rec2");
-    server.setCurrentRec(&rec);
-    server.addTestData();
+    Pos pos;
+    pos.addTestData();
 
     QQmlApplicationEngine engine;    
-    engine.rootContext()->setContextProperty("server", (QObject*)&server);
-    engine.rootContext()->setContextProperty("rec", (QObject*)&rec);
-    engine.rootContext()->setContextProperty("menu", (QObject*)&menu);
+    engine.rootContext()->setContextProperty("pos", (QObject*)&pos);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
 //    server.openDb();
 //    server.createDb();
 
 
-    if(server.listen(QHostAddress("127.0.0.1"), 1337)) {
-    //if(server.listen(QHostAddress("192.168.10.73"), 1337)) {
-        qDebug() << "Listening...";
-    } else {
-        qDebug() << "Failed to listen on port.";
-    }
+//    if(server.listen(QHostAddress("127.0.0.1"), 1337)) {
+//    //if(server.listen(QHostAddress("192.168.10.73"), 1337)) {
+//        qDebug() << "Listening...";
+//    } else {
+//        qDebug() << "Failed to listen on port.";
+//    }
 
 
     return app.exec();
