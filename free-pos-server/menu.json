@@ -1,0 +1,1017 @@
+{
+  "categories" : {
+    "-JAjce3S6S4TDUdsfJRv" : {
+      "hotkey" : "1",
+      "hotkeyCode" : 49,
+      "menuitems" : {
+        "-JRrNjEeDUbCPJxTxQF-" : {
+          "class" : "Alcohol",
+          "name" : "Bud Light",
+          "price" : "2.75"
+        },
+        "-JSJdvRp8wOXjQx9WF0F" : {
+          "class" : "Alcohol",
+          "name" : "Budweiser",
+          "price" : "2.75"
+        },
+        "-JSJdy752cgwewpJA2Qr" : {
+          "class" : "Alcohol",
+          "name" : "Coors Light",
+          "price" : "2.75"
+        },
+        "-JSJe-1CbOoIKtYhI8Oo" : {
+          "class" : "Alcohol",
+          "name" : "Miller Light",
+          "price" : "2.75"
+        },
+        "-JSJe0FCsHDxKnVQhBjA" : {
+          "class" : "Alcohol",
+          "name" : "Yuengling",
+          "price" : "2.75"
+        },
+        "-JSJe3arW0T1TywC819H" : {
+          "class" : "Alcohol",
+          "name" : "Reds Apple",
+          "price" : "3.50"
+        },
+        "-JSJe8LTP9-_Irel6M7T" : {
+          "class" : "Alcohol",
+          "name" : "Michelob Ultra",
+          "price" : "2.75"
+        },
+        "-JSJeD9pEbyI4gxrMoMh" : {
+          "class" : "Alcohol",
+          "name" : "Bud Light Lime",
+          "price" : "3.00"
+        },
+        "-JSJeP_KpcUcalDZxmXy" : {
+          "class" : "Alcohol",
+          "name" : "Corona Light",
+          "price" : "3.50"
+        },
+        "-JSJeSCZb9b_NcIOdRnh" : {
+          "class" : "Alcohol",
+          "name" : "Dos Equis",
+          "price" : "3.50"
+        },
+        "-JSJeUm63IIoDYXQ0oB4" : {
+          "class" : "Alcohol",
+          "name" : "Stella",
+          "price" : "4.00"
+        },
+        "-JT8eXX_RedtZUNoLhDx" : {
+          "class" : "Alcohol",
+          "name" : "Bucket",
+          "price" : "11"
+        },
+        "-JTIYnD-YChTB-Wdltru" : {
+          "class" : "Alcohol",
+          "name" : "HH Discount",
+          "price" : "-.75"
+        },
+        "-JTIrBrQ3RDiSvw_01LI" : {
+          "class" : "Alcohol",
+          "name" : "$2.50 SPECIAL",
+          "price" : "2.5"
+        },
+        "-JTIrGV9B6rI1-FecJaV" : {
+          "class" : "Alcohol",
+          "name" : "$3 SPECIAL",
+          "price" : "3"
+        },
+        "-JTnPAHsjeFS_XANu6GS" : {
+          "class" : "Alcohol",
+          "name" : "Lime-A-Rita",
+          "price" : "1"
+        }
+      },
+      "name" : "Bottle Beer",
+      "type" : "food"
+    },
+    "-JAl5GI2VS_oIc5qBhFC" : {
+      "hotkey" : "3",
+      "hotkeyCode" : 51,
+      "menuitems" : {
+        "-JAl5Q2opIU1YMUF-cbu" : {
+          "class" : "Food",
+          "name" : "Pick Three",
+          "price" : "10"
+        },
+        "-JAl5TJnRAHCsvz43fPb" : {
+          "class" : "Food",
+          "name" : "Pick Four",
+          "price" : "13"
+        },
+        "-JBD2DnGvwRR6kqxX-BQ" : {
+          "class" : "Food",
+          "name" : "Steak Bites - Regular",
+          "price" : "6"
+        },
+        "-JBD2DxlhfXCEFPMqOpC" : {
+          "class" : "Food",
+          "name" : "Steak Bites - Large",
+          "price" : "9"
+        },
+        "-JBD2E3aOjuNy-KvDHmH" : {
+          "class" : "Food",
+          "name" : "Quesadillas - Chicken",
+          "price" : "6.99"
+        },
+        "-JBD2E709ZNZSPnHJVk2" : {
+          "class" : "Food",
+          "name" : "Quesadillas - Steak",
+          "price" : "7.99"
+        },
+        "-JBD2Tj6FaEl-hjumIIz" : {
+          "class" : "Food",
+          "name" : "Wings - Half Dozen",
+          "price" : "6"
+        },
+        "-JBD2Tm2BC7PR2C9Th-K" : {
+          "class" : "Food",
+          "name" : "Wings - Dozen",
+          "price" : "10"
+        },
+        "-JBD2ToU6IBuEfWebLpC" : {
+          "class" : "Food",
+          "name" : "Chicken Strips App",
+          "price" : "7"
+        },
+        "-JBD2TrAk423f57pUwX6" : {
+          "class" : "Food",
+          "name" : "Fried Pickles",
+          "price" : "7"
+        },
+        "-JBD4Oj4eg0pMPeHl-Ai" : {
+          "class" : "Food",
+          "name" : "Fried Mushrooms",
+          "price" : "7"
+        },
+        "-JBD4OlMgnreI0Yn2ObF" : {
+          "class" : "Food",
+          "name" : "Mac'n'Cheese Bites",
+          "price" : "7"
+        },
+        "-JBD4OngJwj0OI0sK5hn" : {
+          "class" : "Food",
+          "name" : "Onion Rings",
+          "price" : "7"
+        },
+        "-JBD4OqQUfOKt7W_KKCp" : {
+          "class" : "Food",
+          "name" : "Mozzarella Sticks",
+          "price" : "7"
+        },
+        "-JBD4bdYhDxpx1Kz8HR7" : {
+          "class" : "Food",
+          "name" : "Bacon Cheese Fries",
+          "price" : "7"
+        },
+        "-JMY8XbHDjxMDKnobdh-" : {
+          "class" : "Food",
+          "name" : "Cheese Quesadilla",
+          "price" : "4.99"
+        },
+        "-JTrcHbXhYMayBBkDw2h" : {
+          "class" : "Food",
+          "name" : "CHIPS AND SALSA",
+          "price" : "5.5"
+        }
+      },
+      "name" : "Dinner Appetizers",
+      "type" : "food"
+    },
+    "-JAl5YNRJjP0KQ94G6wa" : {
+      "hotkey" : "4",
+      "hotkeyCode" : 52,
+      "menuitems" : {
+        "-JAlgMrFHwoa3rQ2J4Ng" : {
+          "class" : "Food",
+          "hotkey" : "1",
+          "hotkeyCode" : 49,
+          "name" : "Ribeye - 8oz",
+          "price" : "15"
+        },
+        "-JAmkUXFQPHjWy-1-1Su" : {
+          "class" : "Food",
+          "hotkey" : "2",
+          "hotkeyCode" : 50,
+          "name" : "Ribeye - 12oz",
+          "price" : "19"
+        },
+        "-JBD58KRNwz6aXx5nt8i" : {
+          "class" : "Food",
+          "hotkey" : "3",
+          "hotkeyCode" : 51,
+          "name" : "Ribeye - 16oz",
+          "price" : "22"
+        },
+        "-JBD5CLa6YcW0Vgu7ro0" : {
+          "class" : "Food",
+          "hotkey" : "4",
+          "hotkeyCode" : 52,
+          "name" : "Hamburger Steak",
+          "price" : "12"
+        },
+        "-JBD5CPGzyfk37OcaMDH" : {
+          "class" : "Food",
+          "hotkey" : "5",
+          "hotkeyCode" : 53,
+          "name" : "Chicken Strips",
+          "price" : "10"
+        },
+        "-JBD5CRz0FvroeSNufMw" : {
+          "class" : "Food",
+          "hotkey" : "6",
+          "hotkeyCode" : 54,
+          "name" : "Cajun Chicken",
+          "price" : "12"
+        },
+        "-JBD5CUHBoJwWjmpuDCb" : {
+          "class" : "Food",
+          "hotkey" : "7",
+          "hotkeyCode" : 55,
+          "name" : "Grilled Salmon",
+          "price" : "18"
+        }
+      },
+      "name" : "Dinner Entrees",
+      "type" : "food"
+    },
+    "-JBD4haGHF5a-zG1Si9m" : {
+      "hotkey" : "5",
+      "hotkeyCode" : 53,
+      "menuitems" : {
+        "-JBD4iR_s7x3ZsW6_lR2" : {
+          "class" : "Food",
+          "hotkey" : "1",
+          "hotkeyCode" : 49,
+          "name" : "Kids Chicken Strips",
+          "price" : "5"
+        },
+        "-JBD4nri2MykarHPzxkt" : {
+          "class" : "Food",
+          "hotkey" : "2",
+          "hotkeyCode" : 50,
+          "name" : "Kids Grilled Cheese",
+          "price" : "5"
+        },
+        "-JBD4o-1Ag0H9gPvsAWi" : {
+          "class" : "Food",
+          "hotkey" : "3",
+          "hotkeyCode" : 51,
+          "name" : "Kids PB and J",
+          "price" : "5"
+        }
+      },
+      "name" : "Dinner Kids",
+      "type" : "food"
+    },
+    "-JBD5lyo6JcaTvjr5A3I" : {
+      "hotkey" : "6",
+      "hotkeyCode" : 54,
+      "menuitems" : {
+        "-JBD5sueCbq3HfEDgRo2" : {
+          "class" : "Food",
+          "hotkey" : "1",
+          "hotkeyCode" : 49,
+          "name" : "Cheeseburger",
+          "price" : "9"
+        },
+        "-JBD5tJXP6AIzRWKWzmG" : {
+          "class" : "Food",
+          "hotkey" : "2",
+          "hotkeyCode" : 50,
+          "name" : "BBQ Bacon Burger",
+          "price" : "9"
+        },
+        "-JBD5tLopq_R-3QAJPdw" : {
+          "class" : "Food",
+          "hotkey" : "3",
+          "hotkeyCode" : 51,
+          "name" : "Black and Bleu Burger",
+          "price" : "9"
+        },
+        "-JBD5tOLmw-ZXW1z6MJP" : {
+          "class" : "Food",
+          "hotkey" : "4",
+          "hotkeyCode" : 52,
+          "name" : "Spicy Sriracha Burger",
+          "price" : "9"
+        },
+        "-JBD5tQSwH8IBmNDte1I" : {
+          "class" : "Food",
+          "hotkey" : "5",
+          "hotkeyCode" : 53,
+          "name" : "Grilled Veggie Melt",
+          "price" : "8"
+        },
+        "-JBD5tSzj9pwM-jtEilL" : {
+          "class" : "Food",
+          "hotkey" : "6",
+          "hotkeyCode" : 54,
+          "name" : "Grilled Chicken Sandwich",
+          "price" : "9"
+        },
+        "-JBD5tYknoS7DPbHnbrl" : {
+          "class" : "Food",
+          "hotkey" : "7",
+          "hotkeyCode" : 55,
+          "name" : "Blackened Chicken Sandwich",
+          "price" : "9"
+        },
+        "-JBD6DTb9nwwtgX23Oty" : {
+          "class" : "Food",
+          "hotkey" : "8",
+          "hotkeyCode" : 56,
+          "name" : "Ribeye Steak Sandwich",
+          "price" : "9"
+        },
+        "-JMY9ErICSyoLTXPBbLi" : {
+          "class" : "Food",
+          "hotkey" : "9",
+          "hotkeyCode" : 57,
+          "name" : "BLT",
+          "price" : "8"
+        },
+        "-JQK5QuHDFwADYNrF6m_" : {
+          "class" : "Food",
+          "name" : "BBQ",
+          "price" : "9"
+        },
+        "-JUR7PzlB8S7B3yQ8o-p" : {
+          "class" : "Food",
+          "name" : "Backlot",
+          "price" : "8"
+        }
+      },
+      "name" : "Dinner Burgers & Sandwich",
+      "type" : "food"
+    },
+    "-JBD6Jl30eDGPva7CRWc" : {
+      "hotkey" : "7",
+      "hotkeyCode" : 55,
+      "menuitems" : {
+        "-JBD6M9Xr5gTy0pKJ9FG" : {
+          "class" : "Food",
+          "hotkey" : "1",
+          "hotkeyCode" : 49,
+          "name" : "Baked Potato",
+          "price" : "2.99"
+        },
+        "-JBD6MKAzrOOL1n3oYox" : {
+          "class" : "Food",
+          "hotkey" : "2",
+          "hotkeyCode" : 50,
+          "name" : "Baked Sweet Potato",
+          "price" : "2.99"
+        },
+        "-JBD6MMg8Sjh7uVhPuU_" : {
+          "class" : "Food",
+          "hotkey" : "3",
+          "hotkeyCode" : 51,
+          "name" : "Hand Cut Fries",
+          "price" : "3"
+        },
+        "-JBD6MOmYop9Vs_547qG" : {
+          "class" : "Food",
+          "hotkey" : "4",
+          "hotkeyCode" : 52,
+          "name" : "Sweet Potato Fries",
+          "price" : "3"
+        },
+        "-JBD6MQv2sPcaPvn_DPn" : {
+          "class" : "Food",
+          "hotkey" : "5",
+          "hotkeyCode" : 53,
+          "name" : "Cole Slaw",
+          "price" : "3"
+        },
+        "-JBD6MTB8XrFqMrvuDyD" : {
+          "class" : "Food",
+          "hotkey" : "6",
+          "hotkeyCode" : 54,
+          "name" : "Cross Ties",
+          "price" : "2.99"
+        },
+        "-JBD6MVTH_dh13IpNzVb" : {
+          "class" : "Food",
+          "hotkey" : "7",
+          "hotkeyCode" : 55,
+          "name" : "Grilled Veggies",
+          "price" : "3"
+        },
+        "-JE5QPtQQG5w86votM1z" : {
+          "class" : "Food",
+          "hotkey" : "8",
+          "hotkeyCode" : 56,
+          "name" : "Add Salad",
+          "price" : "2.99"
+        },
+        "-JE5QQqpp7fsdruuwI7_" : {
+          "class" : "Food",
+          "hotkey" : "9",
+          "hotkeyCode" : 57,
+          "name" : "Add Side",
+          "price" : "1.99"
+        },
+        "-JEegu1qwK-fqCGRgQVr" : {
+          "class" : "Food",
+          "hotkey" : "0",
+          "hotkeyCode" : 48,
+          "name" : "$1 Up",
+          "price" : "1.00"
+        },
+        "-JMY8y9k1hv6nFcb0a5v" : {
+          "class" : "Food",
+          "hotkey" : "11",
+          "hotkeyCode" : 49,
+          "name" : "Dessert",
+          "price" : "4.99"
+        },
+        "-JMY91nqK0zgA5CflyTa" : {
+          "class" : "Food",
+          "hotkey" : "12",
+          "hotkeyCode" : 49,
+          "name" : "Thursday Wings",
+          "price" : "1"
+        },
+        "-JMY98DOkdAZwvhLCJs-" : {
+          "class" : "Food",
+          "hotkey" : "13",
+          "hotkeyCode" : 49,
+          "name" : "Extra Sauce",
+          "price" : ".25"
+        }
+      },
+      "name" : "Dinner Sides",
+      "type" : "food"
+    },
+    "-JBD6t85Ex-z9qpH9Gxp" : {
+      "hotkey" : "8",
+      "hotkeyCode" : 56,
+      "menuitems" : {
+        "-JBD73YX6EFP2OYmG_wM" : {
+          "class" : "Alcohol",
+          "hotkey" : "1",
+          "hotkeyCode" : 49,
+          "name" : "$4 Cocktail",
+          "price" : "4"
+        },
+        "-JBD76ZSyXP18Wq3jUvX" : {
+          "class" : "Alcohol",
+          "hotkey" : "2",
+          "hotkeyCode" : 50,
+          "name" : "$5 Cocktail",
+          "price" : "5"
+        },
+        "-JBD78UKQNh9vEcTg_9X" : {
+          "class" : "Alcohol",
+          "hotkey" : "3",
+          "hotkeyCode" : 51,
+          "name" : "$5.50 Cocktail",
+          "price" : "5.50"
+        },
+        "-JBD7AmmbtA-yHZg4gz7" : {
+          "class" : "Alcohol",
+          "hotkey" : "4",
+          "hotkeyCode" : 52,
+          "name" : "$6 Cocktail",
+          "price" : "6"
+        },
+        "-JBD7CTiGzYk-ebZmMJ9" : {
+          "class" : "Alcohol",
+          "hotkey" : "5",
+          "hotkeyCode" : 53,
+          "name" : "$7 Cocktail",
+          "price" : "7"
+        },
+        "-JBD7EgIhkybYXW7aSeW" : {
+          "class" : "Alcohol",
+          "hotkey" : "6",
+          "hotkeyCode" : 54,
+          "name" : "$8 Cocktail",
+          "price" : "8"
+        },
+        "-JBD7H9DegmXx3yhKVXP" : {
+          "class" : "Alcohol",
+          "hotkey" : "7",
+          "hotkeyCode" : 55,
+          "name" : "$9 Cocktail",
+          "price" : "9"
+        },
+        "-JBD7JClI0Dj_o4cULU5" : {
+          "class" : "Alcohol",
+          "hotkey" : "8",
+          "hotkeyCode" : 56,
+          "name" : "$3 Cocktail",
+          "price" : "3"
+        },
+        "-JBD88l4Vui37XnJRZJ-" : {
+          "class" : "Alcohol",
+          "hotkey" : "9",
+          "hotkeyCode" : 57,
+          "name" : "Red Bull Up",
+          "price" : "3.50"
+        },
+        "-JMY9M0pNeeOZYdbkBUL" : {
+          "class" : "Alcohol",
+          "hotkey" : "10",
+          "hotkeyCode" : 49,
+          "name" : "$4.50 Cocktail",
+          "price" : "4.50"
+        }
+      },
+      "name" : "Cocktails",
+      "type" : "food"
+    },
+    "-JE5LOYOZA0hb3n9M04k" : {
+      "hotkey" : "9",
+      "hotkeyCode" : 57,
+      "menuitems" : {
+        "-JE5LPM9aQ7by-GifCJ3" : {
+          "class" : "Food",
+          "hotkey" : "1",
+          "hotkeyCode" : 49,
+          "name" : "Coke",
+          "price" : "1.99"
+        },
+        "-JE5LWheYIg8mUg8MhUE" : {
+          "class" : "Food",
+          "hotkey" : "2",
+          "hotkeyCode" : 50,
+          "name" : "Tea",
+          "price" : "1.49"
+        },
+        "-JE5LdhXsHaiqorzzHC9" : {
+          "class" : "Food",
+          "hotkey" : "3",
+          "hotkeyCode" : 51,
+          "name" : "Juice/Milk",
+          "price" : "2.49"
+        },
+        "-JE5Lg3u6WWVmHKS6mEE" : {
+          "class" : "Food",
+          "hotkey" : "4",
+          "hotkeyCode" : 52,
+          "name" : "Coffee",
+          "price" : "1.49"
+        }
+      },
+      "name" : "Drinks",
+      "type" : "food"
+    },
+    "-JHP-WtzXRrf4uPTRLac" : {
+      "hotkey" : "91",
+      "hotkeyCode" : 57,
+      "menuitems" : {
+        "-JHP-b5XgQ9ywQd-Veml" : {
+          "class" : "Alcohol",
+          "hotkey" : "1",
+          "hotkeyCode" : 49,
+          "name" : "House Red",
+          "price" : "5.50"
+        },
+        "-JI2N0IL5CU8NEWVcel5" : {
+          "class" : "Alcohol",
+          "hotkey" : "2",
+          "hotkeyCode" : 50,
+          "name" : "House White",
+          "price" : "5.50"
+        },
+        "-JMY7LIGUocFVq3hyCOi" : {
+          "class" : "Alcohol",
+          "hotkey" : "3",
+          "hotkeyCode" : 51,
+          "name" : "Rapido PG/glass",
+          "price" : "7.50"
+        },
+        "-JMY7S9Mvoh9VQM0Wxml" : {
+          "class" : "Alcohol",
+          "hotkey" : "4",
+          "hotkeyCode" : 52,
+          "name" : "Rapido PG/bottle",
+          "price" : "21.00"
+        },
+        "-JMY7WxHSIIJQI3dTOjp" : {
+          "class" : "Alcohol",
+          "hotkey" : "5",
+          "hotkeyCode" : 53,
+          "name" : "Santa Luz SVB/ gl",
+          "price" : "6.50"
+        },
+        "-JMY7cbQYQ0ck-2gZnIu" : {
+          "class" : "Alcohol",
+          "hotkey" : "6",
+          "hotkeyCode" : 54,
+          "name" : "Santa Luz SVB/ Btl.",
+          "price" : "18.00"
+        },
+        "-JMY7vVjFFPv7PAgXW56" : {
+          "class" : "Alcohol",
+          "hotkey" : "7",
+          "hotkeyCode" : 55,
+          "name" : "Grayson Cellars CH/gl",
+          "price" : "8.50"
+        },
+        "-JMY8LWaeuywvU8NR7b9" : {
+          "class" : "Alcohol",
+          "hotkey" : "8",
+          "hotkeyCode" : 56,
+          "name" : "Grayson Cellars CH/Btl.",
+          "price" : "24.00"
+        },
+        "-JMY8QF24Zu66ZAxM6Bz" : {
+          "class" : "Alcohol",
+          "hotkey" : "9",
+          "hotkeyCode" : 57,
+          "name" : "Mars&Venus CAB/MERLOT/ Btl ONLY",
+          "price" : "15.00"
+        },
+        "-JS5BlSqxe4jxMqKjgK-" : {
+          "class" : "Alcohol",
+          "hotkey" : "10",
+          "hotkeyCode" : 49,
+          "name" : "4 Bears CAB/Btl ONLY",
+          "price" : "28.00"
+        },
+        "-JS5BtJ5rOm8AHhzrp0W" : {
+          "class" : "Alcohol",
+          "hotkey" : "11",
+          "hotkeyCode" : 49,
+          "name" : "Jam Jar Swt SHZ/Btl ONLY",
+          "price" : "22.00"
+        },
+        "-JS5C0-xhUkdQt6YaeS_" : {
+          "class" : "Alcohol",
+          "hotkey" : "12",
+          "hotkeyCode" : 49,
+          "name" : "Annalisa Sparkling Moscato/Btl ONLY",
+          "price" : "20.00"
+        }
+      },
+      "name" : "Wine",
+      "type" : "food"
+    },
+    "-JMc1dTl5xy7H1063Kcd" : {
+      "menuitems" : {
+        "-JMc1hPwUUNVQUKyukj6" : {
+          "class" : "Food",
+          "name" : "Chkn Strips w/ side",
+          "price" : "9"
+        },
+        "-JMc1tOxdopVvjfT4jGP" : {
+          "class" : "Food",
+          "name" : "4 oz. StkBts w/ side",
+          "price" : "8"
+        },
+        "-JMc22Q4xIxup_nRzpzy" : {
+          "class" : "Food",
+          "name" : "8 oz StkBts w/ side",
+          "price" : "11"
+        },
+        "-JMc28vdpQDIeSZvTxjk" : {
+          "class" : "Food",
+          "name" : "Chkn Breast w/ side",
+          "price" : "9"
+        },
+        "-JMc2ET-HWgFXrQaixn8" : {
+          "class" : "Food",
+          "name" : "Salad Up",
+          "price" : "1"
+        },
+        "-JMc365y6jWWF52WZG9F" : {
+          "class" : "Food",
+          "name" : "Extra Side",
+          "price" : "2"
+        },
+        "-JMc3ifpRGtajqgolLT_" : {
+          "class" : "Food",
+          "name" : "Drink",
+          "price" : "1"
+        },
+        "-JOo8qBUSXwxwzmyGnoe" : {
+          "class" : "Food",
+          "name" : "Am I Wrong?",
+          "price" : 0
+        },
+        "-JQK2DhssdHqlUwWtEvV" : {
+          "class" : "Alcohol",
+          "name" : "Deposit",
+          "price" : "200"
+        },
+        "-JTwYQER5735enH3Ib4L" : {
+          "class" : "Food",
+          "name" : "25 Dollar Gift Card",
+          "price" : "25"
+        },
+        "-JUBHRdW1ykjfEgvvlCk" : {
+          "class" : "Food",
+          "name" : "BOX OF WINGS",
+          "price" : "36"
+        },
+        "-JUUPvLuJS0g05H7wPjg" : {
+          "class" : "Food",
+          "name" : "Ten Strips",
+          "price" : "10"
+        },
+        "-JUUZCSpelTLcqO9MRNj" : {
+          "class" : "Food",
+          "name" : "Fries App",
+          "price" : "4"
+        },
+        "-JUUZRqk59W0LN9MlyOJ" : {
+          "class" : "Food",
+          "name" : "Junebug",
+          "price" : "5"
+        },
+        "-JVEaw4PEPmD8sSkQgbd" : {
+          "class" : "Food",
+          "name" : "Steak Dinner",
+          "price" : "20"
+        },
+        "-JW7YHv7UUR3Cjps5j58" : {
+          "class" : "Food",
+          "name" : "Gratuity",
+          "price" : 0
+        }
+      },
+      "name" : "Private Party",
+      "type" : "food"
+    },
+    "-JSJbGJDSOJyIYwNaW_J" : {
+      "hotkey" : "92",
+      "hotkeyCode" : 57,
+      "menuitems" : {
+        "-JSJbX-h-eZqXl28JXbL" : {
+          "class" : "Food",
+          "hotkey" : "",
+          "name" : "Great Tater",
+          "price" : "7"
+        },
+        "-JSJbg1C-MI9K-hOEqcj" : {
+          "class" : "Food",
+          "name" : "Veggie Tater",
+          "price" : "6"
+        },
+        "-JSJboU3BjlKOsWeCfYe" : {
+          "class" : "Food",
+          "name" : "Chef Salad",
+          "price" : "6"
+        },
+        "-JSJbrrgPeOhcZ22e_PV" : {
+          "class" : "Food",
+          "name" : "Woodchopper Salad",
+          "price" : "6"
+        },
+        "-JSJc2pB1Ex6B3T-izMF" : {
+          "class" : "Food",
+          "name" : "Salmon Upcharge",
+          "price" : "3"
+        },
+        "-JSJc7bocBJIXAdrsMXQ" : {
+          "class" : "Food",
+          "name" : "Grilled Chicken Upcharge",
+          "price" : "3"
+        },
+        "-JSJcBoZMzlxhzaagKAj" : {
+          "class" : "Food",
+          "name" : "Steak Bites Upcharge",
+          "price" : "3"
+        },
+        "-JSJdc_pisdxJ4AWdpKY" : {
+          "class" : "Food",
+          "name" : "Chicken Salad Tater",
+          "price" : "7"
+        },
+        "-JU9zSNellw6XB-6wA-R" : {
+          "class" : "Food",
+          "name" : "Wedge Salad",
+          "price" : "4"
+        }
+      },
+      "name" : "Lunch Potato/Salad",
+      "type" : "food"
+    },
+    "-JSJbNekLg54FNFOZbSG" : {
+      "hotkey" : "93",
+      "hotkeyCode" : 57,
+      "menuitems" : {
+        "-JSJcKX4p_keCoQIwLCk" : {
+          "class" : "Food",
+          "name" : "Veggie Sandwich",
+          "price" : "6"
+        },
+        "-JSJcNS_K3LBwE7npGkE" : {
+          "class" : "Food",
+          "name" : "Adult Grilled Cheese",
+          "price" : "6"
+        },
+        "-JSJcPmSmhFKXuYuBxcV" : {
+          "class" : "Food",
+          "name" : "BLT",
+          "price" : "6"
+        },
+        "-JSJcRv_f2cm5x2QJo3e" : {
+          "class" : "Food",
+          "name" : "Ham and Egg",
+          "price" : "6"
+        },
+        "-JSJcTVx6MVt9HO1nHrh" : {
+          "class" : "Food",
+          "name" : "Junebug",
+          "price" : "7"
+        },
+        "-JSJcVh_KW-u-abXYVYK" : {
+          "class" : "Food",
+          "name" : "Chicken Salad",
+          "price" : "6"
+        },
+        "-JSJc_3pGMBAcTLvoPqo" : {
+          "class" : "Food",
+          "name" : "Backlot",
+          "price" : "6"
+        },
+        "-JSJcarR-fRpEFq0i0HK" : {
+          "class" : "Food",
+          "name" : "French Dip",
+          "price" : "7"
+        },
+        "-JSJceEJV0CuJX5ZNgvt" : {
+          "class" : "Food",
+          "name" : "Turkey Reuben",
+          "price" : "6"
+        },
+        "-JSxmSh8NyzS5kwOH9hf" : {
+          "class" : "Food",
+          "name" : "Fries Upcharge",
+          "price" : "2"
+        },
+        "-JT78Z8ftVrSeWPBqRHw" : {
+          "class" : "Food",
+          "name" : "Substitution Upcharge",
+          "price" : "1"
+        }
+      },
+      "name" : "Lunch Sandwiches",
+      "type" : "food"
+    },
+    "-JSJcjU30zzE7v4w6EF_" : {
+      "hotkey" : "94",
+      "hotkeyCode" : 57,
+      "menuitems" : {
+        "-JSJcmNRBobG7_Uhtnuz" : {
+          "class" : "Food",
+          "name" : "Chicken Strips",
+          "price" : "8"
+        },
+        "-JSJcomBPdpYH6E-6sfy" : {
+          "class" : "Food",
+          "name" : "Grilled Chicken Sandwich",
+          "price" : "8"
+        },
+        "-JSJcsdxFOruutwAjLGY" : {
+          "class" : "Food",
+          "name" : "Burger",
+          "price" : "8"
+        },
+        "-JSJcwtC4BcKYpQW2IXL" : {
+          "class" : "Food",
+          "name" : "BBQ Sandwich",
+          "price" : "8"
+        }
+      },
+      "name" : "Lunch Entrees",
+      "type" : "food"
+    },
+    "-JSJd0kJW5EFSWj1slDM" : {
+      "hotkey" : "95",
+      "hotkeyCode" : 57,
+      "menuitems" : {
+        "-JSJd32prm3adVL814gl" : {
+          "class" : "Food",
+          "name" : "Chicken Strips",
+          "price" : "5"
+        },
+        "-JSJd9IZ7iq1mtb2Pi46" : {
+          "class" : "Food",
+          "name" : "Grilled Cheese",
+          "price" : "4"
+        },
+        "-JSJdB0C7BCd0xa7WhXc" : {
+          "class" : "Food",
+          "name" : "Peanut Butter and Jelly",
+          "price" : "4"
+        }
+      },
+      "name" : "Lunch Kids",
+      "type" : "food"
+    },
+    "-JSJdG443iwGuCqjLWMs" : {
+      "hotkey" : "96",
+      "hotkeyCode" : 57,
+      "menuitems" : {
+        "-JSJdIgBAwSOAt4Bxuve" : {
+          "class" : "Food",
+          "name" : "Side Salad",
+          "price" : "3"
+        },
+        "-JSJdKwJGHE-zn_p0Uwu" : {
+          "class" : "Food",
+          "name" : "Pasta Salad",
+          "price" : "3"
+        },
+        "-JSJdMoBtfXMAjf3CPeV" : {
+          "class" : "Food",
+          "name" : "Potato Salad",
+          "price" : "3"
+        },
+        "-JSJdOuqR0KSTkwi5FYd" : {
+          "class" : "Food",
+          "name" : "Fries",
+          "price" : "3"
+        },
+        "-JSJdR1puJCvdsdxn02h" : {
+          "class" : "Food",
+          "name" : "Sweet Potato Fries",
+          "price" : "3"
+        },
+        "-JSJdTbwpoRoOZsFwgi8" : {
+          "class" : "Food",
+          "name" : "Slaw",
+          "price" : "3"
+        },
+        "-JSJdVSw_9LEpkabkoXi" : {
+          "class" : "Food",
+          "name" : "Chips",
+          "price" : "1"
+        }
+      },
+      "name" : "Lunch Sides",
+      "type" : "food"
+    },
+    "-JSJf8SZ8Kjc6L0ZRTz4" : {
+      "hotkey" : "2",
+      "hotkeyCode" : 50,
+      "menuitems" : {
+        "-JSJfIk3NRjLTj-lGLfo" : {
+          "class" : "Alcohol",
+          "name" : "Copper",
+          "price" : "5"
+        },
+        "-JSJfPFKIR0_Do0_1L1l" : {
+          "class" : "Alcohol",
+          "name" : "312",
+          "price" : "5"
+        },
+        "-JSJfQlxFkETHwXZzdTO" : {
+          "class" : "Alcohol",
+          "name" : "Summer Shandy",
+          "price" : "5"
+        },
+        "-JSJfVKpMbGYkgrSF6LR" : {
+          "class" : "Alcohol",
+          "name" : "Angry Orchard",
+          "price" : "5"
+        },
+        "-JSJfZ-ChRbwuSI3wz2V" : {
+          "class" : "Alcohol",
+          "name" : "Peacemaker",
+          "price" : "5"
+        },
+        "-JSJfiagXNJOLVjDvHAK" : {
+          "class" : "Alcohol",
+          "name" : "Yuengling",
+          "price" : "3.50"
+        },
+        "-JT8ZwE0wm2rEdhh90-8" : {
+          "class" : "Alcohol",
+          "name" : "Sacred Heart IPA",
+          "price" : "7"
+        },
+        "-JT8ZxOKOZ9qwObnn1mi" : {
+          "class" : "Alcohol",
+          "name" : "Sam Adams BL",
+          "price" : "5"
+        },
+        "-JTIYb_3Z1vEIcGs2a7x" : {
+          "class" : "Alcohol",
+          "name" : "HH Discount",
+          "price" : "-.75"
+        },
+        "-JTN2iWY3E8zXZ1u1eE1" : {
+          "class" : "Alcohol",
+          "name" : "$1 Bud Light",
+          "price" : "1"
+        },
+        "-JThgdR7GF2oTIOKXjEz" : {
+          "class" : "Alcohol",
+          "name" : "Artemis Blonde",
+          "price" : "6"
+        }
+      },
+      "name" : "Draft Beer",
+      "type" : "food"
+    }
+  }
+}
