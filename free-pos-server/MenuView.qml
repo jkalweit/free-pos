@@ -80,7 +80,7 @@ Rectangle {
                 id: menuItemContainer
                 width: menuItems.width
                 height: menuItemName.height + 20
-                color:  "#AA66FF"
+                color:  "#9575cd"
                 flashColor: "#FFFFFF"
                 border.width: 1
                 border.color: "#777777"
@@ -150,7 +150,7 @@ Rectangle {
             clip: true
 
             delegate: RectangleFlashButton {
-                color: "#AA00AA" //  menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DD66FF" : "#AA00DD"
+                color: "#7e57c2" //  menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DD66FF" : "#AA00DD"
                 border.color: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#777777"
                 border.width: 2
                 textColor: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#000000"

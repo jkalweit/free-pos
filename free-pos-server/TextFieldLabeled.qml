@@ -7,11 +7,15 @@ Row {
     property alias text: editText.text
     property alias placeholderText: editText.placeholderText
     property alias textFieldWidth: editText.width
+    property alias inputMethodHints: editText.inputMethodHints
+    signal editingFinished
     signal accepted
 
     function forceActiveFocus() {
         editText.forceActiveFocus();
     }
+
+    onActiveFocusChanged: if(activeFocus) forceActiveFocus();
 
     Text {
         id: label
@@ -24,7 +28,8 @@ Row {
         width: 150
 
         onTextChanged: container.textChanged()
-        onAccepted: container.accepted()
+        onEditingFinished: container.editingFinished()
+        onAccepted: container.accepted()        
 
         onActiveFocusChanged: {
             if(this.focus){

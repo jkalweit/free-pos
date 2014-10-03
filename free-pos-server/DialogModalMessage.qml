@@ -5,6 +5,9 @@ DialogModal {
     id: container
     property alias title: titleText.text
     property alias text: messageText.text
+    property alias buttonText: okButton.text
+    property bool closeOnAcknowledge: true
+    signal acknowledged()
 
     customContent: Column {
         spacing: 40
@@ -21,8 +24,14 @@ DialogModal {
 
         Row {
             Button {
+                id: okButton
                 text: "Ok"
-                onClicked: container.visible = false
+                onClicked: {
+                    if(closeOnAcknowledge)
+                        container.visible = false;
+
+                    acknowledged();
+                }
             }
         }
     }

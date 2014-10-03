@@ -8,6 +8,11 @@ DialogModal {
     property var model
     defaultFocus: editName
 
+    function updateIfDifferent(target, field, val){
+        if(target[field].toFixed(2) !== val.toFixed(2))
+            target[field] = val;
+    }
+
     onVisibleChanged: {
         if(this.visible) {
             //var tmp = model
@@ -26,8 +31,8 @@ DialogModal {
             model.name = editName.currentText;
             model.note = editNote.text;
 
-            beginningDrawer.saveChanges();
-            endingDrawer.saveChanges();
+            //beginningDrawer.saveChanges();
+            //endingDrawer.saveChanges();
         }
         container.visible = false;
     }
@@ -98,43 +103,196 @@ DialogModal {
             EditDrawer {
                 id: endingDrawer
                 model: container.model ? container.model.endingDrawer : 0
+                showPayouts: true
             }
-        }
+
+            Rectangle {
+                id: spacer2
+                width: 40
+                height: 10
+            }
+
+            Column {
+                spacing: 5
+
+                Row {
+                    Text {
+                        height: 50
+                        width: 225
+                        text: "System"
+                        font.pixelSize: 16
+                        font.bold: true
+                    }
+                    Text {
+                        height: 50
+                        width: 225
+                        text: "Actual"
+                        font.pixelSize: 16
+                        font.bold: true
+                    }
+                }
 
 
-        Row {
-            Button {
-                text: "Close Rec"
-                onClicked: {
-                    if(model.hasOpenTickets()) {
-                        message.title = "Cannot Close Rec";
-                        message.text = "There are open tickets.";
-                        message.show();
-                        return;
+                Row {
+                    TextLabeled {
+                        label: "Cash:"
+                        text: container.model ? container.model.cashTotal.toFixed(2) : ""
+                    }
+                    TextLabeled {
+                        label: "Cash:"
+                        text: container.model ? container.model.cashTotalActual.toFixed(2) : ""
+                    }
+                }
+
+                Row {
+                    TextLabeled {
+                        label: ""
                     }
 
-                    confirm.title = "Close Rec?";
-                    confirm.text = "";
-                    confirm.yes.connect(function () {
-                        model.closeRec();
-                        container.visible = false;
-                    });
-                    confirm.show();
+                    TextFieldLabeled {
+                        id: editCreditTips
+                        label: "Credit Tips:"
+                        text: container.model ? container.model.creditCardTotalTips.toFixed(2) : 0
+                        onEditingFinished: container.updateIfDifferent(container.model, "creditCardTotalTips", Number(editCreditTips.text))
+                    }
                 }
-            }
-            Button {
-                text: "Ok"
-                onClicked: {
-                    container.close(true);
+
+                Row {
+                    TextLabeled {
+                        label: "Credit:"
+                        text: container.model ? container.model.creditCardTotal.toFixed(2) : ""
+                    }
+
+
+
+                    TextFieldLabeled {
+                        id: editCreditActual
+                        label: "Credit:"
+                        text: container.model ? container.model.creditCardTotalActual.toFixed(2) : 0
+                        onEditingFinished: container.updateIfDifferent(container.model, "creditCardTotalActual", Number(editCreditActual.text))
+                    }
                 }
-            }
-            Button {
-                text: "Cancel"
-                onClicked: {
-                    container.close(false);
+
+                Row {
+
+                    TextLabeled {
+                        label: "Total Take:"
+                        text: container.model ? container.model.takeTotal.toFixed(2) : ""
+                    }
+
+                    TextLabeled {
+                        label: "Total Take:"
+                        text: container.model ? container.model.takeTotalActual.toFixed(2) : ""
+                    }
                 }
+
+                Rectangle {
+                    id: spacer4
+                    width: 1
+                    height: 40
+                }
+
+                Row {
+
+                    TextLabeled {}
+
+                    TextLabeled {
+                        label: "Food:"
+                        text: container.model ? container.model.foodTotal.toFixed(2) : ""
+                    }
+                }
+
+                Row {
+
+                    TextLabeled {}
+
+                    TextLabeled {
+                        label: "Tax:"
+                        text: container.model ? container.model.taxTotal.toFixed(2) : ""
+                    }
+                }
+
+                Row {
+
+                    TextLabeled {}
+
+                    TextLabeled {
+                        label: "Alcohol:"
+                        text: container.model ? container.model.barTotal.toFixed(2) : ""
+                    }
+                }
+
+                Row {
+
+                    TextLabeled {}
+
+                    TextLabeled {
+                        label: "Total Sales:"
+                        text: container.model ? container.model.total.toFixed(2) : ""
+                    }
+                }
+
+                Rectangle {
+                    id: spacer5
+                    width: 1
+                    height: 40
+                }
+
+                Row {
+
+                    TextLabeled {
+                        label: "Diff:"
+                        text: container.model ? container.model.discrepancy.toFixed(2) : ""
+                    }
+
+                    TextLabeled {
+                        label: "Diff:"
+                        text: container.model ? container.model.discrepancyActual.toFixed(2) : ""
+                    }
+                }
+
+
+                Rectangle {
+                    id: spacer3
+                    width: 1
+                    height: 40
+                }
+
+
+                Row {
+                    Button {
+                        width: 225
+                        text: "Close Rec"
+                        onClicked: {
+                            if(model.hasOpenTickets()) {
+                                message.title = "Cannot Close Rec";
+                                message.text = "There are open tickets.";
+                                message.show();
+                                return;
+                            }
+
+                            confirm.title = "Close Rec?";
+                            confirm.text = "";
+                            confirm.yes.connect(function () {
+                                model.closeRec();
+                                container.visible = false;
+                            });
+                            confirm.show();
+                        }
+                    }
+
+                    Button {
+                        width: 225
+                        text: "Ok"
+                        onClicked: {
+                            container.close(true);
+                        }
+                    }
+                }
+
             }
         }
+
     }
 
     DialogModalMessage {

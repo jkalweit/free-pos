@@ -52,32 +52,32 @@ void Pos::addTestData() {
     addMenu(m_selectedMenu);
     selectedMenuChanged(m_selectedMenu);
 
-    m_selectedRec = openNewRec();
-    selectedRecChanged(m_selectedRec);
+//    m_selectedRec = openNewRec();
+//    selectedRecChanged(m_selectedRec);
 
-    Ticket *ticket = m_selectedRec->addTicket("1-1");
-//    ticket->addCustomer("Andrew");
-//    ticket = m_selectedRec->addTicket("2-2");
-//    ticket->addCustomer("Justin");
-//    ticket = m_selectedRec->addTicket("Bar");
-    Customer *customer = ticket->addCustomer("Larry");
-    customer->addOrderItem("Steak Bites - Small", "Food", 7.50, 2, "This is a note.");
-    customer->addOrderItem("Steak Bites - Small", "Food", 7.50, 1, "This is a note2.");
-    customer = ticket->addCustomer("Steve");
-    customer->addOrderItem("Steak Bites - Large", "Food", 8.00, 0.5, "This is a note3.");
+//    Ticket *ticket = m_selectedRec->addTicket("1-1");
+////    ticket->addCustomer("Andrew");
+////    ticket = m_selectedRec->addTicket("2-2");
+////    ticket->addCustomer("Justin");
+////    ticket = m_selectedRec->addTicket("Bar");
+//    Customer *customer = ticket->addCustomer("Larry");
+//    customer->addOrderItem("Steak Bites - Small", "Food", 7.50, 2, "This is a note.");
+//    customer->addOrderItem("Steak Bites - Small", "Food", 7.50, 1, "This is a note2.");
+//    customer = ticket->addCustomer("Steve");
+//    customer->addOrderItem("Steak Bites - Large", "Food", 8.00, 0.5, "This is a note3.");
 
-//    ticket = m_selectedRec->addTicket("Deck");
-//    ticket->addCustomer("Tina");
-    m_selectedRec->setSelectedTicket(ticket);
+////    ticket = m_selectedRec->addTicket("Deck");
+////    ticket->addCustomer("Tina");
+//    m_selectedRec->setSelectedTicket(ticket);
 
-//    for(int i = 1; i <= 50; i++) {
-//        ticket = m_selectedRec->addTicket("Bar");
-//        customer = ticket->addCustomer("Test Customer " + QString::number(i));
-//        for(int j = 0; j < 1; j++) {
-//            customer->addOrderItem("Test Food Item", "Food", 7.50, 1, "This is a note.");
-//            customer->addOrderItem("Test Alcohol Item", "Alcohol", 2.75, 1, "This is a note.");
-//        }
-//    }
+////    for(int i = 1; i <= 50; i++) {
+////        ticket = m_selectedRec->addTicket("Bar");
+////        customer = ticket->addCustomer("Test Customer " + QString::number(i));
+////        for(int j = 0; j < 1; j++) {
+////            customer->addOrderItem("Test Food Item", "Food", 7.50, 1, "This is a note.");
+////            customer->addOrderItem("Test Alcohol Item", "Alcohol", 2.75, 1, "This is a note.");
+////        }
+////    }
 
 
 

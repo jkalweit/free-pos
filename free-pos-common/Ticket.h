@@ -19,6 +19,7 @@ class Ticket : public QObject {
     Q_PROPERTY(QQmlListProperty<Customer> customers READ customers NOTIFY customersChanged)
     Q_PROPERTY(QDateTime createdStamp MEMBER m_createdStamp NOTIFY createdStampChanged)
     Q_PROPERTY(QDateTime paidStamp MEMBER m_paidStamp NOTIFY paidStampChanged)
+    Q_PROPERTY(QString paymentType MEMBER m_paymentType NOTIFY paymentTypeChanged)
     Q_PROPERTY(bool isTogo MEMBER m_isTogo NOTIFY isTogoChanged)
     Q_PROPERTY(bool isPaid READ isPaid NOTIFY isPaidChanged)
 
@@ -27,12 +28,14 @@ class Ticket : public QObject {
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 public:
-    explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime createdStamp = QDateTime(), QDateTime paidStamp = QDateTime(), bool isTogo = false);
+    explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime createdStamp = QDateTime(),
+                    QString paymentType = "", QDateTime paidStamp = QDateTime(), bool isTogo = false);
 
     QString customerNames();
     QString longName();
     bool isPaid();
-    Q_INVOKABLE void toggleIsPaid();
+    Q_INVOKABLE void cyclePaymentType();
+
 
     Q_INVOKABLE Customer* addCustomer(QString name);
     void addCustomer(Customer *customer);
@@ -56,6 +59,7 @@ signals:
     void isTogoChanged(bool);
     void isPaidChanged(bool);
     void createdStampChanged(QDateTime);
+    void paymentTypeChanged(QString);
     void paidStampChanged(QDateTime);
 
     void customersChanged(QQmlListProperty<Customer>);
@@ -73,6 +77,7 @@ private:
     QString m_name;
     quint32 m_currentCustomerId;
     QDateTime m_createdStamp;
+    QString m_paymentType;
     QDateTime m_paidStamp;
     bool m_isTogo;
     QList<Customer*> m_customers;

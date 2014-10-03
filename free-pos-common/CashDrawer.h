@@ -20,6 +20,9 @@ class CashDrawer : public QObject
     Q_PROPERTY(quint16 c5s MEMBER m_c5s WRITE setc5s NOTIFY c5sChanged)
     Q_PROPERTY(quint16 c1s MEMBER m_c1s WRITE setc1s NOTIFY c1sChanged)
     Q_PROPERTY(float coins MEMBER m_coins WRITE setCoins NOTIFY coinsChanged)
+    Q_PROPERTY(float payouts MEMBER m_payouts WRITE setPayouts NOTIFY payoutsChanged)
+    Q_PROPERTY(float checks MEMBER m_checks WRITE setChecks NOTIFY checksChanged)
+    Q_PROPERTY(float giftCards MEMBER m_giftCards WRITE setGiftCards NOTIFY giftCardsChanged)
 
     // Calculated
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
@@ -31,7 +34,10 @@ public:
             , quint16 c10s = 0
             , quint16 c5s = 0
             , quint16 c1s = 0
-            , float coins = 0);
+            , float coins = 0
+            , float payouts = 0
+            , float checks = 0
+            , float giftCards = 0);
 
     void setc100s(quint16 val);
     void setc50s(quint16 val);
@@ -40,6 +46,9 @@ public:
     void setc5s(quint16 val);
     void setc1s(quint16 val);
     void setCoins(float val);
+    void setPayouts(float val);
+    void setChecks(float val);
+    void setGiftCards(float val);
 
     float total();
 
@@ -54,6 +63,9 @@ signals:
     void c5sChanged(quint16);
     void c1sChanged(quint16);
     void coinsChanged(float);
+    void payoutsChanged(float);
+    void checksChanged(float);
+    void giftCardsChanged(float);
 
     void totalChanged(float);
 
@@ -71,7 +83,9 @@ private:
     quint16 m_c5s;
     quint16 m_c1s;
     float m_coins;
-
+    float m_payouts;
+    float m_checks;
+    float m_giftCards;
 };
 
 #endif // CASHDRAWER_H

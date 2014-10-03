@@ -26,12 +26,23 @@ class Reconciliation : public QObject {
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 
+    Q_PROPERTY(float creditCardTotal READ creditCardTotal NOTIFY creditCardTotalChanged)
+    Q_PROPERTY(float creditCardTotalActual MEMBER m_creditCardTotalActual WRITE setCreditCardTotalActual NOTIFY creditCardTotalActualChanged)
+    Q_PROPERTY(float creditCardTotalTips MEMBER m_creditCardTotalTips WRITE setCreditCardTotalTips NOTIFY creditCardTotalTipsChanged)
+    Q_PROPERTY(float cashTotal READ cashTotal NOTIFY cashTotalChanged)
+    Q_PROPERTY(float cashTotalActual READ cashTotalActual NOTIFY cashTotalActualChanged)
+    Q_PROPERTY(float takeTotal READ takeTotal NOTIFY takeTotalChanged)
+    Q_PROPERTY(float takeTotalActual READ takeTotalActual NOTIFY takeTotalActualChanged)
+    Q_PROPERTY(float discrepancy READ discrepancy NOTIFY discrepancyChanged)
+    Q_PROPERTY(float discrepancyActual READ discrepancyActual NOTIFY discrepancyActualChanged)
+
     Q_PROPERTY(CashDrawer *beginningDrawer READ beginningDrawer NOTIFY beginningDrawerChanged)
     Q_PROPERTY(CashDrawer *endingDrawer READ endingDrawer NOTIFY endingDrawerChanged)
 public:
     explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QString name = "", QString note = "",
                             QDateTime openedStamp = QDateTime(), QDateTime closedStamp = QDateTime(),
-                            CashDrawer *begginningDrawer = nullptr, CashDrawer *endingDrawer = nullptr);
+                            CashDrawer *begginningDrawer = nullptr, CashDrawer *endingDrawer = nullptr,
+                            float creditCardTotalActual = 0, float creditCardTotalTips = 0);
 
     QQmlListProperty<Ticket> tickets();
     Q_INVOKABLE Ticket* addTicket(QString name);
@@ -44,6 +55,17 @@ public:
     float taxTotal();
     float barTotal();
     float total();
+
+    float creditCardTotal();
+    void setCreditCardTotalActual(float);
+    void setCreditCardTotalTips(float);
+    float cashTotal();
+    float cashTotalActual();
+    float takeTotal();
+    float takeTotalActual();
+
+    float discrepancy();
+    float discrepancyActual();
 
     CashDrawer* beginningDrawer();
     CashDrawer* endingDrawer();
@@ -73,6 +95,17 @@ signals:
     void barTotalChanged(float);
     void totalChanged(float);
 
+    void creditCardTotalChanged(float);
+    void creditCardTotalActualChanged(float);
+    void creditCardTotalTipsChanged(float);
+    void cashTotalChanged(float);
+    void cashTotalActualChanged(float);
+    void takeTotalChanged(float);
+    void takeTotalActualChanged(float);
+
+    void discrepancyChanged(float);
+    void discrepancyActualChanged(float);
+
     void beginningDrawerChanged(CashDrawer*);
     void endingDrawerChanged(CashDrawer*);
 
@@ -81,17 +114,22 @@ private:
     QString m_name;
     QString m_note;
     QDateTime m_openedStamp;
-    QDateTime m_closedStamp;
+    QDateTime m_closedStamp;    
 
     CashDrawer *m_beginningDrawer;
     CashDrawer *m_endingDrawer;
 
     quint32 m_currentTicketId;
     QList<Ticket*> m_tickets;
-    Ticket* m_selectedTicket;    
+    Ticket* m_selectedTicket;
+
+    float m_creditCardTotalActual;
+    float m_creditCardTotalTips;
 
 private slots:
     void fireTotalsChanged();
+    void firePaymentTotalsChanged();
+    void fireActualTakeTotalsChanged();
 };
 
 

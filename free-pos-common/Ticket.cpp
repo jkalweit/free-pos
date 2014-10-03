@@ -4,8 +4,9 @@
 #include <QDebug>
 
 
-Ticket::Ticket(QObject *parent, quint32 id, QString name, QDateTime createdStamp, QDateTime paidStamp, bool isTogo) :
-    QObject(parent), m_id(id), m_name(name), m_currentCustomerId(0), m_createdStamp(createdStamp), m_paidStamp(paidStamp), m_isTogo(isTogo)
+Ticket::Ticket(QObject *parent, quint32 id, QString name, QDateTime createdStamp, QString paymentType, QDateTime paidStamp, bool isTogo) :
+    QObject(parent), m_id(id), m_name(name), m_currentCustomerId(0), m_createdStamp(createdStamp),
+    m_paymentType(paymentType), m_paidStamp(paidStamp), m_isTogo(isTogo)
 {
     connect(this, SIGNAL(nameChanged(QString)),
             this, SLOT(fireNamesChanged()));
@@ -27,19 +28,30 @@ QString Ticket::longName() {
 }
 
 bool Ticket::isPaid() {
-    return !m_paidStamp.isNull();
+    return m_paymentType != "";
 }
 
-void Ticket::toggleIsPaid() {
-    if(isPaid()) {
+void Ticket::cyclePaymentType() {
+
+    if(m_paymentType == "") {
+        m_paymentType = "Credit Card";
+    } else if(m_paymentType == "Credit Card") {
+        m_paymentType = "Cash";
+    } else {
+        m_paymentType = "";
+    }
+
+    if(!isPaid()) {
         m_paidStamp = QDateTime();
     } else {
         m_paidStamp = QDateTime::currentDateTime();
     }
 
-    isPaidChanged(isPaid());
+    paymentTypeChanged(m_paymentType);
     paidStampChanged(m_paidStamp);
+    isPaidChanged(isPaid());
 }
+
 
 void Ticket::fireTotalsChanged() {
     foodTotalChanged(foodTotal());

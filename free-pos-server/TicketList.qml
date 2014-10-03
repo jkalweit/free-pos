@@ -7,8 +7,10 @@ import FreePos 1.0 as FreePos
 
 Rectangle {
     id: tickets
+    color: "#33FFFFFF"
     property var rec
     property bool showPaid: true
+
 
     Column {
         id: ticketsControls
@@ -16,7 +18,7 @@ Rectangle {
         spacing: 2
 
         RectangleFlashButton {
-            text: "Paid Tickets: " + tickets.showPaid ? "Shown" : "Hidden"
+            text: "Paid Tickets: " + (tickets.showPaid ? "Shown" : "Hidden")
             onClicked: tickets.showPaid = !tickets.showPaid
         }
 
@@ -40,36 +42,6 @@ Rectangle {
                 }
             }
         }
-
-
-
-    //    Repeater {
-    //        model: rec.tickets
-
-    //        RectangleFlashButton {
-    //            text: modelData.customerNames
-    //            color:  {
-    //                //if(rec.selectedTicket && (rec.selectedTicket.id === modelData.id)) {
-    //                    return modelData.isPaid ? "#DDDDDD" : "#3333FF"
-    //                //}
-    //            }
-    //            border.color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "transparent"
-    //            border.width: 2
-    //            textColor: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#000000"
-    //            visible: {
-    //                if(!showPaid && modelData.isPaid)
-    //                    return false;
-    //                var filter = newCustomerName.text.trim().toUpperCase()
-    //                if(filter.length === 0){
-    //                    return true;
-    //                }
-    //                return modelData.customerNames.toUpperCase().indexOf(filter) > -1;
-    //            }
-    //            onBeforeFlash: {
-    //                rec.selectedTicket = modelData
-    //            }
-    //        }
-    //    }
     }
 
     Flickable {
@@ -89,10 +61,10 @@ Rectangle {
                 RectangleFlashButton {
                     text: modelData.customerNames
                     flashColor: "#FFFFFF"
-                    color:  modelData.isPaid ? "#888888" : "#3333FF"
+                    color:  modelData.isPaid ? "#888888" : "#26a69a"
                     border.color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#777777"
                     border.width: 2
-                    textColor: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#000000"
+                    textColor: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#212121"
                     visible: {
                         if(!tickets.showPaid && modelData.isPaid)
                             return false;

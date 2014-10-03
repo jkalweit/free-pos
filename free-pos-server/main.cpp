@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
 //    server.openDb();
 //    server.createDb();
 
-
 //    if(server.listen(QHostAddress("127.0.0.1"), 1337)) {
 //    //if(server.listen(QHostAddress("192.168.10.73"), 1337)) {
 //        qDebug() << "Listening...";

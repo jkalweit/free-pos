@@ -6,16 +6,23 @@
 
 Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, QString note,
                                QDateTime openedStamp, QDateTime closedStamp,
-                               CashDrawer *begginningDrawer, CashDrawer *endingDrawer) :
+                               CashDrawer *begginningDrawer, CashDrawer *endingDrawer,
+                               float creditCardTotalActual, float creditCardTotalTips) :
     QObject(parent), m_id(id), m_name(name), m_note(note),
     m_openedStamp(openedStamp), m_closedStamp(closedStamp),
     m_beginningDrawer(begginningDrawer), m_endingDrawer(endingDrawer),
-    m_currentTicketId(0), m_selectedTicket(nullptr)
+    m_currentTicketId(0), m_selectedTicket(nullptr), m_creditCardTotalActual(creditCardTotalActual), m_creditCardTotalTips(creditCardTotalTips)
 {
     if(m_beginningDrawer == nullptr)
         m_beginningDrawer = new CashDrawer(this);
     if(m_endingDrawer == nullptr)
         m_endingDrawer = new CashDrawer(this);
+
+
+    connect(m_beginningDrawer, SIGNAL(totalChanged(float)),
+            this, SLOT(fireActualTakeTotalsChanged()));
+    connect(m_endingDrawer, SIGNAL(totalChanged(float)),
+            this, SLOT(fireActualTakeTotalsChanged()));
 }
 
 CashDrawer* Reconciliation::beginningDrawer() {
@@ -41,6 +48,9 @@ void Reconciliation::addTicket(Ticket *ticket) {
             this, SLOT(fireTotalsChanged()));
     connect(ticket, SIGNAL(totalChanged(float)),
             this, SLOT(fireTotalsChanged()));
+
+    connect(ticket, SIGNAL(paymentTypeChanged(QString)),
+            this, SLOT(firePaymentTotalsChanged()));
 
     m_tickets.append(ticket);
     ticketsChanged(tickets());
@@ -95,6 +105,75 @@ void Reconciliation::fireTotalsChanged() {
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
+}
+
+void Reconciliation::fireActualTakeTotalsChanged() {
+    cashTotalActualChanged(cashTotalActual());    
+    creditCardTotalActualChanged(m_creditCardTotalActual);
+    creditCardTotalTipsChanged(m_creditCardTotalTips);
+    takeTotalActualChanged(takeTotalActual());
+    discrepancyActualChanged(discrepancyActual());
+}
+
+float Reconciliation::creditCardTotal() {
+    float sum = 0;
+    for(Ticket *c : m_tickets) {\
+        if(c->property("paymentType").toString() == "Credit Card")
+            sum += c->total();
+    }
+    return sum;
+}
+
+void Reconciliation::setCreditCardTotalActual(float val) {
+    m_creditCardTotalActual = val;
+    creditCardTotalActualChanged(m_creditCardTotalActual);
+    fireActualTakeTotalsChanged();
+}
+
+void Reconciliation::setCreditCardTotalTips(float val) {
+    m_creditCardTotalTips = val;
+    creditCardTotalTipsChanged(m_creditCardTotalTips);
+    fireActualTakeTotalsChanged();
+}
+
+float Reconciliation::cashTotal() {
+    float sum = 0;
+    for(Ticket *c : m_tickets) {\
+        if(c->property("paymentType").toString() == "Cash")
+            sum += c->total();
+    }
+    return sum;
+}
+
+float Reconciliation::cashTotalActual() {
+    return m_endingDrawer->total() - m_beginningDrawer->total();
+}
+
+float Reconciliation::takeTotal() {
+    float sum = 0;
+    for(Ticket *c : m_tickets) {\
+        sum += c->total();
+    }
+    return sum;
+}
+
+float Reconciliation::takeTotalActual() {
+    return cashTotalActual() + m_creditCardTotalActual + m_creditCardTotalTips;
+}
+
+float Reconciliation::discrepancy() {
+    return takeTotal() - total();
+}
+
+float Reconciliation::discrepancyActual() {
+    return takeTotalActual() - total();
+}
+
+void Reconciliation::firePaymentTotalsChanged() {
+    creditCardTotalChanged(creditCardTotal());
+    cashTotalChanged(cashTotal());
+    takeTotalChanged(takeTotal());
+    discrepancyChanged(discrepancy());
 }
 
 bool Reconciliation::hasOpenTickets() {

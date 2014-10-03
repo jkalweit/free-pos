@@ -2,166 +2,96 @@ import QtQuick 2.3
 import QtQuick.Controls 1.2
 
 
-Rectangle {
-    id: editOrderItemDialog
-    anchors.fill: parent
-    visible: false
-    color: "#AA000000"
+DialogModal {
+    id: container
+    title: "Edit Order Item"
     property var model //OrderItem
 
     function show(orderItem) {
-        editOrderItemDialog.model = orderItem;
-        editOrderItemDialog.visible = true;
+        container.model = orderItem;
+        container.visible = true;
         editNote.forceActiveFocus();
         editNote.cursorPosition = editNote.text.length;
     }
 
-
     function close(save) {
         if(save) {
-            editOrderItemDialog.model.quantity = Number(editQuantity.text);
-            editOrderItemDialog.model.price = Number(editPrice.text);
-            editOrderItemDialog.model.note = editNote.text.trim();
+            container.model.quantity = Number(editQuantity.text);
+            container.model.price = Number(editPrice.text);
+            container.model.note = editNote.text.trim();
         }
-        editOrderItemDialog.visible = false;
+        container.visible = false;
     }
 
-    Keys.onEscapePressed: this.close(false)
+    customContent: Column {
+        spacing: 5
 
-    Rectangle {
-        width: orderItemEditInner.width + 80
-        height: orderItemEditInner.height + 80
-        anchors.centerIn: parent
-        color: "#FFFFFF"
-        border.color: "#000000"
-        border.width: 2
-        Column {
-            id: orderItemEditInner
-            anchors.centerIn: parent
-            spacing: 20
-
-
+        Row {
             Text {
-                text: "Edit Order Item"
-                font.bold: true
-                font.pixelSize: 20
+                width: 75
+                text: "Note: "
             }
 
-            Column {
-                spacing: 5
 
-                Row {
-                    Text {
-                        width: 100
-                        text: "Note: "
-                    }
+            Rectangle {
+                width: 250
+                height: 100
+                border.width: 1
+                border.color: "#AAAAAA"
 
+                TextEdit {
+                    id: editNote
+                    text: model ? model.note : ""
+                    anchors.fill: parent
+                    anchors.margins: 5
 
-                    Rectangle {
-                        width: 250
-                        height: 100
-                        border.width: 1
-                        border.color: "#AAAAAA"
+                    KeyNavigation.tab: editQuantity
+                    KeyNavigation.backtab: editPrice
+                    KeyNavigation.priority: KeyNavigation.BeforeItem
 
-                        TextEdit {
-                            id: editNote
-                            text: editOrderItemDialog.model ? editOrderItemDialog.model.note : ""
-                            anchors.fill: parent
-                            anchors.margins: 5
-//                            onAccepted: {
-//                                editOrderItemDialog.close(true);
-//                            }
-
-
-                            KeyNavigation.tab: editQuantity
-                            KeyNavigation.backtab: editPrice
-                            KeyNavigation.priority: KeyNavigation.BeforeItem
-
-                            onActiveFocusChanged: {
-//                                        if(this.focus){
-//                                            this.selectAll();
-//                                        }
-                            }
-
-
-                        }
-                    }
                 }
+            }
+        }
+
+        TextFieldLabeled {
+            id: editQuantity
+            label: "Quantity"
+            text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.quantity.toFixed(2)) : ""
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            placeholderText: "Quantity"
+
+            onAccepted: container.close(true);
+        }
+
+        TextFieldLabeled {
+            id: editPrice
+            label: "Price"
+            text: model ? Number(model.price.toFixed(2)) : ""
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            placeholderText: "price"
+
+            onAccepted: container.close(true);
+        }
 
 
-                Row {
-                    Text {
-                        width: 100
-                        text: "Quantity: "
-                    }
-
-
-                    TextField {
-                        id: editQuantity
-                        text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.quantity.toFixed(2)) : ""
-                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        width: 150
-                        maximumLength: 25
-                        placeholderText: qsTr("Quantity")
-
-                        onAccepted: {
-                            editOrderItemDialog.close(true);
-                        }
-
-                        onActiveFocusChanged: {
-                            if(this.focus){
-                                this.selectAll();
-                            }
-                        }
-                    }
+        Row {
+            Button {
+                text: "Ok"
+                onClicked: {
+                    container.close(true);
                 }
-
-                Row {
-
-                    Text {
-                        width: 100
-                        text: "Price: "
-                    }
-
-
-                    TextField {
-                        id: editPrice
-                        text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.price.toFixed(2)) : ""
-                        width: 150
-                        maximumLength: 25
-                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        placeholderText: qsTr("Price")
-                        onAccepted: {
-                            editOrderItemDialog.close(true);
-                        }
-
-                        onActiveFocusChanged: {
-                            if(this.focus){
-                                this.selectAll();
-                            }
-                        }
-                    }
-
-
-                    Button {
-                        text: "Ok"
-                        onClicked: {
-                            editOrderItemDialog.close(true);
-                        }
-                    }
-                    Button {
-                        text: "Cancel"
-                        onClicked: {
-                            editOrderItemDialog.close(false);
-                        }
-                    }
-                    Button {
-                        text: (editOrderItemDialog.model && editOrderItemDialog.model.deleted) ? "Un-Delete" : "Delete"
-                        onClicked: {
-                            editOrderItemDialog.model.deleted = !editOrderItemDialog.model.deleted;
-                            editOrderItemDialog.close(true);
-                        }
-                    }
+            }
+            Button {
+                text: "Cancel"
+                onClicked: {
+                    container.close(false);
+                }
+            }
+            Button {
+                text: (model && model.deleted) ? "Un-Delete" : "Delete"
+                onClicked: {
+                    model.deleted = !model.deleted;
+                    container.close(true);
                 }
             }
         }

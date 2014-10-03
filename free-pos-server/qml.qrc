@@ -13,5 +13,7 @@
         <file>EditDrawer.qml</file>
         <file>DialogModalMessage.qml</file>
         <file>DialogModalConfirm.qml</file>
+        <file>EditReconciliation.qml</file>
+        <file>TextLabeled.qml</file>
     </qresource>
 </RCC>
