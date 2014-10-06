@@ -1,9 +1,10 @@
 #include <QMetaProperty>
 #include <QDebug>
 #include "OrderItem.h"
+#include "Pos.h"
 
-OrderItem::OrderItem(QObject *parent, quint32 id, QString name, QString type, float price, float quantity, QString note, bool deleted) :
-    QObject(parent), m_id(id), m_name(name), m_type(type), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted)
+OrderItem::OrderItem(QObject *parent, quint32 id, quint32 ticketId, quint32 customerId, QString name, QString type, QDateTime createdStamp, float price, float quantity, QString note, bool deleted) :
+    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted)
 {
     connect(this, SIGNAL(quantityChanged(float)),
             this, SLOT(fireTotalsChanged()));
@@ -11,6 +12,52 @@ OrderItem::OrderItem(QObject *parent, quint32 id, QString name, QString type, fl
             this, SLOT(fireTotalsChanged()));
     connect(this, SIGNAL(deletedChanged(bool)),
             this, SLOT(fireTotalsChanged()));
+}
+
+
+void OrderItem::logPropertyChanged(QVariant value, QString propertyName) {
+    QString update = "UpdateOrderItem:" + QString::number(m_ticketId) + ":" + QString::number(m_customerId) + ":" + QString::number(m_id) + ":" + propertyName + ":"  + escapeString(value.toString());
+    Pos::instance()->appendToHistory(update);
+}
+
+void OrderItem::setCreatedStamp(QDateTime createdStamp) {
+    if(m_createdStamp != createdStamp){
+        m_createdStamp = createdStamp;
+        logPropertyChanged(m_createdStamp, "createdStamp");
+        createdStampChanged(m_createdStamp);
+    }
+}
+
+void OrderItem::setQuantity(float quantity) {
+    if(m_quantity != quantity) {
+        m_quantity = quantity;
+        logPropertyChanged(m_quantity, "quantity");
+        quantityChanged(m_quantity);
+    }
+}
+
+void OrderItem::setPrice(float price) {
+    if(m_price != price) {
+        m_price = price;
+        logPropertyChanged(m_price, "price");
+        priceChanged(m_price);
+    }
+}
+
+void OrderItem::setNote(QString note) {
+    if(m_note != note) {
+        m_note = note;
+        logPropertyChanged(m_note, "note");
+        noteChanged(m_note);
+    }
+}
+
+void OrderItem::setDeleted(bool deleted) {
+    if(m_deleted != deleted) {
+        m_deleted = deleted;
+        logPropertyChanged(m_deleted, "deleted");
+        deletedChanged(m_deleted);
+    }
 }
 
 void OrderItem::fireTotalsChanged() {
@@ -40,49 +87,30 @@ float OrderItem::total() {
 
 
 QString OrderItem::serialize() const {
-    //m_name.replace(":", "");
-    return QString::number(m_id) + ":" + m_name + ":" + m_type + ":" + QString::number(m_price) + ":" + QString::number(m_quantity) + ":" + m_note + ":" + QString::number(m_deleted);
+    QStringList vals;
+    vals << QString::number(m_id) << QString::number(m_ticketId) << QString::number(m_customerId) << m_name << m_type << m_createdStamp.toString() << QString::number(m_price) << QString::number(m_quantity) << m_note << QString::number(m_deleted);
+    return serializeList(vals);
 }
 
 OrderItem* OrderItem::deserialize(QString serialized, QObject *parent)
 {
-    QStringList split = serialized.split(":");
+    QStringList split = deserializeList(serialized);
 
     quint32 id = split[0].toInt();
-    QString name = split[1];
-    QString type = split[2];
-    float price = split[3].toFloat();
-    float quantity = split[4].toFloat();
-    QString note = split[5];
-    bool deleted = split[6].toInt();
+    quint32 ticketId = split[1].toInt();
+    quint32 customerId = split[2].toInt();
+    QString name = split[3];
+    QString type = split[4];
+    QDateTime createdStamp = QDateTime::fromString(split[5]);
+    float price = split[6].toFloat();
+    float quantity = split[7].toFloat();
+    QString note = split[8];
+    bool deleted = split[9].toInt();
 
-    OrderItem *obj = new OrderItem(parent, id, name, type, price, quantity, note, deleted);
-    qDebug() << "    deserialized: " << obj->serialize();
+    OrderItem *obj = new OrderItem(parent, id, ticketId, customerId, name, type, createdStamp, price, quantity, note, deleted);
     return obj;
 }
 
-QTextStream& operator<<(QTextStream& stream, const OrderItem& obj) {
-    stream << obj.serialize() << endl;
-    return stream;
-}
-QTextStream& operator>>(QTextStream& stream, OrderItem& obj) {
-
-    QString line = stream.readAll();
-    if(line.length() <= 1){
-        qDebug() << "Empty line.";
-        return stream;
-    }
-    OrderItem* obj2 = OrderItem::deserialize(line);
-    obj.m_id = obj2->m_id;
-    obj.m_name = obj2->m_name;
-    obj.m_type = obj2->m_type;
-    obj.m_price = obj2->m_price;
-    obj.m_quantity = obj2->m_quantity;
-    obj.m_note = obj2->m_note;
-    obj.m_deleted = obj2->m_deleted;
-
-    return stream;
-}
 
 
 

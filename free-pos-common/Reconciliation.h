@@ -70,9 +70,11 @@ public:
     CashDrawer* beginningDrawer();
     CashDrawer* endingDrawer();
 
-    Q_INVOKABLE bool hasOpenTickets();
+    Q_INVOKABLE bool hasOpenTickets();    
     Q_INVOKABLE void closeRec();
     Q_INVOKABLE bool isOpen();
+
+    Ticket* getTicket(quint32 id);
 
     QString serialize() const;
     static Reconciliation* deserialize(QString serialized, QObject *parent = 0);

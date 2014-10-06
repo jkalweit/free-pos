@@ -28,7 +28,6 @@ FreePosCommand FreePosCommand::deserialize(QString serialized)
     //QString name = split[1];
 
     FreePosCommand obj(serialized);
-    qDebug() << "    deserialized: " << obj.serialize();
     return obj;
 }
 

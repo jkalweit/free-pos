@@ -22,6 +22,7 @@ ApplicationWindow {
         buttonText: "Open New Rec"
         visible: !pos.selectedRec || !pos.selectedRec.isOpen
         closeOnAcknowledge: false
+        saveByDefault: false
         onAcknowledged: {
             pos.selectedRec = pos.openNewRec()
         }

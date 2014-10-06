@@ -2,18 +2,26 @@
 
 #include <QMetaProperty>
 #include <QDebug>
-
+#include "Pos.h"
 
 
 Customer::Customer(QObject *parent, quint32 id, quint32 ticketId, QString name) :
-    QObject(parent), m_id(id), m_ticketId(ticketId), m_name(name), m_currentOrderItemId(0)
+    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_name(name), m_currentOrderItemId(0)
 {
 }
+
+
+void Customer::logPropertyChanged(QVariant value, QString propertyName) {
+    QString update = "UpdateCustomer:" + QString::number(m_ticketId) + ":" + QString::number(m_id) + ":" + propertyName + ":"  + escapeString(value.toString());
+    Pos::instance()->appendToHistory(update);
+}
+
 
 void Customer::setName(QString name) {
     QString normalized = name.toUpper().trimmed();
     if(m_name != normalized) {
         m_name = normalized;
+        logPropertyChanged(m_name, "name");
         nameChanged(m_name);
     }
 }
@@ -58,12 +66,13 @@ void Customer::fireTotalsChanged() {
 }
 
 OrderItem* Customer::addOrderItem(QString name, QString type, float price, float quantity, QString note) {
-    OrderItem* orderItem = new OrderItem(this, ++m_currentOrderItemId, name, type, price, quantity, note, false);
+    OrderItem* orderItem = new OrderItem(this, ++m_currentOrderItemId, m_ticketId, m_id, name, type, QDateTime::currentDateTime(), price, quantity, note, false);
     addOrderItem(orderItem);
     return orderItem;
 }
 
 void Customer::addOrderItem(OrderItem *orderItem) {
+    if(orderItem->property("id").toUInt() > m_currentOrderItemId) m_currentOrderItemId = orderItem->property("id").toUInt();
     connect(orderItem, SIGNAL(subTotalChanged(float)),
             this, SLOT(fireTotalsChanged()));
     connect(orderItem, SIGNAL(taxChanged(float)),
@@ -71,12 +80,22 @@ void Customer::addOrderItem(OrderItem *orderItem) {
     connect(orderItem, SIGNAL(totalChanged(float)),
             this, SLOT(fireTotalsChanged()));
     m_orderItems.append(orderItem);
+    Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
     orderItemsChanged(orderItems());
     fireTotalsChanged();
 }
 
 QQmlListProperty<OrderItem> Customer::orderItems() {
     return QQmlListProperty<OrderItem>(this, m_orderItems);
+}
+
+OrderItem* Customer::getOrderItem(quint32 id) {
+    for(OrderItem* item : m_orderItems) {
+        if(item->property("id").toUInt() == id){
+            return item;
+        }
+    }
+    return nullptr;
 }
 
 QString Customer::serialize() const {
@@ -92,29 +111,9 @@ Customer* Customer::deserialize(QString serialized, QObject *parent)
     QString name = split[2];
 
     Customer *obj = new Customer(parent, id, ticketId, name);
-    qDebug() << "    deserialized: " << obj->serialize();
     return obj;
 }
 
-QTextStream& operator<<(QTextStream& stream, const Customer& obj) {
-    stream << obj.serialize() << endl;
-    return stream;
-}
-QTextStream& operator>>(QTextStream& stream, Customer& obj) {
-
-    QString line = stream.readAll();
-    qDebug() << "Got line: " << line;
-    if(line.length() <= 1){
-        qDebug() << "Empty line.";
-        return stream;
-    }
-    Customer* obj2 = Customer::deserialize(line);
-    obj.m_id = obj2->m_id;
-    obj.m_ticketId = obj2->m_ticketId;
-    obj.m_name = obj2->m_name;
-
-    return stream;
-}
 
 
 

@@ -24,12 +24,16 @@ int main(int argc, char *argv[])
     qmlRegisterType<OrderItem>("FreePos", 1, 0, "OrderItem");
     qmlRegisterType<CashDrawer>("FreePos", 1, 0, "CashDrawer");
 
-    Pos pos;
-    pos.addTestData();
+    Pos *pos = Pos::instance();    
+    pos->readHistory();
+    pos->addTestData();
 
     QQmlApplicationEngine engine;    
-    engine.rootContext()->setContextProperty("pos", (QObject*)&pos);
+    engine.rootContext()->setContextProperty("pos", (QObject*)pos);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
+
+
 
 //    server.openDb();
 //    server.createDb();

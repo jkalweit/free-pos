@@ -6,9 +6,10 @@
 #include <QList>
 #include <QObject>
 #include <QQmlListProperty>
+#include "SimpleSerializable.h"
 #include "Customer.h"
 
-class Ticket : public QObject {
+class Ticket : public SimpleSerializable {
 
     Q_OBJECT
     Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
@@ -20,9 +21,9 @@ class Ticket : public QObject {
     Q_PROPERTY(QDateTime createdStamp MEMBER m_createdStamp NOTIFY createdStampChanged)
     Q_PROPERTY(QDateTime paidStamp MEMBER m_paidStamp NOTIFY paidStampChanged)
     Q_PROPERTY(QString paymentType MEMBER m_paymentType NOTIFY paymentTypeChanged)
-    Q_PROPERTY(bool isTogo MEMBER m_isTogo NOTIFY isTogoChanged)
-    Q_PROPERTY(bool isPaid READ isPaid NOTIFY isPaidChanged)
+    Q_PROPERTY(bool isTogo MEMBER m_isTogo WRITE setIsTogo NOTIFY isTogoChanged)
 
+    Q_PROPERTY(bool isPaid READ isPaid NOTIFY isPaidChanged)
     Q_PROPERTY(float foodTotal READ foodTotal NOTIFY foodTotalChanged)
     Q_PROPERTY(float taxTotal READ taxTotal NOTIFY taxTotalChanged)
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
@@ -31,16 +32,21 @@ public:
     explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime createdStamp = QDateTime(),
                     QString paymentType = "", QDateTime paidStamp = QDateTime(), bool isTogo = false);
 
-    QString customerNames();
-    QString longName();
-    bool isPaid();
-    Q_INVOKABLE void cyclePaymentType();
+
+    void setPaidStamp(QDateTime paidStamp);
+    Q_INVOKABLE void cyclePaymentType();    
+    void setIsTogo(bool togo);
 
 
     Q_INVOKABLE Customer* addCustomer(QString name);
     void addCustomer(Customer *customer);
     QQmlListProperty<Customer> customers();
+    Customer* getCustomer(quint32 id);
 
+
+    QString customerNames();
+    QString longName();
+    bool isPaid();
     float foodTotal();
     float taxTotal();
     float barTotal();
@@ -48,9 +54,6 @@ public:
 
     QString serialize() const;
     static Ticket* deserialize(QString serialized, QObject *parent = 0);
-
-    friend QTextStream& operator<<(QTextStream& stream, const Ticket& obj);
-    friend QTextStream& operator>>(QTextStream& stream, Ticket& obj);
 
 signals:
     void idChanged(quint32);
@@ -86,6 +89,8 @@ private:
 private slots:
     void fireTotalsChanged();
     void fireNamesChanged();
+
+    void logPropertyChanged(QVariant value, QString propertyName);
 };
 
 

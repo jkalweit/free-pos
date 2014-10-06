@@ -22,7 +22,6 @@ MenuItem* MenuItem::deserialize(QString serialized, QObject *parent)
     float price = split[3].toFloat();
 
     MenuItem *obj = new MenuItem(parent, id, name, type, price);
-    qDebug() << "    deserialized: " << obj->serialize();
     return obj;
 }
 

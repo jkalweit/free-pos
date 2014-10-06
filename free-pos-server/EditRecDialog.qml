@@ -88,6 +88,34 @@ DialogModal {
             placeholderText: "Note"
         }
 
+        Rectangle {
+            id: spacer6
+            width: 1
+            height: 40
+        }
+
+        Row {
+            Text {
+                height: 50
+                width: 225
+                text: "Beginning"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            Rectangle {
+                id: spacer5
+                width: 40
+                height: 10
+            }
+            Text {
+                height: 50
+                width: 225
+                text: "Ending"
+                font.pixelSize: 16
+                font.bold: true
+            }
+        }
+
         Row {
             EditDrawer {
                 id: beginningDrawer
@@ -233,7 +261,7 @@ DialogModal {
                 }
 
                 Rectangle {
-                    id: spacer5
+                    id: spacer7
                     width: 1
                     height: 40
                 }

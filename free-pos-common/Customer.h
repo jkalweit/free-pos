@@ -5,14 +5,15 @@
 #include <QList>
 #include <QObject>
 #include <QQmlListProperty>
+#include "SimpleSerializable.h"
 #include "OrderItem.h"
 
 
-class Customer : public QObject {
+class Customer : public SimpleSerializable {
 
     Q_OBJECT
     Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
-    Q_PROPERTY(quint32 ticketId MEMBER m_id NOTIFY ticketIdChanged)
+    Q_PROPERTY(quint32 ticketId MEMBER m_ticketId NOTIFY ticketIdChanged)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QQmlListProperty<OrderItem> orderItems READ orderItems NOTIFY orderItemsChanged)
 
@@ -33,12 +34,10 @@ public:
     QQmlListProperty<OrderItem> orderItems();
     Q_INVOKABLE OrderItem* addOrderItem(QString name, QString type, float price, float quantity, QString note);
     void addOrderItem(OrderItem *orderItem);
+    OrderItem* getOrderItem(quint32 id);
 
     QString serialize() const;
     static Customer* deserialize(QString serialized, QObject *parent = 0);
-
-    friend QTextStream& operator<<(QTextStream& stream, const Customer& obj);
-    friend QTextStream& operator>>(QTextStream& stream, Customer& obj);
 
 signals:
     void idChanged(quint32);
@@ -59,8 +58,10 @@ private:
 
     quint32 m_currentOrderItemId;
 
+
 private slots:
     void fireTotalsChanged();
+    void logPropertyChanged(QVariant value, QString propertyName);
 };
 
 #endif // CUSTOMER_H

@@ -12,13 +12,121 @@
 
 
 
+Pos* Pos::s_instance = nullptr;
 
+
+
+Pos* Pos::instance()
+{
+    if(!s_instance) {
+        qDebug() << "Creating singleton...";
+        s_instance = new Pos();
+    }
+
+    return Pos::s_instance;
+}
 
 
 
 Pos::Pos(QObject *parent) :
-    QObject(parent), m_selectedMenu(nullptr), m_selectedRec(nullptr)
+    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr)
 {
+}
+
+void Pos::readHistory() {
+
+    m_isHistoryDisabled = true;
+
+    QFile file("./history.txt");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in(&file);
+
+    while(!in.atEnd()) {
+        QString line = in.readLine();
+        int delimit = line.indexOf(":");
+        QString command = line.mid(0, delimit);
+        QString payload = line.mid(delimit+1, line.length() - delimit);
+
+        if(command == "OpenRec") {
+            qDebug() << "Open new rec" << payload;
+            m_selectedRec = Reconciliation::deserialize(payload, this);
+        } else if(command == "AddTicket") {
+            qDebug() << "AddTicket: " << payload;
+            m_selectedRec->addTicket(Ticket::deserialize(payload, this));
+        } else if(command == "AddCustomer") {
+            qDebug() << "AddCustomer: " << payload;
+
+            Customer *c = Customer::deserialize(payload, this);
+            Ticket *ticket = m_selectedRec->getTicket(c->property("ticketId").toInt());
+            if(ticket)
+                ticket->addCustomer(c);
+            else
+                qDebug() << "Ticket does not exist.";
+        } else if(command == "AddOrderItem") {
+            qDebug() << "AddOrderItem: " << payload;
+
+            OrderItem *i = OrderItem::deserialize(payload);
+            Ticket *ticket = m_selectedRec->getTicket(i->property("ticketId").toInt());
+            if(!ticket) {
+                qDebug() << "Ticket does not exist.";
+                return;
+            }
+            Customer *customer = ticket->getCustomer(i->property("customerId").toUInt());
+            if(!customer) {
+                qDebug() << "Customer does not exist.";
+                return;
+            }
+            customer->addOrderItem(i);
+        } else if (command == "UpdateTicket") {
+            qDebug() << "UpdateTicket: " << payload;
+            QStringList split = payload.split(":");
+            quint32 ticketId = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            QString restored = value.replace("\\n", "\n").replace("\\colon", ":");
+            Ticket* ticket = m_selectedRec->getTicket(ticketId);
+            ticket->setProperty(property.toUtf8().data(), restored);
+        } else if (command == "UpdateCustomer") {
+            qDebug() << "UpdateCustomer: " << payload;
+            QStringList split = payload.split(":");
+            quint32 ticketId = split[0].toUInt();
+            quint32 customerId = split[1].toUInt();
+            QString property = split[2];
+            QString value = split[3];
+            QString restored = value.replace("\\n", "\n").replace("\\colon", ":");
+            Customer* customer = m_selectedRec->getTicket(ticketId)->getCustomer(customerId);
+            customer->setProperty(property.toUtf8().data(), restored);
+        } else if (command == "UpdateOrderItem") {
+            qDebug() << "UpdateOrderItem: " << payload;
+            QStringList split = payload.split(":");
+            quint32 ticketId = split[0].toUInt();
+            quint32 customerId = split[1].toUInt();
+            quint32 orderItemId = split[2].toUInt();
+            QString property = split[3];
+            QString value = split[4];
+            OrderItem* orderItem = m_selectedRec->getTicket(ticketId)->getCustomer(customerId)->getOrderItem(orderItemId);
+            QString restored = value.replace("\\n", "\n").replace("\\colon", ":");
+            orderItem->setProperty(property.toUtf8().data(), restored);
+        } else {
+            qDebug() << "Unknown command: " << command << " " << payload;
+        }
+    }
+
+    // optional, as QFile destructor will already do it:
+    file.close();
+
+    m_isHistoryDisabled = false;
+}
+
+void Pos::appendToHistory(QString item) {
+    if(m_isHistoryDisabled)
+        return;
+
+    QFile file("./history.txt");
+    file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out << item << endl;
+    file.close();
 }
 
 
@@ -38,6 +146,7 @@ QQmlListProperty<Reconciliation> Pos::reconciliations() {
 Reconciliation* Pos::openNewRec() {
     Reconciliation* rec = new Reconciliation(this, 0, "Lunch", "", QDateTime::currentDateTime());
     addReconciliation(rec);
+    appendToHistory("OpenRec:" + rec->serialize());
     return rec;
 }
 

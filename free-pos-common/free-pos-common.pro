@@ -24,7 +24,8 @@ SOURCES += \
     Reconciliation.cpp \
     OrderItem.cpp \
     CashDrawer.cpp \
-    Pos.cpp
+    Pos.cpp \
+    SimpleSerializable.cpp
 
 HEADERS += \
     MenuCategory.h \

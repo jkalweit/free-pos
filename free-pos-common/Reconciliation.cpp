@@ -2,7 +2,7 @@
 
 #include <QMetaProperty>
 #include <QDebug>
-
+#include "Pos.h"
 
 Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, QString note,
                                QDateTime openedStamp, QDateTime closedStamp,
@@ -40,6 +40,8 @@ Ticket* Reconciliation::addTicket(QString name) {
 }
 
 void Reconciliation::addTicket(Ticket *ticket) {
+    if(ticket->property("id").toUInt() > m_currentTicketId) m_currentTicketId = ticket->property("id").toUInt();
+
     connect(ticket, SIGNAL(foodTotalChanged(float)),
             this, SLOT(fireTotalsChanged()));
     connect(ticket, SIGNAL(taxTotalChanged(float)),
@@ -53,7 +55,17 @@ void Reconciliation::addTicket(Ticket *ticket) {
             this, SLOT(firePaymentTotalsChanged()));
 
     m_tickets.append(ticket);
+    Pos *pos = Pos::instance();
+    pos->appendToHistory("AddTicket:" + ticket->serialize());
     ticketsChanged(tickets());
+}
+
+Ticket* Reconciliation::getTicket(quint32 id) {
+    for(Ticket *ticket : m_tickets) {
+        if(ticket->property("id").toUInt() == id)
+            return ticket;
+    }
+    return nullptr;
 }
 
 void Reconciliation::setSelectedTicket(Ticket *ticket) {
@@ -207,8 +219,10 @@ bool Reconciliation::isOpen() {
     return m_closedStamp.isNull();
 }
 
+
+
 QString Reconciliation::serialize() const {
-    return QString::number(m_id) + ":" + m_name;
+    return QString::number(m_id) + ":" + m_name + ":" + m_note + ":" + m_openedStamp.toString();
 }
 
 Reconciliation* Reconciliation::deserialize(QString serialized, QObject *parent)
@@ -216,10 +230,11 @@ Reconciliation* Reconciliation::deserialize(QString serialized, QObject *parent)
     QStringList split = serialized.split(":");
 
     quint32 id = split[0].toInt();
-    QString name = split[2];
+    QString name = split[1];
+    QString note = split[2];
+    QDateTime opened = QDateTime::fromString(split[3]);
 
-    Reconciliation *obj = new Reconciliation(parent, id, name);
-    qDebug() << "    deserialized: " << obj->serialize();
+    Reconciliation *obj = new Reconciliation(parent, id, name, note, opened);
     return obj;
 }
 

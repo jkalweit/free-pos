@@ -26,6 +26,17 @@ DialogModal {
     customContent: Column {
         spacing: 5
 
+
+        TextLabeled {
+            label: "Name:"
+            text: editOrderItemDialog.model ? editOrderItemDialog.model.name : ""
+        }
+
+        TextLabeled {
+            label: "Added:"
+            text: editOrderItemDialog.model ? Qt.formatTime(editOrderItemDialog.model.createdStamp, "hh:mmAP") : ""
+        }
+
         Row {
             Text {
                 width: 75
@@ -53,9 +64,10 @@ DialogModal {
             }
         }
 
+
         TextFieldLabeled {
             id: editQuantity
-            label: "Quantity"
+            label: "Quantity:"
             text: editOrderItemDialog.model ? Number(editOrderItemDialog.model.quantity.toFixed(2)) : ""
             inputMethodHints: Qt.ImhFormattedNumbersOnly
             placeholderText: "Quantity"

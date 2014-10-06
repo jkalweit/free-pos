@@ -34,7 +34,6 @@ MenuCategory* MenuCategory::deserialize(QString serialized, QObject *parent)
     QString name = split[1];
 
     MenuCategory *obj = new MenuCategory(parent, id, name);
-    qDebug() << "    deserialized: " << obj->serialize();
     return obj;
 }
 
