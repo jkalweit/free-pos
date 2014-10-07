@@ -53,6 +53,7 @@ public:
     float total();
 
     Q_INVOKABLE void printKitchen();
+    Q_INVOKABLE void printReceipt();
 
     QString serialize() const;
     static Ticket* deserialize(QString serialized, QObject *parent = 0);

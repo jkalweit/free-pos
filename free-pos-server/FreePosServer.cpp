@@ -12,6 +12,7 @@ FreePosServer::FreePosServer(QObject *parent) :
 }
 
 
+
 //int FreePosServer::addReconciliation(QString name) {
 //    QString query = "INSERT INTO Reconciliation ( name ) "
 //                    "VALUES ( '" + name + "' )";

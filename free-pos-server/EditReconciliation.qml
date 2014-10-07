@@ -228,6 +228,20 @@ Rectangle {
 
                     RectangleFlash {
                         width: parent.width
+                        height: printReceipt.height + 10
+                        onClicked: {
+                            model.selectedTicket.printReceipt();
+                        }
+
+                        Text{
+                            id: printReceipt
+                            text: "Print Receipt" //model.selectedTicket && model.selectedTicket.isPaid ? model.selectedTicket.paymentType + " " + Qt.formatTime(model.selectedTicket.paidStamp, "hh:mmAP") : "Unpaid"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    RectangleFlash {
+                        width: parent.width
                         height: paidText.height + 10
                         onClicked: {
                             model.selectedTicket.cyclePaymentType();
