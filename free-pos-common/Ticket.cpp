@@ -2,6 +2,12 @@
 
 #include <QMetaProperty>
 #include <QDebug>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QTextDocument>
+#include <QTextFrame>
+#include <QTextFrameFormat>
+#include <QPainter>
 #include "Pos.h"
 
 Ticket::Ticket(QObject *parent, quint32 id, QString name, QDateTime createdStamp, QString paymentType, QDateTime paidStamp, bool isTogo) :
@@ -148,6 +154,119 @@ float Ticket::barTotal() {
 
 float Ticket::total() {
     return foodTotal() + taxTotal() + barTotal();
+}
+
+void Ticket::printKitchen() {
+
+    QPrinter printer;
+
+//    QPrintDialog dialog(&printer);
+//    dialog.setWindowTitle(tr("Print Document"));
+////    if (editor->textCursor().hasSelection())
+////        dialog.addEnabledOption(QAbstractPrintDialog::PrintSelection);
+//    if (dialog.exec() != QDialog::Accepted) {
+//        return;
+//    }
+
+    printer.setFullPage(true);
+    //printer.setOutputFormat(printer.PdfFormat);
+    //printer.setOutputFileName("receipt.pdf");
+
+    qreal currentX = 20;
+    qreal currentY = 0;
+    qreal lineSpacing = 40;
+    qreal width = 232;
+
+    printer.setPaperSize(QSizeF(width, 120), QPrinter::Millimeter);
+    printer.setPageMargins(0, 0, 0, 0, QPrinter::Millimeter);
+
+
+    QPainter painter;
+    painter.begin(&printer);
+
+    QRectF textRect(currentX, currentY, width, 20);
+    QRectF bounding;
+
+    QFont font;
+    font.setPixelSize(22);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignHCenter | Qt::AlignVCenter, "The Coal Yard", &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+    font.setPixelSize(16);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignHCenter | Qt::AlignVCenter, "Neighborhood Public House", &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + lineSpacing);
+    font.setPixelSize(12);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignHCenter | Qt::AlignVCenter, "105 Garner St, York SC 29745", &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+    painter.drawText(textRect, Qt::AlignHCenter | Qt::AlignVCenter, "www.TheCoalYard.com", &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+    painter.drawText(textRect, Qt::AlignHCenter | Qt::AlignVCenter, "803.684.9653", &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+
+    for(Customer *c : m_customers) {
+        textRect.setX(currentX);
+        textRect.setWidth(width);
+        textRect.setY(textRect.y() + bounding.height() + 20);
+        painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, c->property("name").toString(), &bounding);
+
+        for(OrderItem *o : c->orderItemsList()) {
+            textRect.setX(currentX + 20);
+            textRect.setWidth(width - 20);
+            textRect.setY(textRect.y() + bounding.height() + 20);
+            painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, o->property("quantity").toString(), &bounding);
+            textRect.setX(currentX + 50);
+            textRect.setWidth(width - 50);
+            painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, o->property("name").toString(), &bounding);
+            painter.drawText(textRect, Qt::AlignRight | Qt::AlignVCenter, QString::number(o->property("total").toDouble(), 'f', 2), &bounding);
+        }
+    }
+
+    textRect.setX(currentX + 80);
+    textRect.setWidth(width - 80);
+    textRect.setY(textRect.y() + bounding.height() + 40);
+    painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, "Food:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight | Qt::AlignVCenter, QString::number(foodTotal(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+    painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, "Tax:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight | Qt::AlignVCenter, QString::number(taxTotal(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+    painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, "Bar:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight | Qt::AlignVCenter, QString::number(barTotal(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+    font.setPixelSize(18);
+    font.setBold(true);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, "Total:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight | Qt::AlignVCenter, "$" + QString::number(total(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 60);
+    textRect.setX(currentX);
+    textRect.setWidth(width);
+    font.setPixelSize(12);
+    font.setBold(false);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignHCenter | Qt::AlignVCenter, "Thank You!", &bounding);
+
+    painter.setPen(Qt::gray);
+    textRect.setY(textRect.y() + bounding.height() + 20);
+    textRect.setHeight(80);
+    painter.drawRect(textRect);
+    QPointF lineStart(currentX, bounding.y() + bounding.height() + 20);
+    QPointF lineEnd(currentX + width, lineStart.y());
+    painter.drawLine(lineStart, lineEnd);
+
+    painter.end();
+
 }
 
 QString Ticket::serialize() const {

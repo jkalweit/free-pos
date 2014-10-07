@@ -1,8 +1,8 @@
-CONFIG += c++11
+CONFIG += c++11 printsupport
 
 TEMPLATE = app
 
-QT += qml quick widgets sql
+QT += qml quick widgets printsupport
 
 SOURCES += main.cpp \
     FreePosServer.cpp \

@@ -35,6 +35,7 @@ public:
     Q_INVOKABLE OrderItem* addOrderItem(QString name, QString type, float price, float quantity, QString note);
     void addOrderItem(OrderItem *orderItem);
     OrderItem* getOrderItem(quint32 id);
+    QList<OrderItem*> orderItemsList();
 
     QString serialize() const;
     static Customer* deserialize(QString serialized, QObject *parent = 0);

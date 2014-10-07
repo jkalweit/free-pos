@@ -1,8 +1,6 @@
 #include "FreePosServer.h"
 
 #include <QDebug>
-#include <QSqlQuery>
-#include <QSqlError>
 
 
 

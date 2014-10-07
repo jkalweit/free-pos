@@ -52,6 +52,8 @@ public:
     float barTotal();
     float total();
 
+    Q_INVOKABLE void printKitchen();
+
     QString serialize() const;
     static Ticket* deserialize(QString serialized, QObject *parent = 0);
 

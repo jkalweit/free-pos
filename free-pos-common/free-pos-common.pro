@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-CONFIG += c++11
+CONFIG += c++11 printsupport
 
-QT       += qml
+QT       += qml printsupport
 
 QT       -= gui
 

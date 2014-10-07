@@ -98,6 +98,10 @@ OrderItem* Customer::getOrderItem(quint32 id) {
     return nullptr;
 }
 
+QList<OrderItem*> Customer::orderItemsList() {
+    return m_orderItems;
+}
+
 QString Customer::serialize() const {
     return QString::number(m_id) + ":" + QString::number(m_ticketId) + ":" + m_name;
 }

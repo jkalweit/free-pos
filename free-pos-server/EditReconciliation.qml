@@ -212,6 +212,19 @@ Rectangle {
 
                     }
 
+                    RectangleFlash {
+                        width: parent.width
+                        height: printKitchen.height + 10
+                        onClicked: {
+                            model.selectedTicket.printKitchen();
+                        }
+
+                        Text{
+                            id: printKitchen
+                            text: "Print Kitchen" //model.selectedTicket && model.selectedTicket.isPaid ? model.selectedTicket.paymentType + " " + Qt.formatTime(model.selectedTicket.paidStamp, "hh:mmAP") : "Unpaid"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
 
                     RectangleFlash {
                         width: parent.width

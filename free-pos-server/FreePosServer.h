@@ -2,7 +2,6 @@
 #define FREEPOSSERVER_H
 
 #include <QObject>
-#include <QSqlDatabase>
 #include "SimpleServer.h"
 #include "FreePosCommand.h"
 #include "Pos.h"

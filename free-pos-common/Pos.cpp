@@ -191,7 +191,12 @@ void Pos::addTestData() {
 
 
 
+#ifdef QT_DEBUG
     QFile file("../../free-pos/free-pos-server/menu.json");
+#else
+    QFile file("menu.json");
+#endif
+
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Could not open menu file" << endl;
     }
