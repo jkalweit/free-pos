@@ -83,6 +83,12 @@ QQmlListProperty<Ticket> Reconciliation::tickets() {
     return QQmlListProperty<Ticket>(this, m_tickets);
 }
 
+QString Reconciliation::fileName() {
+    return QString::number(m_openedStamp.date().year()) + "-" +
+           QString("%1").arg(m_openedStamp.date().month(), 2, 10, QChar('0')) + "-" +
+           QString("%1").arg(m_openedStamp.date().day(), 2, 10, QChar('0')) +
+            "_" + m_name + ".txt";
+}
 
 float Reconciliation::foodTotal() {
     float sum = 0;
@@ -212,6 +218,7 @@ void Reconciliation::closeRec() {
     closedStampChanged(m_closedStamp);
     isOpenChanged(isOpen());
 
+    Pos::instance()->closeCurrentRec();
     qDebug() << "Closed rec: " << m_closedStamp.toString("MM/dd/yyyy hh:mmAP");
 }
 

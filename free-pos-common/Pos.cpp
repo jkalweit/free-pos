@@ -5,6 +5,7 @@
 
 
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -37,7 +38,9 @@ void Pos::readHistory() {
 
     m_isHistoryDisabled = true;
 
-    QFile file("./history.txt");
+    QDir().mkdir("data");
+
+    QFile file("./data/currRec.txt");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
 
@@ -122,7 +125,7 @@ void Pos::appendToHistory(QString item) {
     if(m_isHistoryDisabled)
         return;
 
-    QFile file("./history.txt");
+    QFile file("./data/currRec.txt");
     file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&file);
     out << item << endl;
@@ -148,6 +151,21 @@ Reconciliation* Pos::openNewRec() {
     addReconciliation(rec);
     appendToHistory("OpenRec:" + rec->serialize());
     return rec;
+}
+
+bool Pos::closeCurrentRec() {
+    if(!m_selectedRec) {
+        qDebug() << "No current rec.";
+        return false;
+    }
+    if(m_selectedRec->isOpen()) {
+        qDebug() << "Rec is still open.";
+        return false;
+    }
+
+    qDebug() << "Moving rec to " << m_selectedRec->fileName();
+    QDir().rename("./data/currRec.txt", "./data/" + m_selectedRec->fileName());
+    return true;
 }
 
 void Pos::addReconciliation(Reconciliation *rec) {

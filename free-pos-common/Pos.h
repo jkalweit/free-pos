@@ -28,8 +28,9 @@ public:
 
     QQmlListProperty<Reconciliation> reconciliations();
     Q_INVOKABLE Reconciliation* openNewRec();
+    bool closeCurrentRec();
     void addReconciliation(Reconciliation *rec);
-    void appendToHistory(QString item);
+    void appendToHistory(QString item);    
     void addTestData();
 
 signals:

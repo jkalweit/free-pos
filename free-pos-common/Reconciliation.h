@@ -51,6 +51,8 @@ public:
     void setSelectedTicket(Ticket *ticket);
     Ticket* selectedTicket();
 
+    QString fileName();
+
     float foodTotal();
     float taxTotal();
     float barTotal();
