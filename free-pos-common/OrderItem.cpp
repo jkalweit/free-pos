@@ -14,10 +14,8 @@ OrderItem::OrderItem(QObject *parent, quint32 id, quint32 ticketId, quint32 cust
             this, SLOT(fireTotalsChanged()));
 }
 
-
-void OrderItem::logPropertyChanged(QVariant value, QString propertyName) {
-    QString update = "UpdateOrderItem:" + QString::number(m_ticketId) + ":" + QString::number(m_customerId) + ":" + QString::number(m_id) + ":" + propertyName + ":"  + escapeString(value.toString());
-    Pos::instance()->appendToHistory(update);
+QStringList OrderItem::updatePrefix() {
+    return QStringList() << "UpdateOrderItem" << QString::number(m_ticketId) << QString::number(m_customerId) << QString::number(m_id);
 }
 
 void OrderItem::setCreatedStamp(QDateTime createdStamp) {

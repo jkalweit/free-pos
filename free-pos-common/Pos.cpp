@@ -10,7 +10,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
-
+#include <QMessageBox>
 
 
 Pos* Pos::s_instance = nullptr;
@@ -80,36 +80,52 @@ void Pos::readHistory() {
                 return;
             }
             customer->addOrderItem(i);
+        } else if (command == "UpdateReconciliation") {
+            qDebug() << "UpdateReconciliation: " << payload;
+            QStringList split = SimpleSerializable::deserializeList(payload);
+            //quint32 recId = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            m_selectedRec->setProperty(property.toUtf8().data(), value);
+        } else if (command == "UpdateCashDrawer") {
+            qDebug() << "UpdateCashDrawer: " << payload;
+            QStringList split = SimpleSerializable::deserializeList(payload);
+            //quint32 recId = split[0].toUInt();
+            quint32 cashDrawerId = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            if(cashDrawerId == 1) {
+                m_selectedRec->beginningDrawer()->setProperty(property.toUtf8().data(), value);
+            } else if(cashDrawerId == 2) {
+                m_selectedRec->endingDrawer()->setProperty(property.toUtf8().data(), value);
+            }
         } else if (command == "UpdateTicket") {
             qDebug() << "UpdateTicket: " << payload;
-            QStringList split = payload.split(":");
+            QStringList split = SimpleSerializable::deserializeList(payload);
             quint32 ticketId = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
-            QString restored = value.replace("\\n", "\n").replace("\\colon", ":");
             Ticket* ticket = m_selectedRec->getTicket(ticketId);
-            ticket->setProperty(property.toUtf8().data(), restored);
+            ticket->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateCustomer") {
             qDebug() << "UpdateCustomer: " << payload;
-            QStringList split = payload.split(":");
+            QStringList split = SimpleSerializable::deserializeList(payload);
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             QString property = split[2];
             QString value = split[3];
-            QString restored = value.replace("\\n", "\n").replace("\\colon", ":");
             Customer* customer = m_selectedRec->getTicket(ticketId)->getCustomer(customerId);
-            customer->setProperty(property.toUtf8().data(), restored);
+            customer->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateOrderItem") {
             qDebug() << "UpdateOrderItem: " << payload;
-            QStringList split = payload.split(":");
+            QStringList split = SimpleSerializable::deserializeList(payload);
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             quint32 orderItemId = split[2].toUInt();
             QString property = split[3];
             QString value = split[4];
             OrderItem* orderItem = m_selectedRec->getTicket(ticketId)->getCustomer(customerId)->getOrderItem(orderItemId);
-            QString restored = value.replace("\\n", "\n").replace("\\colon", ":");
-            orderItem->setProperty(property.toUtf8().data(), restored);
+            orderItem->setProperty(property.toUtf8().data(), value);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }
@@ -163,8 +179,15 @@ bool Pos::closeCurrentRec() {
         return false;
     }
 
-    qDebug() << "Moving rec to " << m_selectedRec->fileName();
-    QDir().rename("./data/currRec.txt", "./data/" + m_selectedRec->fileName());
+    QString newLocation = "./data/" + m_selectedRec->fileName();
+    qDebug() << "Moving rec to " << newLocation;
+    if(QDir().exists(newLocation)) {
+        qDebug() << "File already exists.";
+        QMessageBox::about(nullptr, "Error", "Cannot close rec: file already exists: " + newLocation);
+        return false;
+    }
+
+    QDir().rename("./data/currRec.txt", newLocation);
     return true;
 }
 

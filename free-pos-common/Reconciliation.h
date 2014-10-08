@@ -6,15 +6,16 @@
 #include <QList>
 #include <QObject>
 #include <QQmlListProperty>
+#include "SimpleSerializable.h"
 #include "Ticket.h"
 #include "CashDrawer.h"
 
-class Reconciliation : public QObject {
+class Reconciliation : public SimpleSerializable {
 
     Q_OBJECT
     Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
-    Q_PROPERTY(QString name MEMBER m_name NOTIFY nameChanged)
-    Q_PROPERTY(QString note MEMBER m_note NOTIFY noteChanged)
+    Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString note MEMBER m_note WRITE setNote NOTIFY noteChanged)
     Q_PROPERTY(QDateTime openedStamp MEMBER m_openedStamp NOTIFY openedStampChanged)
     Q_PROPERTY(QDateTime closedStamp MEMBER m_closedStamp NOTIFY closedStampChanged)
     Q_PROPERTY(bool isOpen READ isOpen NOTIFY isOpenChanged)
@@ -43,6 +44,11 @@ public:
                             QDateTime openedStamp = QDateTime(), QDateTime closedStamp = QDateTime(),
                             CashDrawer *begginningDrawer = nullptr, CashDrawer *endingDrawer = nullptr,
                             float creditCardTotalActual = 0, float creditCardTotalTips = 0);
+
+    virtual QStringList updatePrefix();
+
+    void setName(QString name);
+    void setNote(QString note);
 
     QQmlListProperty<Ticket> tickets();
     Q_INVOKABLE Ticket* addTicket(QString name);
@@ -73,7 +79,7 @@ public:
     CashDrawer* endingDrawer();
 
     Q_INVOKABLE bool hasOpenTickets();    
-    Q_INVOKABLE void closeRec();
+    Q_INVOKABLE bool closeRec();
     Q_INVOKABLE bool isOpen();
 
     Ticket* getTicket(quint32 id);

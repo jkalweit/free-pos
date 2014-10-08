@@ -24,6 +24,8 @@ class Customer : public SimpleSerializable {
 public:
     explicit Customer(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, QString name = "");
 
+    virtual QStringList updatePrefix();
+
     void setName(QString name);
 
     float foodTotal();
@@ -35,10 +37,10 @@ public:
     Q_INVOKABLE OrderItem* addOrderItem(QString name, QString type, float price, float quantity, QString note);
     void addOrderItem(OrderItem *orderItem);
     OrderItem* getOrderItem(quint32 id);
-    QList<OrderItem*> orderItemsList();
+    QList<OrderItem*> orderItemsList();   
 
     QString serialize() const;
-    static Customer* deserialize(QString serialized, QObject *parent = 0);
+    static Customer* deserialize(QString serialized, QObject *parent = 0);          
 
 signals:
     void idChanged(quint32);
@@ -61,8 +63,7 @@ private:
 
 
 private slots:
-    void fireTotalsChanged();
-    void logPropertyChanged(QVariant value, QString propertyName);
+    void fireTotalsChanged();    
 };
 
 #endif // CUSTOMER_H

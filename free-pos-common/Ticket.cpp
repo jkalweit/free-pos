@@ -18,12 +18,8 @@ Ticket::Ticket(QObject *parent, quint32 id, QString name, QDateTime createdStamp
             this, SLOT(fireNamesChanged()));
 }
 
-
-void Ticket::logPropertyChanged(QVariant value, QString propertyName) {
-    QString safe = value.toString().replace("\n", "\\n");
-    safe = safe.replace(":", "\\colon");
-    safe = "UpdateTicket:" + QString::number(m_id) + ":" + propertyName + ":"  + safe;
-    Pos::instance()->appendToHistory(safe);
+QStringList Ticket::updatePrefix() {
+    return QStringList() << "UpdateTicket" << QString::number(m_id);
 }
 
 

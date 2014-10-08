@@ -1,8 +1,14 @@
 #include "SimpleSerializable.h"
 
+#include "Pos.h"
+
 SimpleSerializable::SimpleSerializable(QObject *parent) :
     QObject(parent)
 {
+}
+
+void SimpleSerializable::logPropertyChanged(QVariant value, QString propertyName) {
+    Pos::instance()->appendToHistory(serializeList(updatePrefix() << propertyName << escapeString(value.toString())));
 }
 
 QString SimpleSerializable::escapeString(QString val) {

@@ -33,6 +33,8 @@ public:
                     QString paymentType = "", QDateTime paidStamp = QDateTime(), bool isTogo = false);
 
 
+    virtual QStringList updatePrefix();
+
     void setPaidStamp(QDateTime paidStamp);
     Q_INVOKABLE void cyclePaymentType();    
     void setIsTogo(bool togo);
@@ -92,8 +94,6 @@ private:
 private slots:
     void fireTotalsChanged();
     void fireNamesChanged();
-
-    void logPropertyChanged(QVariant value, QString propertyName);
 };
 
 

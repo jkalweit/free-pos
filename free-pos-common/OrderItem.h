@@ -27,6 +27,8 @@ class OrderItem : public SimpleSerializable {
 public:
     explicit OrderItem(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, quint32 customerId = 0, QString name = "", QString type = "", QDateTime createdStamp = QDateTime(), float price = 0, float quantity = 0, QString note = "", bool deleted = false);
 
+    virtual QStringList updatePrefix();
+
     void setCreatedStamp(QDateTime createdStamp);
     void setPrice(float price);
     void setQuantity(float quantity);
@@ -69,7 +71,6 @@ private:
 
 private slots:
     void fireTotalsChanged();
-    void logPropertyChanged(QVariant value, QString propertyName);
 };
 
 #endif // ORDERITEM_H

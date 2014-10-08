@@ -8,21 +8,25 @@ Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, QStrin
                                QDateTime openedStamp, QDateTime closedStamp,
                                CashDrawer *begginningDrawer, CashDrawer *endingDrawer,
                                float creditCardTotalActual, float creditCardTotalTips) :
-    QObject(parent), m_id(id), m_name(name), m_note(note),
+    SimpleSerializable(parent), m_id(id), m_name(name), m_note(note),
     m_openedStamp(openedStamp), m_closedStamp(closedStamp),
     m_beginningDrawer(begginningDrawer), m_endingDrawer(endingDrawer),
     m_currentTicketId(0), m_selectedTicket(nullptr), m_creditCardTotalActual(creditCardTotalActual), m_creditCardTotalTips(creditCardTotalTips)
 {
     if(m_beginningDrawer == nullptr)
-        m_beginningDrawer = new CashDrawer(this);
+        m_beginningDrawer = new CashDrawer(this, 1);
     if(m_endingDrawer == nullptr)
-        m_endingDrawer = new CashDrawer(this);
+        m_endingDrawer = new CashDrawer(this, 2);
 
 
     connect(m_beginningDrawer, SIGNAL(totalChanged(float)),
             this, SLOT(fireActualTakeTotalsChanged()));
     connect(m_endingDrawer, SIGNAL(totalChanged(float)),
             this, SLOT(fireActualTakeTotalsChanged()));
+}
+
+QStringList Reconciliation::updatePrefix() {
+    return QStringList() << "UpdateReconciliation" << QString::number(m_id);
 }
 
 CashDrawer* Reconciliation::beginningDrawer() {
@@ -60,6 +64,22 @@ void Reconciliation::addTicket(Ticket *ticket) {
     ticketsChanged(tickets());
 }
 
+void Reconciliation::setName(QString name) {
+    if(m_name != name.trimmed()) {
+        m_name = name.trimmed();
+        logPropertyChanged(m_name, "name");
+        nameChanged(m_name);
+    }
+}
+
+void Reconciliation::setNote(QString note) {
+    if(m_note != note.trimmed()) {
+        m_note = note.trimmed();
+        logPropertyChanged(m_note, "note");
+        noteChanged(m_note);
+    }
+}
+
 Ticket* Reconciliation::getTicket(quint32 id) {
     for(Ticket *ticket : m_tickets) {
         if(ticket->property("id").toUInt() == id)
@@ -84,10 +104,7 @@ QQmlListProperty<Ticket> Reconciliation::tickets() {
 }
 
 QString Reconciliation::fileName() {
-    return QString::number(m_openedStamp.date().year()) + "-" +
-           QString("%1").arg(m_openedStamp.date().month(), 2, 10, QChar('0')) + "-" +
-           QString("%1").arg(m_openedStamp.date().day(), 2, 10, QChar('0')) +
-            "_" + m_name + ".txt";
+    return m_openedStamp.toString("yyyy-MM-dd") + "_" + m_name + ".txt";
 }
 
 float Reconciliation::foodTotal() {
@@ -144,12 +161,14 @@ float Reconciliation::creditCardTotal() {
 
 void Reconciliation::setCreditCardTotalActual(float val) {
     m_creditCardTotalActual = val;
+    logPropertyChanged(m_creditCardTotalActual, "creditCardTotalActual");
     creditCardTotalActualChanged(m_creditCardTotalActual);
     fireActualTakeTotalsChanged();
 }
 
 void Reconciliation::setCreditCardTotalTips(float val) {
     m_creditCardTotalTips = val;
+    logPropertyChanged(m_creditCardTotalTips, "creditCardTotalTips");
     creditCardTotalTipsChanged(m_creditCardTotalTips);
     fireActualTakeTotalsChanged();
 }
@@ -203,23 +222,30 @@ bool Reconciliation::hasOpenTickets() {
     return false;
 }
 
-void Reconciliation::closeRec() {
+bool Reconciliation::closeRec() {
     if(!isOpen()) {
         qDebug() << "Rec is already closed.";
-        return;
+        return false;
     }
 
     if(hasOpenTickets()) {
         qDebug() << "Rec has open customers.";
-        return;
+        return false;
     }
 
-    m_closedStamp = QDateTime::currentDateTime();
+    m_closedStamp = QDateTime::currentDateTime();    
+    logPropertyChanged(m_closedStamp, "closedStamp");
+    if(!Pos::instance()->closeCurrentRec()) {
+        m_closedStamp = QDateTime();
+        logPropertyChanged(m_closedStamp, "closedStamp");
+    } else {
+        qDebug() << "Closed rec: " << m_closedStamp.toString("MM/dd/yyyy hh:mmAP");        
+    }
+
     closedStampChanged(m_closedStamp);
     isOpenChanged(isOpen());
 
-    Pos::instance()->closeCurrentRec();
-    qDebug() << "Closed rec: " << m_closedStamp.toString("MM/dd/yyyy hh:mmAP");
+    return !isOpen();
 }
 
 bool Reconciliation::isOpen() {
@@ -229,12 +255,14 @@ bool Reconciliation::isOpen() {
 
 
 QString Reconciliation::serialize() const {
-    return QString::number(m_id) + ":" + m_name + ":" + m_note + ":" + m_openedStamp.toString();
+    QStringList vals;
+    vals << QString::number(m_id) << m_name << m_note << m_openedStamp.toString();
+    return serializeList(vals);
 }
 
 Reconciliation* Reconciliation::deserialize(QString serialized, QObject *parent)
 {
-    QStringList split = serialized.split(":");
+    QStringList split = deserializeList(serialized);
 
     quint32 id = split[0].toInt();
     QString name = split[1];

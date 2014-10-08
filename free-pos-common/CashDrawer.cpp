@@ -12,61 +12,95 @@ CashDrawer::CashDrawer(QObject *parent, quint32 id, QString name
                        , float payouts
                        , float checks
                        , float giftCards) :
-    QObject(parent), m_id(id), m_name(name), m_confirmedStamp(QDateTime()),
+    SimpleSerializable(parent), m_id(id), m_name(name), m_confirmedStamp(QDateTime()),
     m_c100s(c100s), m_c50s(c50s), m_c20s(c20s), m_c10s(c10s), m_c5s(c5s), m_c1s(c1s), m_coins(coins),
     m_payouts(payouts), m_checks(checks), m_giftCards(giftCards)
 {
 }
 
+QStringList CashDrawer::updatePrefix() {
+    return QStringList() << "UpdateCashDrawer" << QString::number(m_id);
+}
+
 void CashDrawer::setc100s(quint16 val) {
-    m_c100s = val;
-    c100sChanged(m_c100s);    
-    totalChanged(total());
+    if(m_c100s != val) {
+        m_c100s = val;
+        logPropertyChanged(m_c100s, "c100s");
+        c100sChanged(m_c100s);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setc50s(quint16 val) {
-    m_c50s = val;
-    c50sChanged(m_c50s);
-    totalChanged(total());
+    if(m_c50s != val) {
+        m_c50s = val;
+        logPropertyChanged(m_c50s, "c50s");
+        c50sChanged(m_c50s);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setc20s(quint16 val) {
-    m_c20s = val;
-    c20sChanged(m_c20s);
-    totalChanged(total());
+    if(m_c20s != val) {
+        m_c20s = val;
+        logPropertyChanged(m_c20s, "c20s");
+        c20sChanged(m_c20s);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setc10s(quint16 val) {
-    m_c10s = val;
-    c10sChanged(m_c10s);
-    totalChanged(total());
+    if(m_c10s != val) {
+        m_c10s = val;
+        logPropertyChanged(m_c10s, "c10s");
+        c10sChanged(m_c10s);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setc5s(quint16 val) {
-    m_c5s = val;
-    c5sChanged(m_c5s);
-    totalChanged(total());
+    if(m_c5s != val) {
+        m_c5s = val;
+        logPropertyChanged(m_c5s, "c5s");
+        c5sChanged(m_c5s);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setc1s(quint16 val) {
-    m_c1s = val;
-    c1sChanged(m_c1s);
-    totalChanged(total());
+    if(m_c1s != val) {
+        m_c1s = val;
+        logPropertyChanged(m_c1s, "c1s");
+        c1sChanged(m_c1s);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setCoins(float val) {
-    m_coins = val;
-    coinsChanged(m_coins);
-    totalChanged(total());
+    if(m_coins != val) {
+        m_coins = val;
+        logPropertyChanged(m_coins, "coins");
+        coinsChanged(m_coins);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setPayouts(float val) {
-    m_payouts = val;
-    payoutsChanged(m_payouts);
-    totalChanged(total());
+    if(m_payouts != val) {
+        m_payouts = val;
+        logPropertyChanged(m_payouts, "payouts");
+        payoutsChanged(m_payouts);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setChecks(float val) {
-    m_checks = val;
-    checksChanged(m_checks);
-    totalChanged(total());
+    if(m_checks != val) {
+        m_checks = val;
+        logPropertyChanged(m_checks, "checks");
+        checksChanged(m_checks);
+        totalChanged(total());
+    }
 }
 void CashDrawer::setGiftCards(float val) {
-    m_giftCards = val;
-    giftCardsChanged(m_giftCards);
-    totalChanged(total());
+    if(m_giftCards != val) {
+        m_giftCards = val;
+        logPropertyChanged(m_giftCards, "giftCards");
+        giftCardsChanged(m_giftCards);
+        totalChanged(total());
+    }
 }
 float CashDrawer::total() {
     return m_c100s + m_c50s + m_c20s + m_c10s + m_c5s + m_c1s + m_coins + m_payouts + m_checks + m_giftCards;

@@ -9,6 +9,9 @@ class SimpleSerializable : public QObject
     Q_OBJECT
 public:
     explicit SimpleSerializable(QObject *parent = 0);
+
+    virtual QStringList updatePrefix() = 0;
+
     static QString escapeString(QString val);
     static QString unEscapeString(QString val);
     static QString serializeList(QStringList vals);
@@ -16,6 +19,9 @@ public:
 signals:
 
 public slots:
+
+protected:
+    void logPropertyChanged(QVariant value, QString propertyName);
 
 };
 

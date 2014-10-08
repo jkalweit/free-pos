@@ -2,11 +2,12 @@
 #define CASHDRAWER_H
 
 #include <QDateTime>
+#include <QStringList>
 #include <QTextStream>
 #include <QObject>
+#include "SimpleSerializable.h"
 
-
-class CashDrawer : public QObject
+class CashDrawer : public SimpleSerializable
 {
     Q_OBJECT
     Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
@@ -38,6 +39,8 @@ public:
             , float payouts = 0
             , float checks = 0
             , float giftCards = 0);
+
+    virtual QStringList updatePrefix();
 
     void setc100s(quint16 val);
     void setc50s(quint16 val);

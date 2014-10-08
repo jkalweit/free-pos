@@ -11,9 +11,8 @@ Customer::Customer(QObject *parent, quint32 id, quint32 ticketId, QString name) 
 }
 
 
-void Customer::logPropertyChanged(QVariant value, QString propertyName) {
-    QString update = "UpdateCustomer:" + QString::number(m_ticketId) + ":" + QString::number(m_id) + ":" + propertyName + ":"  + escapeString(value.toString());
-    Pos::instance()->appendToHistory(update);
+QStringList Customer::updatePrefix() {
+    return QStringList() << "UpdateCustomer" << QString::number(m_ticketId) << QString::number(m_id);
 }
 
 

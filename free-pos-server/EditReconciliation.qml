@@ -8,29 +8,6 @@ Rectangle {
     property var model
     visible: model ? true : false
 
-//        Camera {
-//            id: camera
-
-//            imageCapture {
-//                onImageCaptured: {
-//                    // Show the preview in an Image
-//                    //photoPreview.source = preview
-//                    console.log("Captured image");
-//                }
-//            }
-//        }
-
-//        VideoOutput {
-//            source: camera
-//            focus : visible // to receive focus and capture key events when visible
-//            anchors.fill: parent
-
-//            MouseArea {
-//                anchors.fill: parent;
-//                onClicked: camera.imageCapture.capture();
-//            }
-//        }
-
 
     TicketList {
         id: ticketList

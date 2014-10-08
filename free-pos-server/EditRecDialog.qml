@@ -6,7 +6,7 @@ DialogModal {
     id: container
     title: "Edit Reconciliation"
     property var model
-    defaultFocus: editName
+    defaultFocus: editNote
 
     function updateIfDifferent(target, field, val){
         if(target[field].toFixed(2) !== val.toFixed(2))
@@ -16,7 +16,7 @@ DialogModal {
     onVisibleChanged: {
         if(this.visible) {
             //var tmp = model
-            model = model
+            model = pos.selectedRec
             beginningDrawer.model = model.beginningDrawer
             endingDrawer.model = model.endingDrawer
             if(model.name === "Dinner")
@@ -28,13 +28,16 @@ DialogModal {
 
     function close(save) {
         if(save) {
-            model.name = editName.currentText;
-            model.note = editNote.text;
-
+            saveData();
             //beginningDrawer.saveChanges();
             //endingDrawer.saveChanges();
         }
         container.visible = false;
+    }
+
+    function saveData() {
+        model.name = editName.currentText;
+        model.note = editNote.text;
     }
 
     customContent: Column {
@@ -301,9 +304,11 @@ DialogModal {
 
                             confirm.title = "Close Rec?";
                             confirm.text = "";
-                            confirm.yes.connect(function () {
-                                model.closeRec();
-                                container.visible = false;
+                            confirm.yes.connect(function () {                                
+                                saveData();
+                                if(model.closeRec()) {
+                                    container.visible = false;
+                                }
                             });
                             confirm.show();
                         }
