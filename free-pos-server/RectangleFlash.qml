@@ -2,11 +2,22 @@ import QtQuick 2.3
 
 Rectangle {
     id: container
+    border.width: 1
+    border.color: "#DDDDDD"
     signal beforeFlash
     signal clicked
     property string flashColor: "#FF000000"
     property int flashDuration: 100
+    property alias customContent: containerInner.data
 
+    Rectangle {
+        id: containerInner
+        anchors.fill: parent
+        anchors.margins: 10
+//        anchors.leftMargin: 10
+//        anchors.rightMargin: 10
+        color: "transparent"
+    }
 
     MouseArea {
         id: mouseArea

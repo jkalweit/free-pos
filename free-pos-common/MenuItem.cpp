@@ -2,48 +2,31 @@
 #include <QDebug>
 #include "MenuItem.h"
 
-MenuItem::MenuItem(QObject *parent, quint32 id, QString name, QString type, float price) :
-    QObject(parent), m_id(id), m_name(name), m_type(type), m_price(price)
+MenuItem::MenuItem(QObject *parent, quint32 id, quint32 menuCategoryId, QString name, QString type, float price) :
+    SimpleSerializable(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name), m_type(type), m_price(price)
 {
 }
 
+QStringList MenuItem::updatePrefix() {
+    return QStringList() << "UpdateMenuItem" << QString::number(m_id) << QString(m_menuCategoryId);
+}
+
 QString MenuItem::serialize() const {
-    //m_name.replace(":", "");
-    return QString::number(m_id) + ":" + m_name + ":" + m_type + ":" + QString::number(m_price);
+    QStringList vals;
+    vals << QString::number(m_id) << QString::number(m_menuCategoryId) << m_name << m_type << QString::number(m_price);
+    return serializeList(vals);
 }
 
 MenuItem* MenuItem::deserialize(QString serialized, QObject *parent)
 {
-    QStringList split = serialized.split(":");
+    QStringList split = deserializeList(serialized);
 
-    quint32 id = split[0].toInt();
-    QString name = split[1];
-    QString type = split[2];
-    float price = split[3].toFloat();
+    quint32 id = split[0].toUInt();
+    quint32 menuCategoryId = split[1].toUInt();
+    QString name = split[2];
+    QString type = split[3];
+    float price = split[4].toFloat();
 
-    MenuItem *obj = new MenuItem(parent, id, name, type, price);
+    MenuItem *obj = new MenuItem(parent, id, menuCategoryId, name, type, price);
     return obj;
 }
-
-QTextStream& operator<<(QTextStream& stream, const MenuItem& obj) {
-    stream << obj.serialize() << endl;
-    return stream;
-}
-QTextStream& operator>>(QTextStream& stream, MenuItem& obj) {
-
-    QString line = stream.readAll();
-    qDebug() << "Got line: " << line;
-    if(line.length() <= 1){
-        qDebug() << "Empty line.";
-        return stream;
-    }
-    MenuItem* obj2 = MenuItem::deserialize(line);
-    obj.m_id = obj2->m_id;
-    obj.m_name = obj2->m_name;
-    obj.m_type = obj2->m_type;
-    obj.m_price = obj2->m_price;
-
-    return stream;
-}
-
-

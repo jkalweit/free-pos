@@ -11,6 +11,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QMessageBox>
+#include <QDateTime>
 
 
 Pos* Pos::s_instance = nullptr;
@@ -34,21 +35,26 @@ Pos::Pos(QObject *parent) :
 {
 }
 
-void Pos::readHistory() {
+void Pos::readHistory(QString filename) {
 
     m_isHistoryDisabled = true;
 
     QDir().mkdir("data");
 
-    QFile file("./data/currRec.txt");
+    QFile file("./data/" + filename);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
 
     while(!in.atEnd()) {
         QString line = in.readLine();
         int delimit = line.indexOf(":");
-        QString command = line.mid(0, delimit);
-        QString payload = line.mid(delimit+1, line.length() - delimit);
+        QString timestamp = line.mid(0, delimit);
+        Q_UNUSED(timestamp);
+        QString theRest = line.mid(delimit+1, line.length() - delimit);
+        delimit = theRest.indexOf(":");
+        QString command = theRest.mid(0, delimit);
+        QString payload = theRest.mid(delimit+1, line.length() - delimit);
+        QStringList split = SimpleSerializable::deserializeList(payload);
 
         if(command == "OpenRec") {
             qDebug() << "Open new rec" << payload;
@@ -67,7 +73,6 @@ void Pos::readHistory() {
                 qDebug() << "Ticket does not exist.";
         } else if(command == "AddOrderItem") {
             qDebug() << "AddOrderItem: " << payload;
-
             OrderItem *i = OrderItem::deserialize(payload);
             Ticket *ticket = m_selectedRec->getTicket(i->property("ticketId").toInt());
             if(!ticket) {
@@ -82,14 +87,12 @@ void Pos::readHistory() {
             customer->addOrderItem(i);
         } else if (command == "UpdateReconciliation") {
             qDebug() << "UpdateReconciliation: " << payload;
-            QStringList split = SimpleSerializable::deserializeList(payload);
             //quint32 recId = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
             m_selectedRec->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateCashDrawer") {
             qDebug() << "UpdateCashDrawer: " << payload;
-            QStringList split = SimpleSerializable::deserializeList(payload);
             //quint32 recId = split[0].toUInt();
             quint32 cashDrawerId = split[0].toUInt();
             QString property = split[1];
@@ -100,8 +103,7 @@ void Pos::readHistory() {
                 m_selectedRec->endingDrawer()->setProperty(property.toUtf8().data(), value);
             }
         } else if (command == "UpdateTicket") {
-            qDebug() << "UpdateTicket: " << payload;
-            QStringList split = SimpleSerializable::deserializeList(payload);
+            qDebug() << "UpdateTicket: " << payload;            
             quint32 ticketId = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
@@ -109,7 +111,6 @@ void Pos::readHistory() {
             ticket->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateCustomer") {
             qDebug() << "UpdateCustomer: " << payload;
-            QStringList split = SimpleSerializable::deserializeList(payload);
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             QString property = split[2];
@@ -118,7 +119,6 @@ void Pos::readHistory() {
             customer->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateOrderItem") {
             qDebug() << "UpdateOrderItem: " << payload;
-            QStringList split = SimpleSerializable::deserializeList(payload);
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             quint32 orderItemId = split[2].toUInt();
@@ -126,6 +126,26 @@ void Pos::readHistory() {
             QString value = split[4];
             OrderItem* orderItem = m_selectedRec->getTicket(ticketId)->getCustomer(customerId)->getOrderItem(orderItemId);
             orderItem->setProperty(property.toUtf8().data(), value);
+        } else if (command == "AddMenu") {
+            qDebug() << "AddMenu: " << payload;
+            //quint32 id = split[0].toUInt();
+            m_selectedMenu = new Menu(this);
+            Pos::instance()->addMenu(m_selectedMenu);
+            selectedMenuChanged(m_selectedMenu);
+        } else if(command == "AddMenuCategory") {
+            qDebug() << "AddMenuCategory: " << payload;
+            quint32 id = split[0].toUInt();
+            QString name = split[1];
+            m_selectedMenu->addCategory(new MenuCategory(this, id, name));
+        } else if(command == "AddMenuItem") {
+            qDebug() << "AddMenuItem: " << payload;
+            quint32 id = split[0].toUInt();
+            quint32 menuCategoryId = split[1].toUInt();
+            QString name = split[2];
+            QString type = split[3];
+            float price = split[4].toFloat();
+            MenuCategory *category = m_selectedMenu->getMenuCategory(menuCategoryId);
+            category->addMenuItem(new MenuItem(this, id, menuCategoryId, name, type, price));
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }
@@ -137,14 +157,25 @@ void Pos::readHistory() {
     m_isHistoryDisabled = false;
 }
 
+
+
 void Pos::appendToHistory(QString item) {
     if(m_isHistoryDisabled)
         return;
+    appendToFile(item, "currRec.txt");
+}
 
-    QFile file("./data/currRec.txt");
+void Pos::appendToMenuHistory(QString item) {
+    if(m_isHistoryDisabled)
+        return;
+    appendToFile(item, "currMenu.txt");
+}
+
+void Pos::appendToFile(QString item, QString filename) {
+    QFile file("./data/" + filename);
     file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&file);
-    out << item << endl;
+    out << SimpleSerializable::escapeString(QDateTime::currentDateTime().toString()) << ":" << item << endl;
     file.close();
 }
 
@@ -198,9 +229,9 @@ void Pos::addReconciliation(Reconciliation *rec) {
 
 void Pos::addTestData() {
 
-    m_selectedMenu = new Menu(this);
-    addMenu(m_selectedMenu);
-    selectedMenuChanged(m_selectedMenu);
+//    m_selectedMenu = new Menu(this);
+//    addMenu(m_selectedMenu);
+//    selectedMenuChanged(m_selectedMenu);
 
 //    m_selectedRec = openNewRec();
 //    selectedRecChanged(m_selectedRec);
@@ -232,30 +263,30 @@ void Pos::addTestData() {
 
 
 
-#ifdef QT_DEBUG
-    QFile file("../../free-pos/free-pos-server/menu.json");
-#else
-    QFile file("menu.json");
-#endif
+//#ifdef QT_DEBUG
+//    QFile file("../../free-pos/free-pos-server/menu.json");
+//#else
+//    QFile file("menu.json");
+//#endif
 
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Could not open menu file" << endl;
-    }
+//    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+//        qDebug() << "Could not open menu file" << endl;
+//    }
 
-    QJsonDocument json = QJsonDocument::fromJson(file.readAll());
-    QJsonObject menu = json.object()["categories"].toObject();
-    QJsonObject catObj;
-    QJsonObject itemObj;
-    MenuCategory* newCat;
-    //    cat->addMenuItem("Bud Light", "Alcohol", 2.75);
+//    QJsonDocument json = QJsonDocument::fromJson(file.readAll());
+//    QJsonObject menu = json.object()["categories"].toObject();
+//    QJsonObject catObj;
+//    QJsonObject itemObj;
+//    MenuCategory* newCat;
 
-    for(QJsonValue cat : menu) {
-        catObj = cat.toObject();
-        //qDebug() << "Adding: " << catObj["name"].toString();
-        newCat = m_selectedMenu->addCategory(catObj["name"].toString());
-        for(QJsonValue item : catObj["menuitems"].toObject()) {
-            itemObj = item.toObject();
-            newCat->addMenuItem(itemObj["name"].toString(), itemObj["class"].toString(), itemObj["price"].toString().toFloat());
-        }
-    }
+
+//    for(QJsonValue cat : menu) {
+//        catObj = cat.toObject();
+//        //qDebug() << "Adding: " << catObj["name"].toString();
+//        newCat = m_selectedMenu->addCategory(catObj["name"].toString());
+//        for(QJsonValue item : catObj["menuitems"].toObject()) {
+//            itemObj = item.toObject();
+//            newCat->addMenuItem(itemObj["name"].toString(), itemObj["class"].toString(), itemObj["price"].toString().toFloat());
+//        }
+//    }
 }

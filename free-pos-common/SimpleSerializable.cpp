@@ -12,11 +12,11 @@ void SimpleSerializable::logPropertyChanged(QVariant value, QString propertyName
 }
 
 QString SimpleSerializable::escapeString(QString val) {
-    return val.replace("\n", "\\n").replace(":", "\\colon");
+    return val.replace("\n", "\\n").replace(":", "\\!");
 }
 
 QString SimpleSerializable::unEscapeString(QString val) {
-    return val.replace("\\n", "\n").replace("\\colon", ":");
+    return val.replace("\\n", "\n").replace("\\!", ":");
 }
 
 QString SimpleSerializable::serializeList(QStringList vals) {

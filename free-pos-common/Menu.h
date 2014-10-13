@@ -19,10 +19,9 @@ public:
     void addCategory(MenuCategory *category);
     QQmlListProperty<MenuCategory> categories();
 
-    //void addItem(MenuItem* item);
-
     MenuCategory* selectedCategory();
     void setSelectedCategory(MenuCategory *category);
+    MenuCategory* getMenuCategory(quint32 id);
 
 signals:
     void categoriesChanged(QQmlListProperty<MenuCategory>);

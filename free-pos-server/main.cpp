@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
 
     Pos *pos = Pos::instance();    
     pos->readHistory();
+    pos->readHistory("currMenu.txt");
     pos->addTestData();
 
     QQmlApplicationEngine engine;    

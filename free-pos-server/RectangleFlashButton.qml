@@ -7,10 +7,10 @@ RectangleFlash {
     property alias textColor: buttonText.color
     property int verticalMargin: 10
 
-    Text {
+    customContent: Text {
         id: buttonText
         anchors.left: parent.left
-        anchors.leftMargin: 5
+        //anchors.leftMargin: 5
         anchors.verticalCenter: parent.verticalCenter
     }
 }

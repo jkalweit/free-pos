@@ -1,20 +1,28 @@
 #include <QMetaProperty>
 #include <QDebug>
 #include "MenuCategory.h"
+#include "Pos.h"
 
 MenuCategory::MenuCategory(QObject *parent, quint32 id, QString name) :
     QObject(parent), m_id(id), m_name(name), m_currentMenuItemId(0)
 {
 }
 
+QStringList MenuCategory::updatePrefix() {
+    return QStringList() << "UpdateMenuCategory" << QString::number(m_id);
+}
+
 MenuItem* MenuCategory::addMenuItem(QString name, QString type, float price) {
-    MenuItem* item = new MenuItem(this, ++m_currentMenuItemId, name, type, price);
+    MenuItem* item = new MenuItem(this, ++m_currentMenuItemId, m_id, name, type, price);
     addMenuItem(item);
     return item;
 }
 
 void MenuCategory::addMenuItem(MenuItem *menuItem) {
     m_menuItems.append(menuItem);
+    if(menuItem->property("id").toUInt() > m_currentMenuItemId)
+        m_currentMenuItemId = menuItem->property("id").toUInt();
+    Pos::instance()->appendToMenuHistory("AddMenuItem:" + menuItem->serialize());
     menuItemsChanged(menuItems());
 }
 
@@ -37,22 +45,4 @@ MenuCategory* MenuCategory::deserialize(QString serialized, QObject *parent)
     return obj;
 }
 
-QTextStream& operator<<(QTextStream& stream, const MenuCategory& obj) {
-    stream << obj.serialize() << endl;
-    return stream;
-}
-QTextStream& operator>>(QTextStream& stream, MenuCategory& obj) {
-
-    QString line = stream.readAll();
-    qDebug() << "Got line: " << line;
-    if(line.length() <= 1){
-        qDebug() << "Empty line.";
-        return stream;
-    }
-    MenuCategory* obj2 = MenuCategory::deserialize(line);
-    obj.m_id = obj2->m_id;
-    obj.m_name = obj2->m_name;
-
-    return stream;
-}
 

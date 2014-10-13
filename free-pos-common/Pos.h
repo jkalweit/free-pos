@@ -21,7 +21,8 @@ public:
 
     explicit Pos(QObject *parent = 0);
 
-    void readHistory();
+    void readHistory(QString filename = "currRec.txt");
+    void readMenuHistory(QString filename = "currMenu.txt");
 
     QQmlListProperty<Menu> menus();
     void addMenu(Menu *menu);
@@ -30,7 +31,8 @@ public:
     Q_INVOKABLE Reconciliation* openNewRec();
     bool closeCurrentRec();
     void addReconciliation(Reconciliation *rec);
-    void appendToHistory(QString item);    
+    void appendToHistory(QString item);
+    void appendToMenuHistory(QString item);
     void addTestData();
 
 signals:
@@ -50,6 +52,7 @@ private:
     QList<Reconciliation*> m_reconciliations;
     Reconciliation* m_selectedRec;
 
+    void appendToFile(QString item, QString filename);
 };
 
 #endif // POS_H

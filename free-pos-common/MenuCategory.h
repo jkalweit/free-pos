@@ -1,7 +1,6 @@
 #ifndef MENUCATEGORY_H
 #define MENUCATEGORY_H
 
-#include <QTextStream>
 #include <QObject>
 #include <QQmlListProperty>
 #include "MenuItem.h"
@@ -15,15 +14,14 @@ class MenuCategory : public QObject
 public:
     explicit MenuCategory(QObject *parent = 0, quint32 id = 0, QString name = "");
 
+    virtual QStringList updatePrefix();
+
     QQmlListProperty<MenuItem> menuItems();
     Q_INVOKABLE MenuItem* addMenuItem(QString name, QString type, float price);
     void addMenuItem(MenuItem *menuItem);
 
     QString serialize() const;
     static MenuCategory* deserialize(QString serialized, QObject *parent = 0);
-
-    friend QTextStream& operator<<(QTextStream& stream, const MenuCategory& obj);
-    friend QTextStream& operator>>(QTextStream& stream, MenuCategory& obj);
 
 signals:
     void idChanged(quint32);

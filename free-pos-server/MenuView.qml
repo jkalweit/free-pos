@@ -18,60 +18,57 @@ Rectangle {
         color: "#33FFFFFF"
 
 
-        Column {
-            id: menuItemControls
-            width: parent.width
-            spacing: 2
+//        Column {
+//            id: menuItemControls
+//            width: parent.width
+//            spacing: 2
 
-            Row {
-                TextField {
-                    id: newMenuItemName
-                    maximumLength: 20
-                    width: menuItems.width - newMenuItemPrice.width
-                    placeholderText: qsTr("Menu item name")
-                    onAccepted: {
-                        if(menu.selectedCategory) {
-                            if(menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", newMenuItemPrice.text)) {
-                                newMenuItemName.text = "";
-                                newMenuItemPrice.text = "";
-                            }
-                        }
-                    }
+//            Row {
+//                TextField {
+//                    id: newMenuItemName
+//                    maximumLength: 20
+//                    width: menuItems.width - newMenuItemPrice.width
+//                    placeholderText: qsTr("Menu item name")
+//                    onAccepted: {
+//                        if(menu.selectedCategory) {
+//                            if(menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", newMenuItemPrice.text)) {
+//                                newMenuItemName.text = "";
+//                                newMenuItemPrice.text = "";
+//                            }
+//                        }
+//                    }
 
-                    onActiveFocusChanged: {
-                        if(this.focus){
-                            this.selectAll();
-                        }
-                    }
-                }
-                TextField {
-                    id: newMenuItemPrice
-                    width: 75
-                    placeholderText: qsTr("Price")
-                    onAccepted: {
-                        if(menu.selectedCategory) {
-                            if(menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", newMenuItemPrice.text)) {
-                                newMenuItemName.text = "";
-                                newMenuItemPrice.text = "";
-                            }
-                        }
-                    }
+//                    onActiveFocusChanged: {
+//                        if(this.focus){
+//                            this.selectAll();
+//                        }
+//                    }
+//                }
+//                TextField {
+//                    id: newMenuItemPrice
+//                    width: 75
+//                    placeholderText: qsTr("Price")
+//                    onAccepted: {
+//                        if(menu.selectedCategory) {
+//                            if(menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", newMenuItemPrice.text)) {
+//                                newMenuItemName.text = "";
+//                                newMenuItemPrice.text = "";
+//                            }
+//                        }
+//                    }
 
-                    onActiveFocusChanged: {
-                        if(this.focus){
-                            this.selectAll();
-                        }
-                    }
-                }
-            }
-
-
-
-        }
+//                    onActiveFocusChanged: {
+//                        if(this.focus){
+//                            this.selectAll();
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         ListView {
             width: parent.width
-            anchors.top: menuItemControls.bottom
+            anchors.top: parent.top
             anchors.bottom: menuItems.bottom
             model: menu && menu.selectedCategory ? menu.selectedCategory.menuItems : 0
             clip: true
@@ -119,32 +116,32 @@ Rectangle {
         width: parent.width / 2
         color: "#33FFFFFF"
 
-        Column {
-            id: menuCategoryControls
-            width: parent.width
-            spacing: 2
+//        Column {
+//            id: menuCategoryControls
+//            width: parent.width
+//            spacing: 2
 
-            TextField {
-                id: newMenuCategoryName
-                maximumLength: 32
-                width: parent.width
-                placeholderText: qsTr("Category name")
-                onAccepted: {
-                    menu.addCategory(newMenuCategoryName.text);
-                    newMenuCategoryName.text = ""
-                }
+//            TextField {
+//                id: newMenuCategoryName
+//                maximumLength: 32
+//                width: parent.width
+//                placeholderText: qsTr("Category name")
+//                onAccepted: {
+//                    menu.addCategory(newMenuCategoryName.text);
+//                    newMenuCategoryName.text = ""
+//                }
 
-                onActiveFocusChanged: {
-                    if(this.focus){
-                        this.selectAll();
-                    }
-                }
-            }
-        }
+//                onActiveFocusChanged: {
+//                    if(this.focus){
+//                        this.selectAll();
+//                    }
+//                }
+//            }
+//        }
 
         ListView {
             width: parent.width
-            anchors.top: menuCategoryControls.bottom
+            anchors.top: parent.top // menuCategoryControls.bottom
             anchors.bottom: menuCategories.bottom
             model: container.menu ? container.menu.categories : 0
             clip: true
