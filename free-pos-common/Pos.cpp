@@ -200,6 +200,10 @@ Reconciliation* Pos::openNewRec() {
     return rec;
 }
 
+Reconciliation* Pos::selectedRec() {
+    return m_selectedRec;
+}
+
 bool Pos::closeCurrentRec() {
     if(!m_selectedRec) {
         qDebug() << "No current rec.";
@@ -226,6 +230,8 @@ void Pos::addReconciliation(Reconciliation *rec) {
     m_reconciliations.append(rec);
     reconciliationsChanged(reconciliations());
 }
+
+
 
 void Pos::addTestData() {
 

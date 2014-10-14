@@ -2,7 +2,6 @@
 #define RECONCILIATION_H
 
 #include <QDateTime>
-#include <QTextStream>
 #include <QList>
 #include <QObject>
 #include <QQmlListProperty>
@@ -57,6 +56,7 @@ public:
     void setSelectedTicket(Ticket *ticket);
     Ticket* selectedTicket();
 
+
     QString fileName();
 
     float foodTotal();
@@ -84,11 +84,10 @@ public:
 
     Ticket* getTicket(quint32 id);
 
+    Q_INVOKABLE void print();
+
     QString serialize() const;
     static Reconciliation* deserialize(QString serialized, QObject *parent = 0);
-
-    friend QTextStream& operator<<(QTextStream& stream, const Reconciliation& obj);
-    friend QTextStream& operator>>(QTextStream& stream, Reconciliation& obj);
 
 signals:
     void idChanged(quint32);

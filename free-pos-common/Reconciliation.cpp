@@ -1,5 +1,8 @@
 #include "Reconciliation.h"
 
+#include <QPainter>
+#include <QPrinter>
+#include <QFont>
 #include <QMetaProperty>
 #include <QDebug>
 #include "Pos.h"
@@ -273,21 +276,138 @@ Reconciliation* Reconciliation::deserialize(QString serialized, QObject *parent)
     return obj;
 }
 
-QTextStream& operator<<(QTextStream& stream, const Reconciliation& obj) {
-    stream << obj.serialize() << endl;
-    return stream;
-}
-QTextStream& operator>>(QTextStream& stream, Reconciliation& obj) {
 
-    QString line = stream.readAll();
-    qDebug() << "Got line: " << line;
-    if(line.length() <= 1){
-        qDebug() << "Empty line.";
-        return stream;
+
+void Reconciliation::print() {
+
+    QPrinter printer;
+
+
+    printer.setFullPage(true);
+    printer.setOutputFormat(printer.PdfFormat);
+    printer.setOutputFileName("reconciliation.pdf");
+
+    qreal currentX = 20;
+    qreal currentY = 0;
+    qreal lineSpacing = 3;
+    qreal width = 232;
+
+    printer.setPaperSize(QSizeF(72, 500), QPrinter::Millimeter);
+    printer.setPageMargins(0, 0, 0, 0, QPrinter::Millimeter);
+
+
+    QPainter painter;
+    painter.begin(&printer);
+
+    QRectF textRect(currentX, currentY, width, 500);
+    QRectF bounding;
+
+    QFont font;
+    font.setPixelSize(12);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignHCenter, "The Coal Yard", &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + lineSpacing);
+    font.setPixelSize(14);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignHCenter, "Reconciliation", &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + lineSpacing);
+    font.setPixelSize(16);
+    painter.setFont(font);
+    font.setBold(true);
+    painter.setFont(font);
+    painter.drawText(textRect, Qt::AlignHCenter, m_openedStamp.toString("ddd MM/dd/yyyy"), &bounding);
+    textRect.setY(textRect.y() + bounding.height() + lineSpacing);
+    painter.drawText(textRect, Qt::AlignHCenter, m_name, &bounding);
+    font.setBold(false);
+
+    textRect.setY(textRect.y() + bounding.height() + 20);
+
+    font.setPixelSize(12);
+    painter.setFont(font);
+    textRect.setWidth(width/2 + 20);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "End Drawer:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(m_endingDrawer->total(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "- Beg Drawer:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(m_beginningDrawer->total(), 'f', 2), &bounding);    
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "+ Payouts:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(m_endingDrawer->property("payouts").toFloat(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "= Cash Take:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(cashTotalActual(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "+ Checks:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(m_endingDrawer->property("checks").toFloat(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "+ Gift Cards:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(m_endingDrawer->property("giftCards").toFloat(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "+ Credit Cards:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(m_creditCardTotalActual, 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "+ Credit Tips:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(m_creditCardTotalTips, 'f', 2), &bounding);
+
+
+
+
+
+    textRect.setX(width/2 + 40);
+    textRect.setWidth(width/2 - 20);
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignRight, "Food", &bounding);
+    textRect.setWidth(width/2 - 65);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(foodTotal(), 'f', 2), &bounding);
+
+    textRect.setWidth(width/2 - 20);
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignRight, "+ Tax", &bounding);
+    textRect.setWidth(width/2 - 65);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(taxTotal(), 'f', 2), &bounding);
+
+    textRect.setWidth(width/2 - 20);
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignRight, "+ Bar", &bounding);
+    textRect.setWidth(width/2 - 65);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(barTotal(), 'f', 2), &bounding);
+
+    textRect.setWidth(width/2 - 20);
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignRight, "= Sales", &bounding);
+    textRect.setWidth(width/2 - 65);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(total(), 'f', 2), &bounding);
+    textRect.setX(currentX);
+    textRect.setWidth(width/2);
+    painter.drawText(textRect, Qt::AlignLeft, "= Total Take:", &bounding);
+    painter.drawText(textRect, Qt::AlignRight, QString::number(takeTotalActual(), 'f', 2), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 5);
+    painter.drawText(textRect, Qt::AlignLeft, "Discrepancy:", &bounding);
+    float discrepancy = discrepancyActual();
+    if(discrepancy < 0) {
+        textRect.setX(width/2 + 40);
+        textRect.setWidth(width/2 - 65);
+        painter.drawText(textRect, Qt::AlignRight, QString::number(discrepancy * -1, 'f', 2), &bounding);
+    } else {
+        painter.drawText(textRect, Qt::AlignRight, QString::number(discrepancy, 'f', 2), &bounding);
     }
-    Reconciliation* obj2 = Reconciliation::deserialize(line);
-    obj.m_id = obj2->m_id;
-    obj.m_name = obj2->m_name;
 
-    return stream;
+
+
+    painter.end();
+
 }
+
+

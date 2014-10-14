@@ -292,7 +292,13 @@ DialogModal {
 
                 Row {
                     Button {
-                        width: 225
+                        width: 120
+                        text: "Print Rec"
+                        onClicked: model.print()
+                    }
+
+                    Button {
+                        width: 100
                         text: "Close Rec"
                         onClicked: {
                             if(model.hasOpenTickets()) {

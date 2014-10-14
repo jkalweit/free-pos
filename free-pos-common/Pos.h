@@ -13,7 +13,7 @@ class Pos : public QObject
     Q_PROPERTY(QQmlListProperty<Menu> menus READ menus NOTIFY menusChanged)
     Q_PROPERTY(Menu* selectedMenu MEMBER m_selectedMenu NOTIFY selectedMenuChanged)
     Q_PROPERTY(QQmlListProperty<Reconciliation> reconciliations READ reconciliations NOTIFY reconciliationsChanged)
-    Q_PROPERTY(Reconciliation* selectedRec MEMBER m_selectedRec NOTIFY selectedRecChanged)    
+    Q_PROPERTY(Reconciliation* selectedRec MEMBER m_selectedRec READ selectedRec NOTIFY selectedRecChanged)
 
 public:    
 
@@ -29,6 +29,7 @@ public:
 
     QQmlListProperty<Reconciliation> reconciliations();
     Q_INVOKABLE Reconciliation* openNewRec();
+    Q_INVOKABLE Reconciliation* selectedRec();
     bool closeCurrentRec();
     void addReconciliation(Reconciliation *rec);
     void appendToHistory(QString item);
