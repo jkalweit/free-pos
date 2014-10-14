@@ -35,8 +35,8 @@ Rectangle {
         }
     }
 
-    Keys.onReturnPressed: this.close(true)
-    Keys.onEscapePressed: this.close(false)
+    Keys.onReturnPressed: this.close ? this.close(true) : false
+    Keys.onEscapePressed: this.close ? this.close(false) : false
     Keys.priority: Keys.BeforeItem
 
     Rectangle {

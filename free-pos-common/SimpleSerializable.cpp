@@ -11,6 +11,10 @@ void SimpleSerializable::logPropertyChanged(QVariant value, QString propertyName
     Pos::instance()->appendToHistory(serializeList(updatePrefix() << propertyName << escapeString(value.toString())));
 }
 
+void SimpleSerializable::logMenuPropertyChanged(QVariant value, QString propertyName) {
+    Pos::instance()->appendToMenuHistory(serializeList(updatePrefix() << propertyName << escapeString(value.toString())));
+}
+
 QString SimpleSerializable::escapeString(QString val) {
     return val.replace("\n", "\\n").replace(":", "\\!");
 }

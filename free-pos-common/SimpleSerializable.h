@@ -22,6 +22,7 @@ public slots:
 
 protected:
     void logPropertyChanged(QVariant value, QString propertyName);
+    void logMenuPropertyChanged(QVariant value, QString propertyName);
 
 };
 
