@@ -158,22 +158,22 @@ void Ticket::printKitchen() {
 
 
     printer.setFullPage(true);
-    printer.setOutputFormat(printer.PdfFormat);
-    printer.setOutputFileName("rkitchen.pdf");
+//    printer.setOutputFormat(printer.PdfFormat);
+//    printer.setOutputFileName("rkitchen.pdf");
 
     qreal currentX = 20;
     qreal currentY = 0;
     qreal lineSpacing = 2;
     qreal width = 232;
 
-    printer.setPaperSize(QSizeF(72, 500), QPrinter::Millimeter);
+    printer.setPaperSize(QSizeF(72, 5000), QPrinter::Millimeter);
     printer.setPageMargins(0, 0, 0, 0, QPrinter::Millimeter);
 
 
     QPainter painter;
     painter.begin(&printer);
 
-    QRectF textRect(currentX, currentY, width, 500);
+    QRectF textRect(currentX, currentY, width, 5000);
     QRectF bounding;
 
     QFont fontNormal;
@@ -210,7 +210,7 @@ void Ticket::printKitchen() {
         painter.drawText(textRect, Qt::AlignLeft, c->property("name").toString(), &bounding);
         textRect.setY(textRect.y() + 5);
         for(OrderItem *o : c->orderItemsList()) {
-            if(o->property("type").toString() != "Alcohol") {
+            if(!o->property("deleted").toBool() && o->property("type").toString() != "Alcohol") {
                 textRect.setX(currentX + 20);
                 textRect.setWidth(width - 20);
                 textRect.setY(textRect.y() + bounding.height() + lineSpacing + 5);
@@ -250,22 +250,22 @@ void Ticket::printReceipt() {
 
 
     printer.setFullPage(true);
-    printer.setOutputFormat(printer.PdfFormat);
-    printer.setOutputFileName("receipt.pdf");
+//    printer.setOutputFormat(printer.PdfFormat);
+//    printer.setOutputFileName("receipt.pdf");
 
     qreal currentX = 20;
     qreal currentY = 0;
     qreal lineSpacing = 3;
     qreal width = 232;
 
-    printer.setPaperSize(QSizeF(72, 500), QPrinter::Millimeter);
+    printer.setPaperSize(QSizeF(72, 5000), QPrinter::Millimeter);
     printer.setPageMargins(0, 0, 0, 0, QPrinter::Millimeter);
 
 
     QPainter painter;
     painter.begin(&printer);
 
-    QRectF textRect(currentX, currentY, width, 500);
+    QRectF textRect(currentX, currentY, width, 5000);
     QRectF bounding;
 
     QFont font;
@@ -298,14 +298,16 @@ void Ticket::printReceipt() {
         painter.drawText(textRect, Qt::AlignLeft, c->property("name").toString(), &bounding);
 
         for(OrderItem *o : c->orderItemsList()) {
-            textRect.setX(currentX + 20);
-            textRect.setWidth(width - 20);
-            textRect.setY(textRect.y() + bounding.height() + lineSpacing);
-            painter.drawText(textRect, Qt::AlignLeft, o->property("quantity").toString(), &bounding);
-            textRect.setX(currentX + 50);
-            textRect.setWidth(width - 50);
-            painter.drawText(textRect, Qt::AlignLeft, o->property("name").toString(), &bounding);
-            painter.drawText(textRect, Qt::AlignRight, QString::number(o->property("total").toDouble(), 'f', 2), &bounding);
+            if(!o->property("deleted").toBool()) {
+                textRect.setX(currentX + 20);
+                textRect.setWidth(width - 20);
+                textRect.setY(textRect.y() + bounding.height() + lineSpacing);
+                painter.drawText(textRect, Qt::AlignLeft, o->property("quantity").toString(), &bounding);
+                textRect.setX(currentX + 50);
+                textRect.setWidth(width - 50);
+                painter.drawText(textRect, Qt::AlignLeft, o->property("name").toString(), &bounding);
+                painter.drawText(textRect, Qt::AlignRight, QString::number(o->property("subTotal").toDouble(), 'f', 2), &bounding);
+            }
         }
     }
 

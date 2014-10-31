@@ -284,8 +284,8 @@ void Reconciliation::print() {
 
 
     printer.setFullPage(true);
-    printer.setOutputFormat(printer.PdfFormat);
-    printer.setOutputFileName("reconciliation.pdf");
+//    printer.setOutputFormat(printer.PdfFormat);
+//    printer.setOutputFileName("reconciliation.pdf");
 
     qreal currentX = 20;
     qreal currentY = 0;
@@ -321,11 +321,14 @@ void Reconciliation::print() {
     textRect.setY(textRect.y() + bounding.height() + lineSpacing);
     painter.drawText(textRect, Qt::AlignHCenter, m_name, &bounding);
     font.setBold(false);
+    font.setPixelSize(12);
+    painter.setFont(font);
+    textRect.setY(textRect.y() + bounding.height() + lineSpacing);
+    painter.drawText(textRect, Qt::AlignHCenter, m_note, &bounding);
 
     textRect.setY(textRect.y() + bounding.height() + 20);
 
-    font.setPixelSize(12);
-    painter.setFont(font);
+
     textRect.setWidth(width/2 + 20);
 
     textRect.setY(textRect.y() + bounding.height() + 5);
@@ -389,6 +392,8 @@ void Reconciliation::print() {
     textRect.setWidth(width/2 - 65);
     painter.drawText(textRect, Qt::AlignRight, QString::number(total(), 'f', 2), &bounding);
     textRect.setX(currentX);
+
+
     textRect.setWidth(width/2);
     painter.drawText(textRect, Qt::AlignLeft, "= Total Take:", &bounding);
     painter.drawText(textRect, Qt::AlignRight, QString::number(takeTotalActual(), 'f', 2), &bounding);
@@ -397,14 +402,18 @@ void Reconciliation::print() {
     painter.drawText(textRect, Qt::AlignLeft, "Discrepancy:", &bounding);
     float discrepancy = discrepancyActual();
     if(discrepancy < 0) {
-        textRect.setX(width/2 + 40);
-        textRect.setWidth(width/2 - 65);
         painter.drawText(textRect, Qt::AlignRight, QString::number(discrepancy * -1, 'f', 2), &bounding);
     } else {
+        textRect.setX(width/2 + 40);
+        textRect.setWidth(width/2 - 65);
         painter.drawText(textRect, Qt::AlignRight, QString::number(discrepancy, 'f', 2), &bounding);
     }
 
 
+    painter.setPen(Qt::gray);
+    QPointF lineStart(currentX, bounding.y() + bounding.height() + 20);
+    QPointF lineEnd(currentX + width, lineStart.y());
+    painter.drawLine(lineStart, lineEnd);
 
     painter.end();
 

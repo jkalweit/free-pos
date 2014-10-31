@@ -18,7 +18,7 @@ Rectangle {
         spacing: 2
 
         RectangleFlashButton {
-            text: "Paid Tickets: " + (tickets.showPaid ? "Shown" : "Hidden")
+            text: "Paid Tickets: " + (tickets.showPaid ? "Shown2" : "Hidden")
             onClicked: tickets.showPaid = !tickets.showPaid
         }
 

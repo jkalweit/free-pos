@@ -292,9 +292,14 @@ DialogModal {
 
                 Row {
                     Button {
+                        id: printButton
                         width: 120
                         text: "Print Rec"
-                        onClicked: model.print()
+                        onClicked: {
+                            printButton.forceActiveFocus();
+                            saveData();
+                            model.print();
+                        }
                     }
 
                     Button {

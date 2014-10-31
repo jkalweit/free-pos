@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     pos->readHistory();
     pos->readHistory("currMenu.txt");
     pos->addTestData();
-    pos->selectedRec()->print();
 
     QQmlApplicationEngine engine;    
     engine.rootContext()->setContextProperty("pos", (QObject*)pos);

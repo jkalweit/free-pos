@@ -76,7 +76,7 @@ Rectangle {
             delegate: RectangleFlash {
                 id: menuItemContainer
                 width: menuItems.width
-                height: menuItemName.height + 20
+                height: menuItemName.height + 40
                 color:  "#9575cd"
                 flashColor: "#FFFFFF"
                 border.width: 1
@@ -87,20 +87,23 @@ Rectangle {
                 }
 
 
-                Text {
-                    id: menuItemName
-                    text: modelData.name
-                    color: "#FFFFFF"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                }
-                Text {
-                    text: modelData.price.toFixed(2)
-                    color: "#000000"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
+                customContent: Item {
+                    anchors.fill: parent
+                    Text {
+                        id: menuItemName
+                        text: modelData.name
+                        color: "#FFFFFF"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        //anchors.leftMargin: 5
+                    }
+                    Text {
+                        text: modelData.price.toFixed(2)
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        //anchors.rightMargin: 5
+                    }
                 }
             }
 
