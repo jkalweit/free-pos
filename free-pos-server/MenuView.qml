@@ -6,7 +6,9 @@ Rectangle {
     id: container
     color: "transparent"
     property var menu
+    property bool editMode: false
     signal menuItemSelected(var menuItem)
+    signal menuCategorySelected(var menuCategory)
 
     Rectangle {
         id: menuItems
@@ -16,7 +18,6 @@ Rectangle {
         anchors.bottom: parent.bottom
         width: parent.width / 2
         color: "#33FFFFFF"
-
 
 //        Column {
 //            id: menuItemControls
@@ -119,46 +120,60 @@ Rectangle {
         width: parent.width / 2
         color: "#33FFFFFF"
 
-//        Column {
-//            id: menuCategoryControls
-//            width: parent.width
-//            spacing: 2
+        Column {
+            id: menuCategoryControls
+            width: parent.width
+            spacing: 2
 
-//            TextField {
-//                id: newMenuCategoryName
-//                maximumLength: 32
-//                width: parent.width
-//                placeholderText: qsTr("Category name")
-//                onAccepted: {
-//                    menu.addCategory(newMenuCategoryName.text);
-//                    newMenuCategoryName.text = ""
-//                }
+            TextField {
+                id: newMenuCategoryName
+                maximumLength: 32
+                width: parent.width
+                placeholderText: qsTr("Category name")
+                onAccepted: {
+                    if(container.editMode) {
+                        menu.addCategory(newMenuCategoryName.text);
+                        newMenuCategoryName.text = "";
+                    }
+                }
 
-//                onActiveFocusChanged: {
-//                    if(this.focus){
-//                        this.selectAll();
-//                    }
-//                }
-//            }
-//        }
+                onActiveFocusChanged: {
+                    if(this.focus){
+                        this.selectAll();
+                    }
+                }
+            }
+        }
 
         ListView {
             width: parent.width
-            anchors.top: parent.top // menuCategoryControls.bottom
+            anchors.top: menuCategoryControls.bottom
             anchors.bottom: menuCategories.bottom
             model: container.menu ? container.menu.categories : 0
             clip: true
 
             delegate: RectangleFlashButton {
-                color: "#7e57c2" //  menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DD66FF" : "#AA00DD"
+                visible: {
+                    if(!container.editMode && modelData.isDisabled)
+                        return false;
+                    var filter = newMenuCategoryName.text.trim().toUpperCase()
+                    if(filter.length === 0){
+                        return true;
+                    }
+                    return modelData.name.toUpperCase().indexOf(filter) > -1;
+                }
+
+                color: modelData.isDisabled ? "#AAAAAA" : "#7e57c2"
                 border.color: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#777777"
                 border.width: 2
                 textColor: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#000000"
                 flashColor: "#FFFFFF"
                 text: modelData.name
                 onBeforeFlash: {
-                    menu.selectedCategory = modelData
+                    menu.selectedCategory = modelData;
                 }
+
+                onClicked: menuCategorySelected(modelData);
             }
         }
     }

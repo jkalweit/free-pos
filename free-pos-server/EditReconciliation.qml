@@ -1,5 +1,5 @@
 import QtQuick 2.3
-
+import QtQuick.Controls 1.2
 
 Rectangle {
     id: container
@@ -325,7 +325,8 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.right: recTotals.right
             anchors.rightMargin: 10
-            spacing: 5
+            spacing: 5                        
+
             Rectangle {
                 width: parent.width
                 height: 20
@@ -430,4 +431,157 @@ Rectangle {
         id: editRecDialog
         model: container.model
     }
+
+    RectangleFlashButton {
+        width: 200
+        anchors.right: container.right
+        anchors.rightMargin: 200
+        anchors.bottom: container.bottom
+        text: "Edit Menu"
+        onClicked: editMenuDialog.show()
+    }
+
+    DialogModal {
+        id: editMenuDialog
+        customContent: Column {
+            Text {
+                text: "Edit Menu"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            MenuView {
+                id: editMenuView
+                menu: pos.selectedMenu ? pos.selectedMenu : 0
+                width: 400
+                height: 700
+                editMode: true
+
+                onMenuItemSelected: {
+                    editMenuItem.menuItem = menuItem;
+                    editMenuItem.show();
+                }
+
+                onMenuCategorySelected: {
+                    if(menuCategory === editMenuCategory.menuCategory) {
+                        editMenuCategory.show();
+                    } else {
+                        editMenuCategory.menuCategory = menuCategory;
+                    }
+                }
+            }
+        }
+    }
+    DialogModal {
+        id: editMenuItem
+        property var menuItem
+        property bool isItemDisabled
+
+        onVisibleChanged: {
+            if(editMenuItem.visible) {
+                editMenuItem.menuItem = editMenuItem.menuItem;
+                editMenuItem.isItemDisabled = editMenuItem.menuItem.isDisabled;
+                if(editMenuItem.menuItem.type === "Alcohol") {
+                    editType.currentIndex = 1;
+                } else {
+                    editType.currentIndex = 0;
+                }
+            }
+        }
+
+        function close(save) {
+            if(save) {
+                editMenuItem.menuItem.name = editMenuItemName.text;
+                editMenuItem.menuItem.price = editMenuItemPrice.text;
+                editMenuItem.menuItem.isDisabled = editMenuItem.isItemDisabled;
+                editMenuItem.menuItem.type = editType.currentText;
+            }
+            editMenuItem.visible = false;
+        }
+
+        customContent: Column {
+            Text {
+                text: "Edit Menu Item"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            TextFieldLabeled {
+                id: editMenuItemName
+                label: "Item Name:"
+                text: editMenuItem.menuItem ? editMenuItem.menuItem.name : ""
+            }
+            TextFieldLabeled {
+                id: editMenuItemPrice
+                label: "Price:"
+                text: editMenuItem.menuItem ? editMenuItem.menuItem.price.toFixed(2) : ""
+            }
+            ComboBox {
+                id: editType
+                model: [ "Food", "Alcohol" ]
+            }
+            RectangleFlashButton {
+                text: "Is Disabled: " + (editMenuItem.isItemDisabled ? "Yes" : "No")
+                onClicked: editMenuItem.isItemDisabled = !editMenuItem.isItemDisabled
+            }
+            Row {
+                Button {
+                    text: "Ok"
+                    onClicked: editMenuItem.close(true)
+                }
+                Button {
+                    text: "Cancel"
+                    onClicked: editMenuItem.close(false)
+                }
+            }
+        }
+    }
+
+    DialogModal {
+        id: editMenuCategory
+        property var menuCategory
+        property bool isCategoryDisabled
+
+        onVisibleChanged: {
+            if(editMenuCategory.visible) {
+                editMenuCategory.menuCategory = editMenuCategory.menuCategory;
+                editMenuCategory.isCategoryDisabled = editMenuCategory.menuCategory.isDisabled
+            }
+        }
+
+        function close(save) {
+            if(save) {
+                editMenuCategory.menuCategory.name = editMenuCategoryName.text;
+                editMenuCategory.menuCategory.isDisabled = editMenuCategory.isCategoryDisabled;
+            }
+            editMenuCategory.visible = false;
+        }
+
+        customContent: Column {
+            Text {
+                text: "Edit Menu Category"
+                font.pixelSize: 16
+                font.bold: true
+            }
+
+            TextFieldLabeled {
+                id: editMenuCategoryName
+                label: "Name:"
+                text: editMenuCategory.menuCategory ? editMenuCategory.menuCategory.name : ""
+            }
+            RectangleFlashButton {
+                text: "Is Disabled: " + (editMenuCategory.isCategoryDisabled ? "Yes" : "No")
+                onClicked: editMenuCategory.isCategoryDisabled = !editMenuCategory.isCategoryDisabled
+            }
+            Row {
+                Button {
+                    text: "Ok"
+                    onClicked: editMenuCategory.close(true)
+                }
+                Button {
+                    text: "Cancel"
+                    onClicked: editMenuCategory.close(false)
+                }
+            }
+        }
+    }
+
 }

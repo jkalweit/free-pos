@@ -146,6 +146,22 @@ void Pos::readHistory(QString filename) {
             float price = split[4].toFloat();
             MenuCategory *category = m_selectedMenu->getMenuCategory(menuCategoryId);
             category->addMenuItem(new MenuItem(this, id, menuCategoryId, name, type, price));
+        } else if (command == "UpdateMenuCategory") {
+            qDebug() << "UpdateMenuCategory: " << payload;
+            quint32 menuCategoryId = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            MenuCategory* cat = m_selectedMenu->getMenuCategory(menuCategoryId);
+            cat->setProperty(property.toUtf8().data(), value);
+        } else if (command == "UpdateMenuItem") {
+            qDebug() << "UpdateMenuItem: " << payload;
+            quint32 id = split[0].toUInt();
+            quint32 menuCategoryId = split[1].toUInt();
+            QString property = split[2];
+            QString value = split[3];
+            MenuCategory *cat = m_selectedMenu->getMenuCategory(menuCategoryId);
+            MenuItem *item = cat->getMenuItem(id);
+            item->setProperty(property.toUtf8().data(), value);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }
