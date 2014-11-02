@@ -102,6 +102,52 @@ Ticket* Reconciliation::selectedTicket() {
     return m_selectedTicket;
 }
 
+
+Ticket* Reconciliation::getNextTicket(QString nameFilter, bool showIsPaid) {
+    bool foundSelected = false;
+    Ticket *firstEnabled = nullptr;
+    for(int i = 0; i < m_tickets.length(); i++) {
+        bool isDisabled = !m_tickets[i]->property("customerNames").toString().toUpper().contains(nameFilter.toUpper()) || (m_tickets[i]->property("isPaid").toBool() && !showIsPaid);
+        if(!isDisabled) {
+            if(!m_selectedTicket) {
+                return m_tickets[i];
+            } else if(foundSelected) {
+                return m_tickets[i];
+            } else if(!firstEnabled)
+                firstEnabled = m_tickets[i];
+        }
+        if(m_selectedTicket && (m_tickets[i]->property("id").toUInt() == m_selectedTicket->property("id").toUInt())) {
+            foundSelected = true;
+        }
+    }
+
+    // if we make it here, then just return first !isDisabled ticket, or nullptr
+    return firstEnabled;
+}
+
+Ticket* Reconciliation::getPreviousTicket(QString nameFilter, bool showIsPaid) {
+    bool foundSelected = false;
+    Ticket *firstEnabled = nullptr;
+    for(int i = m_tickets.length() - 1; i >= 0 ; i--) {
+        bool isDisabled = !m_tickets[i]->property("customerNames").toString().toUpper().contains(nameFilter.toUpper()) || (m_tickets[i]->property("isPaid").toBool() && !showIsPaid);
+        if(!isDisabled) {
+            if(!m_selectedTicket) {
+                return m_tickets[i];
+            } else if(foundSelected) {
+                return m_tickets[i];
+            } else if(!firstEnabled)
+                firstEnabled = m_tickets[i];
+        }
+        if(m_selectedTicket && (m_tickets[i]->property("id").toUInt() == m_selectedTicket->property("id").toUInt())) {
+            foundSelected = true;
+        }
+    }
+
+    // if we make it here, then just return first !isDisabled ticket, or nullptr
+    return firstEnabled;
+}
+
+
 QQmlListProperty<Ticket> Reconciliation::tickets() {
     return QQmlListProperty<Ticket>(this, m_tickets);
 }

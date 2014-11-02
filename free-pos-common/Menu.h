@@ -17,11 +17,12 @@ public:
 
     Q_INVOKABLE MenuCategory* addCategory(QString name);
     void addCategory(MenuCategory *category);
-    QQmlListProperty<MenuCategory> categories();
-
+    QQmlListProperty<MenuCategory> categories();    
     MenuCategory* selectedCategory();
     void setSelectedCategory(MenuCategory *category);
-    MenuCategory* getMenuCategory(quint32 id);
+    Q_INVOKABLE MenuCategory* getNextCategory(QString nameFilter);
+    Q_INVOKABLE MenuCategory* getPreviousCategory(QString nameFilter);
+    MenuCategory* getMenuCategory(quint32 id);        
 
 signals:
     void categoriesChanged(QQmlListProperty<MenuCategory>);

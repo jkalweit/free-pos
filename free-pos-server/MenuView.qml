@@ -8,7 +8,7 @@ Rectangle {
     property var menu
     property bool editMode: false
     signal menuItemSelected(var menuItem)
-    signal menuCategorySelected(var menuCategory)
+    signal menuCategorySelected(var menuCategory, var isNew)
 
     Rectangle {
         id: menuItems
@@ -17,34 +17,41 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width / 2
-        color: "#33FFFFFF"
+        color: "#33FFFFFF"        
 
-//        Column {
-//            id: menuItemControls
-//            width: parent.width
-//            spacing: 2
+        function selectCurrentItem() {
+            if(container.menu.selectedCategory && container.menu.selectedCategory.selectedItem) {
+                container.menuItemSelected(container.menu.selectedCategory.selectedItem);
+            }
+        }
 
-//            Row {
-//                TextField {
-//                    id: newMenuItemName
-//                    maximumLength: 20
-//                    width: menuItems.width - newMenuItemPrice.width
-//                    placeholderText: qsTr("Menu item name")
-//                    onAccepted: {
-//                        if(menu.selectedCategory) {
-//                            if(menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", newMenuItemPrice.text)) {
-//                                newMenuItemName.text = "";
-//                                newMenuItemPrice.text = "";
-//                            }
-//                        }
-//                    }
+        Keys.onDownPressed: container.menu.selectedCategory.selectedItem = container.menu.selectedCategory.getNextItem(newMenuItemName.text.trim())
+        Keys.onUpPressed: container.menu.selectedCategory.selectedItem = container.menu.selectedCategory.getPreviousItem(newMenuItemName.text.trim())
+        Keys.onEnterPressed: selectCurrentItem()
 
-//                    onActiveFocusChanged: {
-//                        if(this.focus){
-//                            this.selectAll();
-//                        }
-//                    }
-//                }
+        Column {
+            id: menuItemControls
+            width: parent.width
+            spacing: 2
+
+            Row {
+                TextField {
+                    id: newMenuItemName
+                    maximumLength: 20
+                    width: menuItemControls.width
+                    height: 50
+                    //width: menuItems.width - newMenuItemPrice.width
+                    placeholderText: qsTr("Menu item name")
+                    onAccepted: {
+                        menuItems.selectCurrentItem();
+                    }
+
+                    onActiveFocusChanged: {
+                        if(this.focus){
+                            this.selectAll();
+                        }
+                    }
+                }
 //                TextField {
 //                    id: newMenuItemPrice
 //                    width: 75
@@ -64,12 +71,12 @@ Rectangle {
 //                        }
 //                    }
 //                }
-//            }
-//        }
+            }
+        }
 
         ListView {
             width: parent.width
-            anchors.top: parent.top
+            anchors.top: menuItemControls.bottom
             anchors.bottom: menuItems.bottom
             model: menu && menu.selectedCategory ? menu.selectedCategory.menuItems : 0
             clip: true
@@ -78,12 +85,25 @@ Rectangle {
                 id: menuItemContainer
                 width: menuItems.width
                 height: menuItemName.height + 20
+                border.color: menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
+                border.width: 2
+                //textColor: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#000000"
                 color:  "#9575cd"
                 flashColor: "#FFFFFF"
-                border.width: 1
-                border.color: "#777777"
+
+                visible: {
+                    if(!container.editMode && modelData.isDisabled)
+                        return false;
+                    var filter = newMenuItemName.text.trim().toUpperCase();
+                    if(filter.length === 0){
+                        return true;
+                    }
+                    return modelData.name.toUpperCase().indexOf(filter) > -1;
+                }
 
                 onBeforeFlash: {
+                    newMenuItemName.text = "";
+                    container.menu.selectedCategory.selectedItem = modelData;
                     container.menuItemSelected(modelData);
                 }
 
@@ -117,6 +137,9 @@ Rectangle {
         width: parent.width / 2
         color: "#33FFFFFF"
 
+        Keys.onDownPressed: container.menu.selectedCategory = container.menu.getNextCategory(newMenuCategoryName.text.trim())
+        Keys.onUpPressed: container.menu.selectedCategory = container.menu.getPreviousCategory(newMenuCategoryName.text.trim())
+
         Column {
             id: menuCategoryControls
             width: parent.width
@@ -126,11 +149,14 @@ Rectangle {
                 id: newMenuCategoryName
                 maximumLength: 32
                 width: parent.width
+                height: 50
                 placeholderText: qsTr("Category name")
                 onAccepted: {
                     if(container.editMode) {
-                        menu.addCategory(newMenuCategoryName.text);
+                        var cat = menu.addCategory(newMenuCategoryName.text);
                         newMenuCategoryName.text = "";
+                        console.log("added cat: " + cat.name);
+                        container.menuCategorySelected(cat, true);
                     }
                 }
 
@@ -149,7 +175,14 @@ Rectangle {
             model: container.menu ? container.menu.categories : 0
             clip: true
 
-            delegate: RectangleFlashButton {
+            delegate: RectangleFlashButton {                
+                color: modelData.isDisabled ? "#AAAAAA" : "#7e57c2"
+                border.color: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#777777"
+                border.width: 2
+                textColor: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#000000"
+                flashColor: "#FFFFFF"
+                text: modelData.name
+
                 visible: {
                     if(!container.editMode && modelData.isDisabled)
                         return false;
@@ -160,17 +193,17 @@ Rectangle {
                     return modelData.name.toUpperCase().indexOf(filter) > -1;
                 }
 
-                color: modelData.isDisabled ? "#AAAAAA" : "#7e57c2"
-                border.color: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#777777"
-                border.width: 2
-                textColor: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#000000"
-                flashColor: "#FFFFFF"
-                text: modelData.name
+                hidden: !container.editMode && modelData.isDisabled;
+
                 onBeforeFlash: {
                     menu.selectedCategory = modelData;
                 }
 
-                onClicked: menuCategorySelected(modelData);
+                onClicked: {
+                    newMenuCategoryName.text = "";
+                    newMenuItemName.forceActiveFocus();
+                    menuCategorySelected(modelData, false);
+                }
             }
         }
     }

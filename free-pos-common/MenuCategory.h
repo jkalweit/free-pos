@@ -13,6 +13,7 @@ class MenuCategory : public SimpleSerializable
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QQmlListProperty<MenuItem> menuItems READ menuItems NOTIFY menuItemsChanged)
     Q_PROPERTY(bool isDisabled MEMBER m_isDisabled WRITE setIsDisabled NOTIFY isDisabledChanged)
+    Q_PROPERTY(MenuItem *selectedItem READ selectedItem WRITE setSelectedItem NOTIFY selectedItemChanged)
 public:
     explicit MenuCategory(QObject *parent = 0, quint32 id = 0, QString name = "", bool isDisabled = false);
 
@@ -22,6 +23,10 @@ public:
     Q_INVOKABLE MenuItem* addMenuItem(QString name, QString type, float price);
     void addMenuItem(MenuItem *menuItem);
     MenuItem* getMenuItem(quint32 id);
+    MenuItem* selectedItem();
+    Q_INVOKABLE MenuItem* getNextItem(QString nameFilter);
+    Q_INVOKABLE MenuItem* getPreviousItem(QString nameFilter);
+    void setSelectedItem(MenuItem *item);
 
     void setName(QString name);
     void setIsDisabled(bool isDisabled);
@@ -34,6 +39,7 @@ signals:
     void nameChanged(QString);
     void menuItemsChanged(QQmlListProperty<MenuItem>);
     void isDisabledChanged(bool);
+    void selectedItemChanged(MenuItem*);
 
 public slots:
 
@@ -41,8 +47,9 @@ private:
     quint32 m_id;
     QString m_name;
     quint32 m_currentMenuItemId;
-    QList<MenuItem*> m_menuItems;    
+    QList<MenuItem*> m_menuItems;
     bool m_isDisabled;
+    MenuItem *m_selectedItem;
 };
 
 #endif // MENUCATEGORY_H

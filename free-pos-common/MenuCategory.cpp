@@ -4,7 +4,7 @@
 #include "Pos.h"
 
 MenuCategory::MenuCategory(QObject *parent, quint32 id, QString name, bool isDisabled) :
-    SimpleSerializable(parent), m_id(id), m_name(name), m_currentMenuItemId(0), m_isDisabled(isDisabled)
+    SimpleSerializable(parent), m_id(id), m_name(name), m_currentMenuItemId(0), m_isDisabled(isDisabled), m_selectedItem(nullptr)
 {
 }
 
@@ -39,6 +39,65 @@ MenuItem* MenuCategory::getMenuItem(quint32 id) {
 QQmlListProperty<MenuItem> MenuCategory::menuItems() {
     return QQmlListProperty<MenuItem>(this, m_menuItems);
 }
+
+MenuItem* MenuCategory::selectedItem() {
+    return m_selectedItem;
+}
+
+void MenuCategory::setSelectedItem(MenuItem *item) {
+    if(m_selectedItem != item) {
+        m_selectedItem = item;
+        selectedItemChanged(m_selectedItem);
+    }
+}
+
+MenuItem* MenuCategory::getNextItem(QString nameFilter) {
+    bool foundSelected = false;
+    MenuItem *firstEnabled = nullptr;
+    for(int i = 0; i < m_menuItems.length(); i++) {
+        bool isDisabled = !m_menuItems[i]->property("name").toString().toUpper().contains(nameFilter.toUpper()) || m_menuItems[i]->property("isDisabled").toBool();
+        if(!isDisabled) {
+            if(!m_selectedItem) {
+                return m_menuItems[i];
+            } else if(foundSelected) {
+                return m_menuItems[i];
+            } else if(!firstEnabled)
+                firstEnabled = m_menuItems[i];
+        }
+        if(m_selectedItem && (m_menuItems[i]->property("id").toUInt() == m_selectedItem->property("id").toUInt())) {
+            foundSelected = true;
+        }
+    }
+
+    // if we make it here, then just return first !isDisabled item, or nullptr
+    return firstEnabled;
+}
+
+MenuItem* MenuCategory::getPreviousItem(QString nameFilter) {
+    bool foundSelected = false;
+    MenuItem *firstEnabled = nullptr;
+    for(int i = m_menuItems.length() - 1; i >= 0 ; i--) {
+        bool isDisabled = !m_menuItems[i]->property("name").toString().toUpper().contains(nameFilter.toUpper()) || m_menuItems[i]->property("isDisabled").toBool();
+        if(!isDisabled) {
+            if(!m_selectedItem) {
+                return m_menuItems[i];
+            } else if(foundSelected) {
+                return m_menuItems[i];
+            } else if(!firstEnabled)
+                firstEnabled = m_menuItems[i];
+        }
+        if(m_selectedItem && (m_menuItems[i]->property("id").toUInt() == m_selectedItem->property("id").toUInt())) {
+            foundSelected = true;
+        }
+    }
+
+    // if we make it here, then just return first !isDisabled item, or nullptr
+    return firstEnabled;
+}
+
+
+
+
 
 void MenuCategory::setName(QString name) {
     if(m_name != name.trimmed()) {

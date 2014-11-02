@@ -45,3 +45,47 @@ void Menu::setSelectedCategory(MenuCategory *category) {
         selectedCategoryChanged(m_selectedCategory);
     }
 }
+
+MenuCategory* Menu::getNextCategory(QString nameFilter) {
+    bool foundSelected = false;
+    MenuCategory *firstEnabled = nullptr;
+    for(int i = 0; i < m_categories.length(); i++) {
+        bool isDisabled = !m_categories[i]->property("name").toString().toUpper().contains(nameFilter.toUpper()) || m_categories[i]->property("isDisabled").toBool();
+        if(!isDisabled) {
+            if(!m_selectedCategory) {
+                return m_categories[i];
+            } else if(foundSelected) {
+                return m_categories[i];
+            } else if(!firstEnabled)
+                firstEnabled = m_categories[i];
+        }
+        if(m_selectedCategory && m_categories[i]->property("id").toUInt() == m_selectedCategory->property("id").toUInt()) {
+            foundSelected = true;
+        }
+    }
+
+    // if we make it here, then just return first !isDisabled category, or nullptr
+    return firstEnabled;
+}
+
+MenuCategory* Menu::getPreviousCategory(QString nameFilter) {
+    bool foundSelected = false;
+    MenuCategory *firstEnabled = nullptr;
+    for(int i = m_categories.length() - 1; i >= 0 ; i--) {
+        bool isDisabled = !m_categories[i]->property("name").toString().toUpper().contains(nameFilter.toUpper()) || m_categories[i]->property("isDisabled").toBool();
+        if(!isDisabled) {
+            if(!m_selectedCategory) {
+                return m_categories[i];
+            } else if(foundSelected) {
+                return m_categories[i];
+            } else if(!firstEnabled)
+                firstEnabled = m_categories[i];
+        }
+        if(m_selectedCategory && m_categories[i]->property("id").toUInt() == m_selectedCategory->property("id").toUInt()) {
+            foundSelected = true;
+        }
+    }
+
+    // if we make it here, then just return first !isDisabled category, or nullptr
+    return firstEnabled;
+}

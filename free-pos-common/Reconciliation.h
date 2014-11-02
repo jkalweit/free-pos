@@ -55,7 +55,8 @@ public:
 
     void setSelectedTicket(Ticket *ticket);
     Ticket* selectedTicket();
-
+    Q_INVOKABLE Ticket* getNextTicket(QString nameFilter, bool showIsPaid);
+    Q_INVOKABLE Ticket* getPreviousTicket(QString nameFilter, bool showIsPaid);
 
     QString fileName();
 

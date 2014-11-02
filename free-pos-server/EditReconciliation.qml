@@ -461,7 +461,11 @@ Rectangle {
                     editMenuItem.show();
                 }
 
-                onMenuCategorySelected: {
+                onMenuCategorySelected: {                    
+                    if(isNew) {
+                        editMenuCategory.menuCategory = menuCategory;
+                    }
+
                     if(menuCategory === editMenuCategory.menuCategory) {
                         editMenuCategory.show();
                     } else {

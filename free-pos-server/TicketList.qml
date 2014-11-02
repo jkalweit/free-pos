@@ -11,6 +11,9 @@ Rectangle {
     property var rec
     property bool showPaid: true
 
+    Keys.onDownPressed: tickets.rec.selectedTicket = tickets.rec.getNextTicket(newCustomerName.text.trim(), tickets.showPaid)
+    Keys.onUpPressed: tickets.rec.selectedTicket = tickets.rec.getPreviousTicket(newCustomerName.text.trim(), tickets.showPaid)
+
 
     Column {
         id: ticketsControls
