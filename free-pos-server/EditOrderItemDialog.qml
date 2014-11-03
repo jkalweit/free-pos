@@ -5,6 +5,8 @@ import QtQuick.Controls 1.2
 DialogModal {
     id: container
     title: "Edit Order Item"
+    property var rec
+    property var customer
     property var model //OrderItem
 
     function show(orderItem) {
@@ -85,6 +87,20 @@ DialogModal {
             onAccepted: container.close(true);
         }
 
+        RectangleFlash {
+            width: parent.width
+            height: submittedText.height + 10
+            onClicked: {
+                editOrderItemDialog.model.cycleSubmittedStamp();
+            }
+
+            customContent: Text{
+                id: submittedText
+                text: editOrderItemDialog.model && editOrderItemDialog.model.isSubmitted ? "Submitted " + Qt.formatTime(editOrderItemDialog.model.submittedStamp, "hh:mmAP") : "Not Submitted"
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
 
         Row {
             Button {
@@ -100,6 +116,12 @@ DialogModal {
                 }
             }
             Button {
+                text: "Move"
+                onClicked: {
+                    moveOrderItem.show();
+                }
+            }
+            Button {
                 text: (model && model.deleted) ? "Un-Delete" : "Delete"
                 onClicked: {
                     model.deleted = !model.deleted;
@@ -107,5 +129,50 @@ DialogModal {
                 }
             }
         }
+    }
+
+
+    DialogModal {
+        id: moveOrderItem
+        title: "Move Order Item"
+
+        customContent: Column {
+            spacing: 5
+
+            TicketList {
+                id: ticketList
+                rec: pos.selectedRec
+                showPaid: false
+//                anchors.left: parent.left
+//                anchors.leftMargin: 2
+//                anchors.top: parent.top
+//                anchors.topMargin: 2
+//                anchors.bottom: parent.bottom
+                width: 200
+                height: 700
+                onTicketSelected: {
+                    if (ticket.id === model.ticketId && ticket.customers[0].id === model.customerId) {
+                      // do nothing, selected the same destination
+                    } else if(ticket.isPaid) {
+                        cannotMoveOrderItem.show()
+                    } else {
+                        moveOrderItem.visible = false;
+                        container.close(true); // save changes before moving
+                        rec.moveOrderItem(model, ticket.id, ticket.customers[0].id);
+                    }
+                }
+            }
+
+            Button {
+                text: "Cancel"
+                onClicked: moveOrderItem.visible = false
+            }
+        }
+    }
+
+    DialogModalMessage {
+        id: cannotMoveOrderItem
+        title: "Cannot Move Order Item"
+        text: "Destination ticket has already been paid."
     }
 }

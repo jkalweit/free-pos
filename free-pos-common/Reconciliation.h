@@ -58,6 +58,8 @@ public:
     Q_INVOKABLE Ticket* getNextTicket(QString nameFilter, bool showIsPaid);
     Q_INVOKABLE Ticket* getPreviousTicket(QString nameFilter, bool showIsPaid);
 
+    Q_INVOKABLE void moveOrderItem(OrderItem* orderItem, quint32 toTicketId, quint32 toCustomerId);
+
     QString fileName();
 
     float foodTotal();

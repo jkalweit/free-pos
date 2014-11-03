@@ -11,6 +11,8 @@ Rectangle {
     property var rec
     property bool showPaid: true
 
+    signal ticketSelected(var ticket)
+
     Keys.onDownPressed: tickets.rec.selectedTicket = tickets.rec.getNextTicket(newCustomerName.text.trim(), tickets.showPaid)
     Keys.onUpPressed: tickets.rec.selectedTicket = tickets.rec.getPreviousTicket(newCustomerName.text.trim(), tickets.showPaid)
 
@@ -59,7 +61,7 @@ Rectangle {
             id: ticketsInner
             width: tickets.width
             Repeater {
-                model: rec.tickets
+                model: rec ? rec.tickets : 0
 
                 RectangleFlashButton {
                     text: modelData.customerNames
@@ -77,8 +79,8 @@ Rectangle {
                         }
                         return modelData.customerNames.toUpperCase().indexOf(filter) > -1;
                     }
-                    onBeforeFlash: {
-                        rec.selectedTicket = modelData
+                    onBeforeFlash: {                        
+                        ticketSelected(modelData);
                     }
                 }
             }

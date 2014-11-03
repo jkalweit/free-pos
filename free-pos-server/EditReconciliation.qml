@@ -18,6 +18,10 @@ Rectangle {
         anchors.topMargin: 2
         anchors.bottom: parent.bottom
         width: 200
+
+        onTicketSelected: {
+            rec.selectedTicket = ticket;
+        }
     }
 
 
@@ -77,6 +81,7 @@ Rectangle {
                         Column {
                             id: customer
                             width: customers.width
+                            property var model: modelData
 
                             RectangleFlash {
                                 width: parent.width
@@ -109,6 +114,7 @@ Rectangle {
                                         width: orderItems.width
                                         height: orderItemInner.height + 20
                                         property var model: modelData
+                                        color: modelData.isSubmitted ? "transparent" : "#9977DD77"
                                         //property alias flash: flashAnimation
 
                                         customContent: Column {
@@ -149,7 +155,11 @@ Rectangle {
                                         }
 
 
-                                        onClicked: editOrderItemDialog.show(model)
+                                        onClicked: {
+                                            editOrderItemDialog.rec = container.model
+                                            editOrderItemDialog.customer = customer.model
+                                            editOrderItemDialog.show(model)
+                                        }
                                     }
                                 }
                             }
@@ -191,7 +201,7 @@ Rectangle {
 
                             customContent: Text{
                                 id: printKitchen
-                                text: "Print Kitchen" //model.selectedTicket && model.selectedTicket.isPaid ? model.selectedTicket.paymentType + " " + Qt.formatTime(model.selectedTicket.paidStamp, "hh:mmAP") : "Unpaid"
+                                text: "Print Kitchen"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -424,7 +434,7 @@ Rectangle {
     }
 
     EditOrderItemDialog {
-        id: editOrderItemDialog
+        id: editOrderItemDialog        
     }
 
     EditRecDialog {

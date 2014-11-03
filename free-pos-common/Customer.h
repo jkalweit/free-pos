@@ -35,9 +35,10 @@ public:
 
     QQmlListProperty<OrderItem> orderItems();
     Q_INVOKABLE OrderItem* addOrderItem(QString name, QString type, float price, float quantity, QString note);
-    void addOrderItem(OrderItem *orderItem);
+    void addOrderItem(OrderItem *orderItem, bool isMoved = false);
     OrderItem* getOrderItem(quint32 id);
     QList<OrderItem*> orderItemsList();   
+    Q_INVOKABLE void removeOrderItem(OrderItem* orderItem);
 
     QString serialize() const;
     static Customer* deserialize(QString serialized, QObject *parent = 0);          

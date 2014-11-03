@@ -5,7 +5,8 @@ RectangleFlash {
     height: hidden ? 0 : buttonText.height + (verticalMargin * 2)
     property alias text: buttonText.text
     property alias textColor: buttonText.color
-    property int verticalMargin: 10    
+
+    property int verticalMargin: 20
     property bool hidden: false
 
     customContent: Text {

@@ -7,7 +7,7 @@ Rectangle {
     color: "transparent"
     property var menu
     property bool editMode: false
-    signal menuItemSelected(var menuItem)
+    signal menuItemSelected(var menuItem, var isNew)
     signal menuCategorySelected(var menuCategory, var isNew)
 
     Rectangle {
@@ -43,7 +43,13 @@ Rectangle {
                     //width: menuItems.width - newMenuItemPrice.width
                     placeholderText: qsTr("Menu item name")
                     onAccepted: {
-                        menuItems.selectCurrentItem();
+                        if(container.editMode && menu.selectedCategory) {
+                            var item = menu.selectedCategory.addMenuItem(newMenuItemName.text, "Food", 0);
+                            newMenuItemName.text = "";
+                            console.log("added item: " + item.name);
+                            container.menuItemSelected(item, true);
+                        }
+                        //menuItems.selectCurrentItem();
                     }
 
                     onActiveFocusChanged: {
@@ -84,11 +90,11 @@ Rectangle {
             delegate: RectangleFlash {
                 id: menuItemContainer
                 width: menuItems.width
-                height: menuItemName.height + 20
+
+                height: menuItemName.height + 40
                 border.color: menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
                 border.width: 2
-                //textColor: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#000000"
-                color:  "#9575cd"
+                color:  modelData.isDisabled ? "#AAAAAA" : "#9575cd"
                 flashColor: "#FFFFFF"
 
                 visible: {
@@ -104,24 +110,27 @@ Rectangle {
                 onBeforeFlash: {
                     newMenuItemName.text = "";
                     container.menu.selectedCategory.selectedItem = modelData;
-                    container.menuItemSelected(modelData);
+                    container.menuItemSelected(modelData, false);
                 }
 
 
-                Text {
-                    id: menuItemName
-                    text: modelData.name
-                    color: "#FFFFFF"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                }
-                Text {
-                    text: modelData.price.toFixed(2)
-                    color: "#000000"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
+                customContent: Item {
+                    anchors.fill: parent
+                    Text {
+                        id: menuItemName
+                        text: modelData.name
+                        color: "#FFFFFF"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        //anchors.leftMargin: 5
+                    }
+                    Text {
+                        text: modelData.price.toFixed(2)
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        //anchors.rightMargin: 5
+                    }
                 }
             }
 

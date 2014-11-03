@@ -67,10 +67,13 @@ void Customer::fireTotalsChanged() {
 OrderItem* Customer::addOrderItem(QString name, QString type, float price, float quantity, QString note) {
     OrderItem* orderItem = new OrderItem(this, ++m_currentOrderItemId, m_ticketId, m_id, name, type, QDateTime::currentDateTime(), price, quantity, note, false);
     addOrderItem(orderItem);
+    if(type == "Alcohol" && !orderItem->isSubmitted()) {
+        orderItem->setSubmittedStamp(orderItem->property("createdStamp").toDateTime());
+    }
     return orderItem;
 }
 
-void Customer::addOrderItem(OrderItem *orderItem) {
+void Customer::addOrderItem(OrderItem *orderItem, bool isMoved) {
     if(orderItem->property("id").toUInt() > m_currentOrderItemId) m_currentOrderItemId = orderItem->property("id").toUInt();
     connect(orderItem, SIGNAL(subTotalChanged(float)),
             this, SLOT(fireTotalsChanged()));
@@ -79,7 +82,9 @@ void Customer::addOrderItem(OrderItem *orderItem) {
     connect(orderItem, SIGNAL(totalChanged(float)),
             this, SLOT(fireTotalsChanged()));
     m_orderItems.append(orderItem);
-    Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
+    if(!isMoved) {
+        Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
+    }
     orderItemsChanged(orderItems());
     fireTotalsChanged();
 }
@@ -99,6 +104,17 @@ OrderItem* Customer::getOrderItem(quint32 id) {
 
 QList<OrderItem*> Customer::orderItemsList() {
     return m_orderItems;
+}
+
+void Customer::removeOrderItem(OrderItem *orderItem) {
+    for(int i = 0; i < m_orderItems.length(); i++) {
+        if(m_orderItems[i] == orderItem) {
+            m_orderItems.removeAt(i);
+            orderItemsChanged(orderItems());
+            fireTotalsChanged();
+            return;
+        }
+    }
 }
 
 QString Customer::serialize() const {

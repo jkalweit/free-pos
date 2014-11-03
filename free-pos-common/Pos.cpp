@@ -126,6 +126,16 @@ void Pos::readHistory(QString filename) {
             QString value = split[4];
             OrderItem* orderItem = m_selectedRec->getTicket(ticketId)->getCustomer(customerId)->getOrderItem(orderItemId);
             orderItem->setProperty(property.toUtf8().data(), value);
+        } else if (command == "MoveOrderItem") {
+            qDebug() << "MoveOrderItem: " << payload;
+            quint32 fromTicketId = split[0].toUInt();
+            quint32 fromCustomerId = split[1].toUInt();
+            quint32 orderItemId = split[2].toUInt();
+            quint32 toTicketId = split[3].toUInt();
+            quint32 toCustomerId = split[4].toUInt();
+
+            OrderItem* orderItem = m_selectedRec->getTicket(fromTicketId)->getCustomer(fromCustomerId)->getOrderItem(orderItemId);
+            m_selectedRec->moveOrderItem(orderItem, toTicketId, toCustomerId);
         } else if (command == "AddMenu") {
             qDebug() << "AddMenu: " << payload;
             //quint32 id = split[0].toUInt();
