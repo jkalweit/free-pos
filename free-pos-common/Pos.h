@@ -6,6 +6,8 @@
 #include <QQmlListProperty>
 #include "Menu.h"
 #include "Reconciliation.h"
+#include "Inventory.h"
+#include "InventoryItem.h"
 
 class Pos : public QObject
 {
@@ -14,7 +16,7 @@ class Pos : public QObject
     Q_PROPERTY(Menu* selectedMenu MEMBER m_selectedMenu NOTIFY selectedMenuChanged)
     Q_PROPERTY(QQmlListProperty<Reconciliation> reconciliations READ reconciliations NOTIFY reconciliationsChanged)
     Q_PROPERTY(Reconciliation* selectedRec MEMBER m_selectedRec READ selectedRec NOTIFY selectedRecChanged)
-
+    Q_PROPERTY(Inventory* selectedInventory MEMBER m_selectedInventory NOTIFY selectedInventoryChanged)
 public:    
 
     static Pos *instance();
@@ -34,6 +36,7 @@ public:
     void addReconciliation(Reconciliation *rec);
     void appendToHistory(QString item);
     void appendToMenuHistory(QString item);
+    void appendToInventoryHistory(QString item);
     void addTestData();
 
 signals:
@@ -41,17 +44,19 @@ signals:
     void selectedMenuChanged(Menu*);
     void reconciliationsChanged(QQmlListProperty<Reconciliation>);
     void selectedRecChanged(Reconciliation*);
+    void selectedInventoryChanged(Inventory*);
 
 public slots:
 
 private:    
-    static Pos* s_instance;
+    static Pos *s_instance;
     QList<QString> m_history;
     bool m_isHistoryDisabled;
     QList<Menu*> m_menus;
     Menu* m_selectedMenu;
     QList<Reconciliation*> m_reconciliations;
-    Reconciliation* m_selectedRec;
+    Reconciliation *m_selectedRec;
+    Inventory *m_selectedInventory;
 
     void appendToFile(QString item, QString filename);
 };

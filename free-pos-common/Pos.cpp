@@ -31,7 +31,7 @@ Pos* Pos::instance()
 
 
 Pos::Pos(QObject *parent) :
-    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr)
+    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr), m_selectedInventory(nullptr)
 {
 }
 
@@ -172,6 +172,20 @@ void Pos::readHistory(QString filename) {
             MenuCategory *cat = m_selectedMenu->getMenuCategory(menuCategoryId);
             MenuItem *item = cat->getMenuItem(id);
             item->setProperty(property.toUtf8().data(), value);
+        } else if (command == "AddInventory") {
+            qDebug() << "AddInventory: " << payload;
+            m_selectedInventory = new Inventory(this);
+            selectedInventoryChanged(m_selectedInventory);
+        } else if(command == "AddInventoryItem") {
+            qDebug() << "AddInventoryItem: " << payload;
+            m_selectedInventory->addInventoryItem(InventoryItem::deserialize(payload, this));
+        } else if (command == "UpdateInventoryItem") {
+            qDebug() << "UpdateInventoryItem: " << payload;
+            quint32 id = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            InventoryItem *item = m_selectedInventory->getInventoryItem(id);
+            item->setProperty(property.toUtf8().data(), value);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }
@@ -195,6 +209,12 @@ void Pos::appendToMenuHistory(QString item) {
     if(m_isHistoryDisabled)
         return;
     appendToFile(item, "currMenu.txt");
+}
+
+void Pos::appendToInventoryHistory(QString item) {
+    if(m_isHistoryDisabled)
+        return;
+    appendToFile(item, "currInventory.txt");
 }
 
 void Pos::appendToFile(QString item, QString filename) {

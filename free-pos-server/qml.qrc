@@ -15,5 +15,6 @@
         <file>DialogModalConfirm.qml</file>
         <file>EditReconciliation.qml</file>
         <file>TextLabeled.qml</file>
+        <file>InventoryItems.qml</file>
     </qresource>
 </RCC>

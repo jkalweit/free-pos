@@ -9,6 +9,8 @@
 #include "MenuCategory.h"
 #include "MenuItem.h"
 #include "Reconciliation.h"
+#include "Inventory.h"
+#include "InventoryItem.h"
 
 
 int main(int argc, char *argv[])
@@ -23,10 +25,15 @@ int main(int argc, char *argv[])
     qmlRegisterType<Customer>("FreePos", 1, 0, "Customer");
     qmlRegisterType<OrderItem>("FreePos", 1, 0, "OrderItem");
     qmlRegisterType<CashDrawer>("FreePos", 1, 0, "CashDrawer");
+    qmlRegisterType<Inventory>("FreePos", 1, 0, "Inventory");
+    qmlRegisterType<InventoryItem>("FreePos", 1, 0, "InventoryItem");
 
     Pos *pos = Pos::instance();    
     pos->readHistory();
+
+
     pos->readHistory("currMenu.txt");
+    pos->readHistory("currInventory.txt");
     pos->addTestData();
 
     QQmlApplicationEngine engine;    

@@ -25,7 +25,9 @@ SOURCES += \
     OrderItem.cpp \
     CashDrawer.cpp \
     Pos.cpp \
-    SimpleSerializable.cpp
+    SimpleSerializable.cpp \
+    InventoryItem.cpp \
+    Inventory.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -38,7 +40,9 @@ HEADERS += \
     Reconciliation.h \
     OrderItem.h \
     CashDrawer.h \
-    Pos.h
+    Pos.h \
+    InventoryItem.h \
+    Inventory.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

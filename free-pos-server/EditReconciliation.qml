@@ -451,6 +451,15 @@ Rectangle {
         onClicked: editMenuDialog.show()
     }
 
+    RectangleFlashButton {
+        width: 200
+        anchors.right: container.right
+        anchors.rightMargin: 0
+        anchors.bottom: container.bottom
+        text: "Edit Inventory"
+        onClicked: editInventoryDialog.show()
+    }
+
     DialogModal {
         id: editMenuDialog
         customContent: Column {
@@ -593,6 +602,77 @@ Rectangle {
                 Button {
                     text: "Cancel"
                     onClicked: editMenuCategory.close(false)
+                }
+            }
+        }
+    }
+
+
+    DialogModal {
+        id: editInventoryDialog
+        customContent: Column {
+            Text {
+                text: "Edit Inventory"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            InventoryItems {
+                id: editInventoryView
+                inventory: pos.selectedInventory ? pos.selectedInventory : 0
+                width: 400
+                height: 700
+
+                onInventoryItemSelected: {
+                    editInventoryItem.inventoryItem = inventoryItem;
+                    editInventoryItem.show();
+                    console.log('Selected Inventory Item:', inventoryItem.name);
+                }
+            }
+        }
+    }
+
+    DialogModal {
+        id: editInventoryItem
+        property var inventoryItem
+
+        onVisibleChanged: {
+            if(editInventoryItem.visible) {
+                editInventoryItem.inventoryItem = editInventoryItem.inventoryItem;
+            }
+        }
+
+        function close(save) {
+            if(save) {
+                editInventoryItem.inventoryItem.name = editInventoryItemName.text;
+                editInventoryItem.inventoryItem.price = editInventoryItemPrice.text;
+            }
+            editInventoryItem.visible = false;
+        }
+
+        customContent: Column {
+            Text {
+                text: "Edit Inventory Item"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            TextFieldLabeled {
+                id: editInventoryItemName
+                label: "Item Name:"
+                text: editInventoryItem.inventoryItem ? editInventoryItem.inventoryItem.name : ""
+            }
+            TextFieldLabeled {
+                id: editInventoryItemPrice
+                label: "Price:"
+                text: editInventoryItem.inventoryItem ? editInventoryItem.inventoryItem.price.toFixed(2) : ""
+            }
+            Row {
+                Button {
+                    text: "Ok"
+                    onClicked: editInventoryItem.close(true)
+                }
+                Button {
+                    text: "Cancel"
+                    onClicked: editInventoryItem.close(false)
                 }
             }
         }
