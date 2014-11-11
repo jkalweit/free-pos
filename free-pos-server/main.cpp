@@ -27,13 +27,12 @@ int main(int argc, char *argv[])
     qmlRegisterType<CashDrawer>("FreePos", 1, 0, "CashDrawer");
     qmlRegisterType<Inventory>("FreePos", 1, 0, "Inventory");
     qmlRegisterType<InventoryItem>("FreePos", 1, 0, "InventoryItem");
+    qmlRegisterType<MenuItemInventoryItem>("FreePos", 1, 0, "MenuItemInventoryItem");
 
     Pos *pos = Pos::instance();    
     pos->readHistory();
-
-
-    pos->readHistory("currMenu.txt");
     pos->readHistory("currInventory.txt");
+    pos->readHistory("currMenu.txt");
     pos->addTestData();
 
     QQmlApplicationEngine engine;    

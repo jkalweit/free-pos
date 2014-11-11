@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QQmlListProperty>
 #include "SimpleSerializable.h"
+#include "MenuItemInventoryItem.h"
 
 class MenuItem : public SimpleSerializable
 {
@@ -14,6 +15,8 @@ class MenuItem : public SimpleSerializable
     Q_PROPERTY(QString type MEMBER m_type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(float price MEMBER m_price WRITE setPrice NOTIFY priceChanged)
     Q_PROPERTY(bool isDisabled MEMBER m_isDisabled WRITE setIsDisabled NOTIFY isDisabledChanged)
+
+    Q_PROPERTY(QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems READ menuItemInventoryItems NOTIFY menuItemInventoryItemsChanged)
 public:
     explicit MenuItem(QObject *parent = 0, quint32 id = 0, quint32 m_menuCategoryId = 0, QString name = "", QString type = "", float price = 0, bool isDisabled = false);
 
@@ -25,6 +28,12 @@ public:
     void setPrice(float price);
     void setIsDisabled(bool isDisabled);
 
+    QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems();
+    Q_INVOKABLE MenuItemInventoryItem* addMenuItemInventoryItem(quint32 inventoryItemId, float quantity);
+    void addMenuItemInventoryItem(MenuItemInventoryItem *menuItemInventoryItem);
+    MenuItemInventoryItem* getMenuItemInventoryItem(quint32 id);
+    Q_INVOKABLE void removeMenuItemInventoryItem(quint32 menuItemInventoryItemId);
+
     QString serialize() const;
     static MenuItem* deserialize(QString serialized, QObject *parent = 0);
 
@@ -35,6 +44,8 @@ signals:
     void priceChanged(float);
     void isDisabledChanged(bool);
 
+    void menuItemInventoryItemsChanged(QQmlListProperty<MenuItemInventoryItem>);
+
 public slots:
 
 private:
@@ -44,6 +55,9 @@ private:
     QString m_type;
     float m_price;
     bool m_isDisabled;
+
+    quint32 m_currentMenuItemInventoryItemId;
+    QList<MenuItemInventoryItem*> m_menuItemInventoryItems;
 };
 
 #endif // MENUITEM_H

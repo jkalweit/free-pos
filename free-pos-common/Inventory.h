@@ -17,7 +17,7 @@ public:
     Q_INVOKABLE InventoryItem* addInventoryItem(QString name, float price);
     void addInventoryItem(InventoryItem *inventoryItem);
     QQmlListProperty<InventoryItem> inventoryItems();
-    InventoryItem* getInventoryItem(quint32 id);
+    Q_INVOKABLE InventoryItem* getInventoryItem(quint32 id);
 
 signals:
     void inventoryItemsChanged(QQmlListProperty<InventoryItem>);

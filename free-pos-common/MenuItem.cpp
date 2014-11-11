@@ -1,9 +1,11 @@
-#include <QMetaProperty>
-#include <QDebug>
 #include "MenuItem.h"
 
+#include <QMetaProperty>
+#include <QDebug>
+#include "Pos.h"
+
 MenuItem::MenuItem(QObject *parent, quint32 id, quint32 menuCategoryId, QString name, QString type, float price, bool isDisabled) :
-    SimpleSerializable(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name), m_type(type), m_price(price), m_isDisabled(isDisabled)
+    SimpleSerializable(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name), m_type(type), m_price(price), m_isDisabled(isDisabled), m_currentMenuItemInventoryItemId(0)
 {
 }
 
@@ -42,6 +44,55 @@ void MenuItem::setIsDisabled(bool isDisabled) {
         isDisabledChanged(m_isDisabled);
     }
 }
+
+
+
+
+
+
+MenuItemInventoryItem* MenuItem::addMenuItemInventoryItem(quint32 inventoryItemId, float quantity) {
+    MenuItemInventoryItem* item = new MenuItemInventoryItem(this, ++m_currentMenuItemInventoryItemId, m_menuCategoryId, m_id, inventoryItemId, quantity);
+    addMenuItemInventoryItem(item);
+    return item;
+}
+
+void MenuItem::addMenuItemInventoryItem(MenuItemInventoryItem *menuItemInventoryItem) {
+    if(menuItemInventoryItem->property("id").toUInt() > m_currentMenuItemInventoryItemId) m_currentMenuItemInventoryItemId = menuItemInventoryItem->property("id").toUInt();
+
+    m_menuItemInventoryItems.append(menuItemInventoryItem);
+    Pos::instance()->appendToMenuHistory("AddMenuItemInventoryItem:" + menuItemInventoryItem->serialize());
+    menuItemInventoryItemsChanged(menuItemInventoryItems());
+}
+
+QQmlListProperty<MenuItemInventoryItem> MenuItem::menuItemInventoryItems() {
+    return QQmlListProperty<MenuItemInventoryItem>(this, m_menuItemInventoryItems);
+}
+
+MenuItemInventoryItem* MenuItem::getMenuItemInventoryItem(quint32 id) {
+    for(MenuItemInventoryItem* item : m_menuItemInventoryItems) {
+        if(item->property("id").toUInt() == id){
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+
+void MenuItem::removeMenuItemInventoryItem(quint32 menuItemInventoryItemId) {
+    for(int i = 0; i < m_menuItemInventoryItems.length(); i++) {
+        if(m_menuItemInventoryItems[i]->property("id").toUInt() == menuItemInventoryItemId) {
+            MenuItemInventoryItem *item = m_menuItemInventoryItems[i];
+            m_menuItemInventoryItems.removeAt(i);
+            QStringList historyEntry;
+            historyEntry << "RemoveMenuItemInventoryItem" << item->property("id").toString() << item->property("menuCategoryId").toString() << item->property("menuItemId").toString();
+            Pos::instance()->appendToMenuHistory(serializeList(historyEntry));
+            menuItemInventoryItemsChanged(menuItemInventoryItems());
+            return;
+        }
+    }
+}
+
+
 
 
 QString MenuItem::serialize() const {

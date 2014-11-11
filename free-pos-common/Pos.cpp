@@ -186,6 +186,31 @@ void Pos::readHistory(QString filename) {
             QString value = split[2];
             InventoryItem *item = m_selectedInventory->getInventoryItem(id);
             item->setProperty(property.toUtf8().data(), value);
+        } else if (command == "AddMenuItemInventoryItem") {
+            qDebug() << "AddMenuItemInventoryItem: " << payload;
+            MenuItemInventoryItem *menuItemInventoryItem = MenuItemInventoryItem::deserialize(payload);
+            MenuCategory* cat = Pos::instance()->selectedMenu()->getMenuCategory(menuItemInventoryItem->property("menuCategoryId").toUInt());
+            MenuItem *menuItem = cat->getMenuItem(menuItemInventoryItem->property("menuItemId").toUInt());
+            menuItem->addMenuItemInventoryItem(menuItemInventoryItem);
+        } else if (command == "UpdateMenuItemInventoryItem") {
+            qDebug() << "UpdateMenuItemInventoryItem: " << payload;
+            quint32 id = split[0].toUInt();
+            quint32 menuCategoryId = split[1].toUInt();
+            quint32 menuItemId = split[2].toUInt();
+            QString property = split[3];
+            QString value = split[4];
+            MenuCategory *cat = m_selectedMenu->getMenuCategory(menuCategoryId);
+            MenuItem *menuItem = cat->getMenuItem(menuItemId);
+            MenuItemInventoryItem *item = menuItem->getMenuItemInventoryItem(id);
+            item->setProperty(property.toUtf8().data(), value);
+        } else if (command == "RemoveMenuItemInventoryItem") {
+            qDebug() << "RemoveMenuItemInventoryItem: " << payload;
+            quint32 id = split[0].toUInt();
+            quint32 menuCategoryId = split[1].toUInt();
+            quint32  menuItemId = split[2].toUInt();
+            MenuCategory* cat = Pos::instance()->selectedMenu()->getMenuCategory(menuCategoryId);
+            MenuItem *menuItem = cat->getMenuItem(menuItemId);
+            menuItem->removeMenuItemInventoryItem(id);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }
@@ -248,6 +273,14 @@ Reconciliation* Pos::openNewRec() {
 
 Reconciliation* Pos::selectedRec() {
     return m_selectedRec;
+}
+
+Menu* Pos::selectedMenu() {
+    return m_selectedMenu;
+}
+
+Inventory* Pos::selectedInventory() {
+    return m_selectedInventory;
 }
 
 bool Pos::closeCurrentRec() {

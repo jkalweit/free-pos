@@ -545,6 +545,50 @@ Rectangle {
                 text: "Is Disabled: " + (editMenuItem.isItemDisabled ? "Yes" : "No")
                 onClicked: editMenuItem.isItemDisabled = !editMenuItem.isItemDisabled
             }
+            Button {
+                text: "Add Inventory Item"
+                onClicked: addMenuItemInventoryItemDialog.show()
+            }
+            ListView {
+                width: 200
+                height: 200
+                model: editMenuItem.menuItem ? editMenuItem.menuItem.menuItemInventoryItems : 0
+                clip: true
+
+                delegate: RectangleFlash {
+                    id: inventoryItemContainer
+                    width: parent.width
+                    //property alias model: modelData
+
+                    height: inventoryItemName.height + 10
+                    border.color: "blue" // menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
+                    border.width: 2
+                    //color:  modelData.isDisabled ? "#AAAAAA" : "#9575cd"
+                    flashColor: "#FFFFFF"
+
+                    onClicked: {
+                        editMenuItemInventoryItem.menuItemInventoryItem = modelData;
+                        editMenuItemInventoryItem.show();
+                    }
+
+                    customContent: Item {
+                        anchors.fill: parent
+                        Text {
+                            id: inventoryItemName
+                            text: pos.selectedInventory.getInventoryItem(modelData.inventoryItemId).name
+                            color: "#000000"
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                        }
+                        Text {
+                            text: modelData.quantity.toFixed(2)
+                            color: "#000000"
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                        }
+                    }
+                }
+            }
             Row {
                 Button {
                     text: "Ok"
@@ -557,6 +601,87 @@ Rectangle {
             }
         }
     }
+
+    DialogModal {
+        id: addMenuItemInventoryItemDialog
+        //signal inventoryItemSelected(var inventoryItem)
+        customContent: Column {
+            Text {
+                text: "Add Inventory Item"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            InventoryItems {
+                id: editInventoryView
+                inventory: pos.selectedInventory ? pos.selectedInventory : 0
+                width: 400
+                height: 700
+
+                onInventoryItemSelected: {
+                    editMenuItem.menuItem.addMenuItemInventoryItem(inventoryItem.id, 1);
+                    addMenuItemInventoryItemDialog.visible = false;
+                }
+            }
+        }
+    }
+
+
+    DialogModal {
+        id: editMenuItemInventoryItem
+        property var menuItemInventoryItem
+
+        onVisibleChanged: {
+            if(editMenuItemInventoryItem.visible) {
+                editMenuItemInventoryItem.menuItemInventoryItem = editMenuItemInventoryItem.menuItemInventoryItem;
+            }
+        }
+
+        function close(save) {
+            if(save) {
+                editMenuItemInventoryItem.menuItemInventoryItem.quantity = editMenuItemInventoryItemQuantity.text;
+            }
+            editMenuItemInventoryItem.visible = false;
+        }
+
+        customContent: Column {
+            spacing: 5
+            Text {
+                text: "Edit Inventory Item"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            TextLabeled {
+                label: "Item Name:"
+                text: editMenuItemInventoryItem.menuItemInventoryItem ? pos.selectedInventory.getInventoryItem(editMenuItemInventoryItem.menuItemInventoryItem.inventoryItemId).name : ""
+            }
+            TextFieldLabeled {
+                id: editMenuItemInventoryItemQuantity
+                label: "Quantity:"
+                text: editMenuItemInventoryItem.menuItemInventoryItem ? editMenuItemInventoryItem.menuItemInventoryItem.quantity.toFixed(2) : ""
+            }
+            Row {
+                Button {
+                    text: "Ok"
+                    onClicked: editMenuItemInventoryItem.close(true)
+                }
+                Button {
+                    text: "Cancel"
+                    onClicked: editMenuItemInventoryItem.close(false)
+                }
+                Button {
+                    text: "Delete"
+                    onClicked: {
+                        var menuItemInventoryItem = editMenuItemInventoryItem.menuItemInventoryItem;
+                        var menuCategory = pos.selectedMenu.getMenuCategory(menuItemInventoryItem.menuCategoryId);
+                        var menuItem = menuCategory.getMenuItem(menuItemInventoryItem.menuItemId);
+                        menuItem.removeMenuItemInventoryItem(menuItemInventoryItem.id);
+                        editMenuItemInventoryItem.visible = false;
+                    }
+                }
+            }
+        }
+    }
+
 
     DialogModal {
         id: editMenuCategory
@@ -617,7 +742,6 @@ Rectangle {
                 font.bold: true
             }
             InventoryItems {
-                id: editInventoryView
                 inventory: pos.selectedInventory ? pos.selectedInventory : 0
                 width: 400
                 height: 700

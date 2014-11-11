@@ -22,7 +22,7 @@ public:
     void setSelectedCategory(MenuCategory *category);
     Q_INVOKABLE MenuCategory* getNextCategory(QString nameFilter);
     Q_INVOKABLE MenuCategory* getPreviousCategory(QString nameFilter);
-    MenuCategory* getMenuCategory(quint32 id);        
+    Q_INVOKABLE MenuCategory* getMenuCategory(quint32 id);
 
 signals:
     void categoriesChanged(QQmlListProperty<MenuCategory>);

@@ -13,10 +13,10 @@ class Pos : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Menu> menus READ menus NOTIFY menusChanged)
-    Q_PROPERTY(Menu* selectedMenu MEMBER m_selectedMenu NOTIFY selectedMenuChanged)
+    Q_PROPERTY(Menu* selectedMenu MEMBER m_selectedMenu READ selectedMenu NOTIFY selectedMenuChanged)
     Q_PROPERTY(QQmlListProperty<Reconciliation> reconciliations READ reconciliations NOTIFY reconciliationsChanged)
     Q_PROPERTY(Reconciliation* selectedRec MEMBER m_selectedRec READ selectedRec NOTIFY selectedRecChanged)
-    Q_PROPERTY(Inventory* selectedInventory MEMBER m_selectedInventory NOTIFY selectedInventoryChanged)
+    Q_PROPERTY(Inventory* selectedInventory MEMBER m_selectedInventory READ selectedInventory NOTIFY selectedInventoryChanged)
 public:    
 
     static Pos *instance();
@@ -32,6 +32,8 @@ public:
     QQmlListProperty<Reconciliation> reconciliations();
     Q_INVOKABLE Reconciliation* openNewRec();
     Q_INVOKABLE Reconciliation* selectedRec();
+    Q_INVOKABLE Menu* selectedMenu();
+    Q_INVOKABLE Inventory* selectedInventory();
     bool closeCurrentRec();
     void addReconciliation(Reconciliation *rec);
     void appendToHistory(QString item);

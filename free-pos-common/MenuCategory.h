@@ -22,7 +22,7 @@ public:
     QQmlListProperty<MenuItem> menuItems();
     Q_INVOKABLE MenuItem* addMenuItem(QString name, QString type, float price);
     void addMenuItem(MenuItem *menuItem);
-    MenuItem* getMenuItem(quint32 id);
+    Q_INVOKABLE MenuItem* getMenuItem(quint32 id);
     MenuItem* selectedItem();
     Q_INVOKABLE MenuItem* getNextItem(QString nameFilter);
     Q_INVOKABLE MenuItem* getPreviousItem(QString nameFilter);
