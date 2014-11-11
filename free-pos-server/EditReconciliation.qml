@@ -522,6 +522,7 @@ Rectangle {
         }
 
         customContent: Column {
+            spacing: 5
             Text {
                 text: "Edit Menu Item"
                 font.pixelSize: 16
@@ -550,7 +551,7 @@ Rectangle {
                 onClicked: addMenuItemInventoryItemDialog.show()
             }
             ListView {
-                width: 200
+                width: 300
                 height: 200
                 model: editMenuItem.menuItem ? editMenuItem.menuItem.menuItemInventoryItems : 0
                 clip: true
@@ -581,13 +582,21 @@ Rectangle {
                             anchors.left: parent.left
                         }
                         Text {
-                            text: modelData.quantity.toFixed(2)
+                            text: modelData.quantity.toFixed(2) + " @ " + (modelData.inventoryItem ? modelData.inventoryItem.price.toFixed(2) + " = " + modelData.cost.toFixed(2) : "?")
                             color: "#000000"
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: parent.right
                         }
                     }
                 }
+            }
+            TextLabeled {
+                label: "Cost:"
+                text: editMenuItem.menuItem ? editMenuItem.menuItem.cost.toFixed(2) : ""
+            }
+            TextLabeled {
+                label: "Margin:"
+                text: editMenuItem.menuItem ? editMenuItem.menuItem.margin.toFixed(2) : ""
             }
             Row {
                 Button {
@@ -618,7 +627,8 @@ Rectangle {
                 height: 700
 
                 onInventoryItemSelected: {
-                    editMenuItem.menuItem.addMenuItemInventoryItem(inventoryItem.id, 1);
+                    var item = editMenuItem.menuItem.addMenuItemInventoryItem(inventoryItem.id, 1);
+                    item.inventoryItem = inventoryItem;
                     addMenuItemInventoryItemDialog.visible = false;
                 }
             }

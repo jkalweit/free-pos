@@ -46,8 +46,24 @@ void MenuItem::setIsDisabled(bool isDisabled) {
 }
 
 
+float MenuItem::cost() {
+    float cost = 0;
 
+    for(MenuItemInventoryItem *item : m_menuItemInventoryItems) {
+        cost += item->cost();
+    }
 
+    return cost;
+}
+
+float MenuItem::margin() {
+    return m_price - cost();
+}
+
+void MenuItem::fireCostChanged() {
+    costChanged(cost());
+    marginChanged(margin());
+}
 
 
 MenuItemInventoryItem* MenuItem::addMenuItemInventoryItem(quint32 inventoryItemId, float quantity) {
@@ -60,8 +76,12 @@ void MenuItem::addMenuItemInventoryItem(MenuItemInventoryItem *menuItemInventory
     if(menuItemInventoryItem->property("id").toUInt() > m_currentMenuItemInventoryItemId) m_currentMenuItemInventoryItemId = menuItemInventoryItem->property("id").toUInt();
 
     m_menuItemInventoryItems.append(menuItemInventoryItem);
-    Pos::instance()->appendToMenuHistory("AddMenuItemInventoryItem:" + menuItemInventoryItem->serialize());
+    Pos::instance()->appendToMenuHistory("AddMenuItemInventoryItem:" + menuItemInventoryItem->serialize());    
+    connect(menuItemInventoryItem, SIGNAL(costChanged(float)),
+            this, SLOT(fireCostChanged()));
     menuItemInventoryItemsChanged(menuItemInventoryItems());
+
+    fireCostChanged();
 }
 
 QQmlListProperty<MenuItemInventoryItem> MenuItem::menuItemInventoryItems() {
@@ -86,7 +106,13 @@ void MenuItem::removeMenuItemInventoryItem(quint32 menuItemInventoryItemId) {
             QStringList historyEntry;
             historyEntry << "RemoveMenuItemInventoryItem" << item->property("id").toString() << item->property("menuCategoryId").toString() << item->property("menuItemId").toString();
             Pos::instance()->appendToMenuHistory(serializeList(historyEntry));
+
+            disconnect(item, SIGNAL(costChanged(float)),
+                    this, SLOT(fireCostChanged()));
+
             menuItemInventoryItemsChanged(menuItemInventoryItems());
+
+            fireCostChanged();
             return;
         }
     }

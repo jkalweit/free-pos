@@ -17,6 +17,9 @@ class MenuItem : public SimpleSerializable
     Q_PROPERTY(bool isDisabled MEMBER m_isDisabled WRITE setIsDisabled NOTIFY isDisabledChanged)
 
     Q_PROPERTY(QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems READ menuItemInventoryItems NOTIFY menuItemInventoryItemsChanged)
+
+    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
+    Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
     explicit MenuItem(QObject *parent = 0, quint32 id = 0, quint32 m_menuCategoryId = 0, QString name = "", QString type = "", float price = 0, bool isDisabled = false);
 
@@ -27,6 +30,9 @@ public:
     void setType(QString type);
     void setPrice(float price);
     void setIsDisabled(bool isDisabled);
+
+    float cost();
+    float margin();
 
     QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems();
     Q_INVOKABLE MenuItemInventoryItem* addMenuItemInventoryItem(quint32 inventoryItemId, float quantity);
@@ -46,7 +52,11 @@ signals:
 
     void menuItemInventoryItemsChanged(QQmlListProperty<MenuItemInventoryItem>);
 
+    void costChanged(float);
+    void marginChanged(float);
+
 public slots:
+    void fireCostChanged();
 
 private:
     quint32 m_id;

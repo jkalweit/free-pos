@@ -4,6 +4,7 @@
 #include <QTextStream>
 #include <QObject>
 #include "SimpleSerializable.h"
+#include "InventoryItem.h"
 
 class MenuItemInventoryItem : public SimpleSerializable
 {
@@ -13,12 +14,18 @@ class MenuItemInventoryItem : public SimpleSerializable
     Q_PROPERTY(quint32 menuItemId MEMBER m_menuItemId NOTIFY menuItemIdChanged)
     Q_PROPERTY(quint32 inventoryItemId MEMBER m_inventoryItemId NOTIFY inventoryItemIdChanged)
     Q_PROPERTY(float quantity MEMBER m_quantity WRITE setQuantity NOTIFY quantityChanged)
+    Q_PROPERTY(InventoryItem* inventoryItem READ inventoryItem WRITE setInventoryItem NOTIFY inventoryItemChanged)
+    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
 public:
     explicit MenuItemInventoryItem(QObject *parent = 0, quint32 id = 0, quint32 menuCategoryId = 0, quint32 menuItemId = 0, quint32 inventoryItemId = 0, float quantity = 0);
 
     virtual QStringList updatePrefix();
 
     void setQuantity(float quantity);
+    float cost();
+
+    InventoryItem* inventoryItem();
+    void setInventoryItem(InventoryItem* inventoryItem);
 
     QString serialize() const;
     static MenuItemInventoryItem* deserialize(QString serialized, QObject *parent = 0);
@@ -29,9 +36,12 @@ signals:
     void menuCategoryIdChanged(quint32);
     void menuItemIdChanged(quint32);
     void inventoryItemIdChanged(quint32);
+    void inventoryItemChanged(InventoryItem*);
     void quantityChanged(float);
+    void costChanged(float);
 
 public slots:
+    void fireCostChanged();
 
 private:
     quint32 m_id;
@@ -39,7 +49,10 @@ private:
     quint32 m_menuItemId;
     quint32 m_inventoryItemId;
 
+    InventoryItem *m_inventoryItem;
+
     float m_quantity;
+
 };
 
 #endif // MENUITEMINVENTORYITEM_H

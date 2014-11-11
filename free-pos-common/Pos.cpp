@@ -189,6 +189,8 @@ void Pos::readHistory(QString filename) {
         } else if (command == "AddMenuItemInventoryItem") {
             qDebug() << "AddMenuItemInventoryItem: " << payload;
             MenuItemInventoryItem *menuItemInventoryItem = MenuItemInventoryItem::deserialize(payload);
+            InventoryItem *inventoryItem = Pos::instance()->selectedInventory()->getInventoryItem(menuItemInventoryItem->property("inventoryItemId").toUInt());
+            menuItemInventoryItem->setInventoryItem(inventoryItem);
             MenuCategory* cat = Pos::instance()->selectedMenu()->getMenuCategory(menuItemInventoryItem->property("menuCategoryId").toUInt());
             MenuItem *menuItem = cat->getMenuItem(menuItemInventoryItem->property("menuItemId").toUInt());
             menuItem->addMenuItemInventoryItem(menuItemInventoryItem);
