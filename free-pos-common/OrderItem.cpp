@@ -4,7 +4,7 @@
 #include "Pos.h"
 
 OrderItem::OrderItem(QObject *parent, quint32 id, quint32 ticketId, quint32 customerId, QString name, QString type, QDateTime createdStamp, float price, float quantity, QString note, bool deleted, QDateTime submittedStamp) :
-    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted), m_submittedStamp(submittedStamp)
+    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted), m_submittedStamp(submittedStamp), m_currentOrderItemInventoryItemId(0)
 {
     connect(this, SIGNAL(quantityChanged(float)),
             this, SLOT(fireTotalsChanged()));
@@ -47,6 +47,7 @@ void OrderItem::setQuantity(float quantity) {
         m_quantity = quantity;
         logPropertyChanged(m_quantity, "quantity");
         quantityChanged(m_quantity);
+        fireTotalsChanged();
     }
 }
 
@@ -55,6 +56,7 @@ void OrderItem::setPrice(float price) {
         m_price = price;
         logPropertyChanged(m_price, "price");
         priceChanged(m_price);
+        fireTotalsChanged();
     }
 }
 
@@ -71,6 +73,7 @@ void OrderItem::setDeleted(bool deleted) {
         m_deleted = deleted;
         logPropertyChanged(m_deleted, "deleted");
         deletedChanged(m_deleted);
+        fireTotalsChanged();
     }
 }
 
@@ -99,6 +102,9 @@ void OrderItem::fireTotalsChanged() {
     subTotalChanged(subTotal());
     taxChanged(tax());
     totalChanged(total());
+
+    costChanged(cost());
+    marginChanged(margin());
 }
 
 float OrderItem::subTotal() {
@@ -119,6 +125,80 @@ float OrderItem::tax() {
 float OrderItem::total() {
     return subTotal() + tax();
 }
+
+
+
+
+
+float OrderItem::cost() {
+    float cost = 0;
+
+    for(OrderItemInventoryItem *item : m_orderItemInventoryItems) {
+        cost += (m_quantity * item->cost());
+    }
+
+    return cost;
+}
+
+float OrderItem::margin() {
+    return subTotal() - cost();
+}
+
+
+
+
+
+OrderItemInventoryItem* OrderItem::addOrderItemInventoryItem(quint32 inventoryItemId, QString name, float price, float quantity) {
+    OrderItemInventoryItem* item = new OrderItemInventoryItem(this, m_ticketId, m_customerId, m_id, ++m_currentOrderItemInventoryItemId, inventoryItemId, name, price, quantity);
+    addOrderItemInventoryItem(item);
+    return item;
+}
+
+void OrderItem::addOrderItemInventoryItem(OrderItemInventoryItem *orderItemInventoryItem) {
+    if(orderItemInventoryItem->property("id").toUInt() > m_currentOrderItemInventoryItemId) m_currentOrderItemInventoryItemId = orderItemInventoryItem->property("id").toUInt();
+//    connect(orderItem, SIGNAL(subTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
+    m_orderItemInventoryItems.append(orderItemInventoryItem);
+//    if(!isMoved) {
+//        Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
+//    }
+    // TODO: check to see if merely moved
+    Pos::instance()->appendToHistory("AddOrderItemInventoryItem:" + orderItemInventoryItem->serialize());
+    orderItemInventoryItemsChanged(orderItemInventoryItems());
+    fireTotalsChanged();
+}
+
+QQmlListProperty<OrderItemInventoryItem> OrderItem::orderItemInventoryItems() {
+    return QQmlListProperty<OrderItemInventoryItem>(this, m_orderItemInventoryItems);
+}
+
+OrderItemInventoryItem* OrderItem::getOrderItemInventoryItem(quint32 id) {
+    for(OrderItemInventoryItem* item : m_orderItemInventoryItems) {
+        if(item->property("id").toUInt() == id){
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+void OrderItem::removeOrderItemInventoryItem(quint32 id) {
+    for(int i = 0; i < m_orderItemInventoryItems.length(); i++) {
+        if(m_orderItemInventoryItems[i]->property("id").toUInt() == id) {
+            OrderItemInventoryItem *item = m_orderItemInventoryItems[i];
+            m_orderItemInventoryItems.removeAt(i);
+            QStringList historyEntry;
+            historyEntry << "RemoveOrderItemInventoryItem" << item->property("ticketId").toString() << item->property("customerId").toString() << item->property("orderItemId").toString() << item->property("id").toString();
+            Pos::instance()->appendToHistory(serializeList(historyEntry));
+            orderItemInventoryItemsChanged(orderItemInventoryItems());
+            fireTotalsChanged();
+            return;
+        }
+    }
+}
+
+
+
+
 
 
 QString OrderItem::serialize() const {

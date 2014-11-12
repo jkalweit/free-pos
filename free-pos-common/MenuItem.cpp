@@ -88,6 +88,10 @@ QQmlListProperty<MenuItemInventoryItem> MenuItem::menuItemInventoryItems() {
     return QQmlListProperty<MenuItemInventoryItem>(this, m_menuItemInventoryItems);
 }
 
+QList<MenuItemInventoryItem*> MenuItem::menuItemInventoryItemsList() {
+    return m_menuItemInventoryItems;
+}
+
 MenuItemInventoryItem* MenuItem::getMenuItemInventoryItem(quint32 id) {
     for(MenuItemInventoryItem* item : m_menuItemInventoryItems) {
         if(item->property("id").toUInt() == id){

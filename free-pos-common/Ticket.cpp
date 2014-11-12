@@ -80,6 +80,9 @@ void Ticket::fireTotalsChanged() {
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
+
+    costChanged(cost());
+    marginChanged(margin());
 }
 
 void Ticket::fireNamesChanged() {
@@ -103,6 +106,11 @@ void Ticket::addCustomer(Customer *customer) {
     connect(customer, SIGNAL(barTotalChanged(float)),
             this, SLOT(fireTotalsChanged()));
     connect(customer, SIGNAL(totalChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+
+    connect(customer, SIGNAL(costChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(customer, SIGNAL(marginChanged(float)),
             this, SLOT(fireTotalsChanged()));
 
     m_customers.append(customer);
@@ -151,6 +159,26 @@ float Ticket::barTotal() {
 float Ticket::total() {
     return foodTotal() + taxTotal() + barTotal();
 }
+
+
+
+float Ticket::cost() {
+    float cost = 0;
+
+    for(Customer *item : m_customers) {
+        cost += item->cost();
+    }
+
+    return cost;
+}
+
+float Ticket::margin() {
+    return foodTotal() + barTotal() - cost();
+}
+
+
+
+
 
 void Ticket::printKitchen() {
 

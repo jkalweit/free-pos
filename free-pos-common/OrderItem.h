@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QQmlListProperty>
 #include "SimpleSerializable.h"
+#include "OrderItemInventoryItem.h"
 
 class OrderItem : public SimpleSerializable {
 
@@ -26,6 +27,11 @@ class OrderItem : public SimpleSerializable {
     Q_PROPERTY(float subTotal READ subTotal NOTIFY subTotalChanged)
     Q_PROPERTY(float tax READ tax NOTIFY taxChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
+
+    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
+    Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
+
+    Q_PROPERTY(QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems READ orderItemInventoryItems NOTIFY orderItemInventoryItemsChanged)
 public:
     explicit OrderItem(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, quint32 customerId = 0, QString name = "", QString type = "", QDateTime createdStamp = QDateTime(), float price = 0, float quantity = 0, QString note = "", bool deleted = false, QDateTime submittedStamp = QDateTime());
 
@@ -48,6 +54,16 @@ public:
     float tax();
     float total();
 
+    float cost();
+    float margin();
+
+    QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems();
+    Q_INVOKABLE OrderItemInventoryItem* addOrderItemInventoryItem(quint32 inventoryItemId, QString name, float price, float quantity);
+    void addOrderItemInventoryItem(OrderItemInventoryItem *orderItemInventoryItem);
+    OrderItemInventoryItem* getOrderItemInventoryItem(quint32 id);
+    Q_INVOKABLE void removeOrderItemInventoryItem(quint32 id);
+
+
     QString serialize() const;
     static OrderItem* deserialize(QString serialized, QObject *parent = 0);
 
@@ -68,6 +84,12 @@ signals:
     void subTotalChanged(float);
     void taxChanged(float);
     void totalChanged(float);
+
+    void orderItemInventoryItemsChanged(QQmlListProperty<OrderItemInventoryItem>);
+
+    void costChanged(float);
+    void marginChanged(float);
+
 private:
     quint32 m_id;
     quint32 m_ticketId;
@@ -80,6 +102,9 @@ private:
     QString m_note;
     bool m_deleted;
     QDateTime m_submittedStamp;
+
+    QList<OrderItemInventoryItem*> m_orderItemInventoryItems;
+    quint32 m_currentOrderItemInventoryItemId;
 
 private slots:
     void fireTotalsChanged();

@@ -38,6 +38,9 @@ class Reconciliation : public SimpleSerializable {
 
     Q_PROPERTY(CashDrawer *beginningDrawer READ beginningDrawer NOTIFY beginningDrawerChanged)
     Q_PROPERTY(CashDrawer *endingDrawer READ endingDrawer NOTIFY endingDrawerChanged)
+
+    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
+    Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
     explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QString name = "", QString note = "",
                             QDateTime openedStamp = QDateTime(), QDateTime closedStamp = QDateTime(),
@@ -85,6 +88,9 @@ public:
     Q_INVOKABLE bool closeRec();
     Q_INVOKABLE bool isOpen();
 
+    float cost();
+    float margin();
+
     Ticket* getTicket(quint32 id);
 
     Q_INVOKABLE void print();
@@ -120,6 +126,9 @@ signals:
 
     void beginningDrawerChanged(CashDrawer*);
     void endingDrawerChanged(CashDrawer*);
+
+    void costChanged(float);
+    void marginChanged(float);
 
 private:
     quint32 m_id;

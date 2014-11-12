@@ -7,6 +7,7 @@
 #include <QQmlListProperty>
 #include "SimpleSerializable.h"
 #include "OrderItem.h"
+#include "MenuItem.h"
 
 
 class Customer : public SimpleSerializable {
@@ -21,6 +22,9 @@ class Customer : public SimpleSerializable {
     Q_PROPERTY(float taxTotal READ taxTotal NOTIFY taxTotalChanged)
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
+
+    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
+    Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
     explicit Customer(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, QString name = "");
 
@@ -33,8 +37,11 @@ public:
     float barTotal();
     float total();
 
+    float cost();
+    float margin();
+
     QQmlListProperty<OrderItem> orderItems();
-    Q_INVOKABLE OrderItem* addOrderItem(QString name, QString type, float price, float quantity, QString note);
+    Q_INVOKABLE OrderItem* addOrderItem(MenuItem *menuItem, float quantity, QString note);
     void addOrderItem(OrderItem *orderItem, bool isMoved = false);
     OrderItem* getOrderItem(quint32 id);
     QList<OrderItem*> orderItemsList();   
@@ -53,6 +60,10 @@ signals:
     void taxTotalChanged(float);
     void barTotalChanged(float);
     void totalChanged(float);
+
+    void costChanged(float);
+    void marginChanged(float);
+
 
 private:
     quint32 m_id;

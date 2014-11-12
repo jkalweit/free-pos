@@ -35,6 +35,7 @@ public:
     float margin();
 
     QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems();
+    QList<MenuItemInventoryItem*> menuItemInventoryItemsList();
     Q_INVOKABLE MenuItemInventoryItem* addMenuItemInventoryItem(quint32 inventoryItemId, float quantity);
     void addMenuItemInventoryItem(MenuItemInventoryItem *menuItemInventoryItem);
     MenuItemInventoryItem* getMenuItemInventoryItem(quint32 id);

@@ -3,6 +3,7 @@
 #include <QMetaProperty>
 #include <QDebug>
 #include "Pos.h"
+#include "MenuItemInventoryItem.h"
 
 
 Customer::Customer(QObject *parent, quint32 id, quint32 ticketId, QString name) :
@@ -62,14 +63,49 @@ void Customer::fireTotalsChanged() {
     foodTotalChanged(foodTotal());
     taxTotalChanged(taxTotal());
     totalChanged(total());
+
+    costChanged(cost());
+    marginChanged(margin());
 }
 
-OrderItem* Customer::addOrderItem(QString name, QString type, float price, float quantity, QString note) {
-    OrderItem* orderItem = new OrderItem(this, ++m_currentOrderItemId, m_ticketId, m_id, name, type, QDateTime::currentDateTime(), price, quantity, note, false);
+
+
+float Customer::cost() {
+    float cost = 0;
+
+    for(OrderItem *item : m_orderItems) {
+        cost += item->cost();
+    }
+
+    return cost;
+}
+
+float Customer::margin() {
+    return foodTotal() + barTotal() - cost();
+}
+
+
+
+OrderItem* Customer::addOrderItem(MenuItem* menuItem, float quantity, QString note) {
+    OrderItem* orderItem = new OrderItem(this, ++m_currentOrderItemId, m_ticketId, m_id,
+                                         menuItem->property("name").toString(),
+                                         menuItem->property("type").toString(),
+                                         QDateTime::currentDateTime(),
+                                         menuItem->property("price").toFloat(), quantity, note, false);
+
     addOrderItem(orderItem);
-    if(type == "Alcohol" && !orderItem->isSubmitted()) {
+    if(menuItem->property("type").toString() == "Alcohol" && !orderItem->isSubmitted()) {
         orderItem->setSubmittedStamp(orderItem->property("createdStamp").toDateTime());
     }
+
+    // add OrderItemInventoryItems AFTER adding OrderItem to ensure correct order of events in History.
+    for(MenuItemInventoryItem *item : menuItem->menuItemInventoryItemsList()) {
+        orderItem->addOrderItemInventoryItem(item->property("inventoryItemId").toUInt(),
+                                             item->inventoryItem()->property("name").toString(),
+                                             item->inventoryItem()->property("price").toFloat(),
+                                             item->property("quantity").toFloat());
+    }
+
     return orderItem;
 }
 
@@ -81,6 +117,12 @@ void Customer::addOrderItem(OrderItem *orderItem, bool isMoved) {
             this, SLOT(fireTotalsChanged()));
     connect(orderItem, SIGNAL(totalChanged(float)),
             this, SLOT(fireTotalsChanged()));
+
+    connect(orderItem, SIGNAL(costChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(orderItem, SIGNAL(marginChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+
     m_orderItems.append(orderItem);
     if(!isMoved) {
         Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
@@ -107,14 +149,15 @@ QList<OrderItem*> Customer::orderItemsList() {
 }
 
 void Customer::removeOrderItem(OrderItem *orderItem) {
-    for(int i = 0; i < m_orderItems.length(); i++) {
-        if(m_orderItems[i] == orderItem) {
-            m_orderItems.removeAt(i);
-            orderItemsChanged(orderItems());
-            fireTotalsChanged();
-            return;
-        }
-    }
+    Q_UNUSED(orderItem);
+//    for(int i = 0; i < m_orderItems.length(); i++) {
+//        if(m_orderItems[i] == orderItem) {
+//            m_orderItems.removeAt(i);
+//            orderItemsChanged(orderItems());
+//            fireTotalsChanged();
+//            return;
+//        }
+//    }
 }
 
 QString Customer::serialize() const {

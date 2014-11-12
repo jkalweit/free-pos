@@ -61,6 +61,11 @@ void Reconciliation::addTicket(Ticket *ticket) {
     connect(ticket, SIGNAL(paymentTypeChanged(QString)),
             this, SLOT(firePaymentTotalsChanged()));
 
+    connect(ticket, SIGNAL(costChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    connect(ticket, SIGNAL(marginChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+
     m_tickets.append(ticket);
     Pos *pos = Pos::instance();
     pos->appendToHistory("AddTicket:" + ticket->serialize());
@@ -202,11 +207,35 @@ float Reconciliation::total() {
     return foodTotal() + taxTotal() + barTotal();
 }
 
+
+
+
+float Reconciliation::cost() {
+    float cost = 0;
+
+    for(Ticket *item : m_tickets) {
+        cost += item->cost();
+    }
+
+    return cost;
+}
+
+float Reconciliation::margin() {
+    return foodTotal() + barTotal() - cost();
+}
+
+
+
+
+
 void Reconciliation::fireTotalsChanged() {
     foodTotalChanged(foodTotal());
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
+
+    costChanged(cost());
+    marginChanged(margin());
 }
 
 void Reconciliation::fireActualTakeTotalsChanged() {

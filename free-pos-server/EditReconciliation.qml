@@ -152,6 +152,13 @@ Rectangle {
                                                 font.strikeout: modelData.deleted
                                             }
 
+//                                            Repeater {
+//                                                model: modelData.orderItemInventoryItems
+
+//                                                Text {
+//                                                    text: modelData.name
+//                                                }
+//                                            }
                                         }
 
 
@@ -298,6 +305,30 @@ Rectangle {
                                 }
                             }
                         }
+                        Rectangle {
+                            width: parent.width
+                            height: 15
+                            Text {
+                                text: "Cost:"
+                                anchors.left: parent.left
+                            }
+                            Text {
+                                text: model.selectedTicket ? model.selectedTicket.cost.toFixed(2) : ""
+                                anchors.right: parent.right
+                            }
+                        }
+                        Rectangle {
+                            width: parent.width
+                            height: 15
+                            Text {
+                                text: "Margin:"
+                                anchors.left: parent.left
+                            }
+                            Text {
+                                text: model.selectedTicket ? model.selectedTicket.margin.toFixed(2) : ""
+                                anchors.right: parent.right
+                            }
+                        }
                     }
                 }
             }
@@ -314,7 +345,7 @@ Rectangle {
 
         onMenuItemSelected: {
             if(model && model.selectedTicket) {
-                model.selectedTicket.customers[0].addOrderItem(menuItem.name, menuItem.type, menuItem.price, 1, "");
+                model.selectedTicket.customers[0].addOrderItem(menuItem, 1, "");
             }
         }
     }
@@ -420,6 +451,40 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 5
                     text: model ? "$" + model.total.toFixed(2) : ""
+                }
+            }
+            Rectangle {
+                width: parent.width
+                height: 20
+                color: "transparent"
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                    text: "Cost:"
+                }
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    text: model ? "$" + model.cost.toFixed(2) : ""
+                }
+            }
+            Rectangle {
+                width: parent.width
+                height: 20
+                color: "transparent"
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                    text: "Margin:"
+                }
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    text: model ? "$" + model.margin.toFixed(2) : ""
                 }
             }
         }

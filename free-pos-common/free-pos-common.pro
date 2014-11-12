@@ -28,7 +28,8 @@ SOURCES += \
     SimpleSerializable.cpp \
     InventoryItem.cpp \
     Inventory.cpp \
-    MenuItemInventoryItem.cpp
+    MenuItemInventoryItem.cpp \
+    OrderItemInventoryItem.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -44,7 +45,8 @@ HEADERS += \
     Pos.h \
     InventoryItem.h \
     Inventory.h \
-    MenuItemInventoryItem.h
+    MenuItemInventoryItem.h \
+    OrderItemInventoryItem.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
