@@ -131,6 +131,11 @@ float OrderItem::total() {
 
 
 float OrderItem::cost() {
+
+    if(m_deleted) {
+        return 0;
+    }
+
     float cost = 0;
 
     for(OrderItemInventoryItem *item : m_orderItemInventoryItems) {
@@ -141,7 +146,7 @@ float OrderItem::cost() {
 }
 
 float OrderItem::margin() {
-    return subTotal() - cost();
+    return subTotal() - cost();  // m_deleted case handled in subTotal() and cost()
 }
 
 

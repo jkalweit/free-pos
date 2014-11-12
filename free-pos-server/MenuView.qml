@@ -124,12 +124,39 @@ Rectangle {
                         anchors.left: parent.left
                         //anchors.leftMargin: 5
                     }
-                    Text {
-                        text: modelData.price.toFixed(2)
-                        color: "#000000"
+                    Column {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right
-                        //anchors.rightMargin: 5
+                        Text {
+                            text: modelData.price.toFixed(2)
+                            anchors.right: parent.right
+                            horizontalAlignment: Text.AlignRight
+                            color: "#000000"
+                        }
+                        Text {
+                            text: modelData.cost.toFixed(2)
+                            anchors.right: parent.right
+                            horizontalAlignment: Text.AlignRight
+                            color: {
+                                var priceRatio = modelData.cost / modelData.price;
+                                if (priceRatio > 1 || priceRatio < 0) // negative price ratio is because of negative price, ie discount
+                                    priceRatio = 1;
+                                return Qt.rgba(priceRatio, 0.1, 0.1, 1);
+                            }
+                        }
+                        Text {
+                            text: modelData.margin.toFixed(2)
+                            anchors.right: parent.right
+                            horizontalAlignment: Text.AlignRight
+                            color: {
+                                var priceRatio = modelData.margin / modelData.price;
+                                var marginRatio = modelData.margin / 5;
+                                var green = priceRatio > marginRatio ? priceRatio : marginRatio;
+                                if (green > 1)
+                                    green = 1;
+                                return Qt.rgba(0.1, green, 0.1, 1);
+                            }
+                        }
                     }
                 }
             }

@@ -116,6 +116,7 @@ Rectangle {
                                         property var model: modelData
                                         color: modelData.isSubmitted ? "transparent" : "#9977DD77"
                                         //property alias flash: flashAnimation
+                                        visible: !(modelData.deleted && !modelData.isSubmitted) // do not show if deleted and not submitted
 
                                         customContent: Column {
                                             id: orderItemInner
@@ -647,7 +648,7 @@ Rectangle {
                             anchors.left: parent.left
                         }
                         Text {
-                            text: modelData.quantity.toFixed(2) + " @ " + (modelData.inventoryItem ? modelData.inventoryItem.price.toFixed(2) + " = " + modelData.cost.toFixed(2) : "?")
+                            text: modelData.quantity.toFixed(2) + " " + modelData.inventoryItem.unit + " @ " + (modelData.inventoryItem ? modelData.inventoryItem.price.toFixed(2) + " = " + modelData.cost.toFixed(2) : "?")
                             color: "#000000"
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: parent.right
@@ -692,7 +693,7 @@ Rectangle {
                 height: 700
 
                 onInventoryItemSelected: {
-                    var item = editMenuItem.menuItem.addMenuItemInventoryItem(inventoryItem.id, 1);
+                    var item = editMenuItem.menuItem.addMenuItemInventoryItem(inventoryItem.id, inventoryItem.defaultQuantity);
                     item.inventoryItem = inventoryItem;
                     addMenuItemInventoryItemDialog.visible = false;
                 }
@@ -834,21 +835,37 @@ Rectangle {
         id: editInventoryItem
         property var inventoryItem
 
+        onInventoryItemChanged: editInventoryItem.updateUnitPrice()
+
         onVisibleChanged: {
             if(editInventoryItem.visible) {
                 editInventoryItem.inventoryItem = editInventoryItem.inventoryItem;
             }
         }
 
+        function updateUnitPrice() {
+            var priceQuantity = parseFloat(editInventoryItemPriceQuantity.text);
+            var price = parseFloat(editInventoryItemPrice.text);
+            if(priceQuantity > 0) {
+                editInventoryItemUnitPrice.text = (price / priceQuantity).toFixed(2);
+            } else {
+                editInventoryItemUnitPrice.text = "Invalid";
+            }
+        }
+
         function close(save) {
             if(save) {
                 editInventoryItem.inventoryItem.name = editInventoryItemName.text;
+                editInventoryItem.inventoryItem.unit = editInventoryItemUnit.currentText;
+                editInventoryItem.inventoryItem.priceQuantity = editInventoryItemPriceQuantity.text;
                 editInventoryItem.inventoryItem.price = editInventoryItemPrice.text;
+                editInventoryItem.inventoryItem.defaultQuantity = editInventoryItemDefaultQuantity.text;
             }
             editInventoryItem.visible = false;
         }
 
         customContent: Column {
+            spacing: 5
             Text {
                 text: "Edit Inventory Item"
                 font.pixelSize: 16
@@ -858,11 +875,43 @@ Rectangle {
                 id: editInventoryItemName
                 label: "Item Name:"
                 text: editInventoryItem.inventoryItem ? editInventoryItem.inventoryItem.name : ""
+            }            
+            Text {
+                text: "[Use the smallest unit used in recipes]"
+                width: 225
+            }
+            Row {
+                Text {
+                    text: "Unit:"
+                    width: 75
+                }
+                ComboBox {
+                    id: editInventoryItemUnit
+                    width: 150
+                    model: [ "oz", "Slice", "tsp", "Tbsp", "Each" ]
+                }
+            }
+            TextFieldLabeled {
+                id: editInventoryItemPriceQuantity
+                label: "Price Quantity:"
+                text: editInventoryItem.inventoryItem ? editInventoryItem.inventoryItem.priceQuantity.toFixed(2) : ""
+                onTextChanged: editInventoryItem.updateUnitPrice();
             }
             TextFieldLabeled {
                 id: editInventoryItemPrice
                 label: "Price:"
                 text: editInventoryItem.inventoryItem ? editInventoryItem.inventoryItem.price.toFixed(2) : ""
+                onTextChanged: editInventoryItem.updateUnitPrice();
+            }            
+            TextLabeled {
+                id: editInventoryItemUnitPrice
+                label: "Unit Price:"
+                text: ""
+            }
+            TextFieldLabeled {
+                id: editInventoryItemDefaultQuantity
+                label: "Default Quantity:"
+                text: editInventoryItem.inventoryItem ? editInventoryItem.inventoryItem.defaultQuantity.toFixed(2) : ""
             }
             Row {
                 Button {

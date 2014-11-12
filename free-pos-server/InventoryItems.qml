@@ -73,6 +73,13 @@ Rectangle {
                     anchors.left: parent.left
                 }
                 Text {
+                    text: modelData.unit
+                    color: "#000000"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 150
+                }
+                Text {
                     text: modelData.price.toFixed(2)
                     color: "#000000"
                     anchors.verticalCenter: parent.verticalCenter

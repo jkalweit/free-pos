@@ -125,7 +125,11 @@ void Pos::readHistory(QString filename) {
             QString property = split[3];
             QString value = split[4];
             OrderItem* orderItem = m_selectedRec->getTicket(ticketId)->getCustomer(customerId)->getOrderItem(orderItemId);
-            orderItem->setProperty(property.toUtf8().data(), value);
+            if(property == "submittedStamp" && value.trimmed() == "") {
+                orderItem->setProperty("submittedStamp", QDateTime());
+            } else {
+                orderItem->setProperty(property.toUtf8().data(), value);
+            }
         } else if (command == "MoveOrderItem") {
             qDebug() << "MoveOrderItem: " << payload;
             quint32 fromTicketId = split[0].toUInt();

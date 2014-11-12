@@ -1,6 +1,8 @@
 #include "Inventory.h"
 #include "Pos.h"
 
+#include <algorithm>
+
 Inventory::Inventory(QObject *parent) :
     QObject(parent), m_currentInventoryItemId(0)
 {
@@ -8,7 +10,7 @@ Inventory::Inventory(QObject *parent) :
 
 
 InventoryItem* Inventory::addInventoryItem(QString name, float price) {
-    InventoryItem *item = new InventoryItem(this, ++m_currentInventoryItemId, name, price);
+    InventoryItem *item = new InventoryItem(this, ++m_currentInventoryItemId, name, "Each", 1, 1, price);
     addInventoryItem(item);
     return item;
 }
@@ -30,7 +32,14 @@ InventoryItem* Inventory::getInventoryItem(quint32 id) {
     return nullptr;
 }
 
+bool compareInventoryItems(InventoryItem *a, InventoryItem *b) {
+    //return a < b;
+    return a->property("name").toString() < b->property("name").toString();
+}
+
 QQmlListProperty<InventoryItem> Inventory::inventoryItems() {
+
+    std::sort(m_inventoryItems.begin(), m_inventoryItems.end(), compareInventoryItems);
     return QQmlListProperty<InventoryItem>(this, m_inventoryItems);
 }
 

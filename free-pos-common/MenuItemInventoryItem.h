@@ -47,11 +47,10 @@ private:
     quint32 m_id;
     quint32 m_menuCategoryId;
     quint32 m_menuItemId;
-    quint32 m_inventoryItemId;
+    quint32 m_inventoryItemId;    
+    float m_quantity;
 
     InventoryItem *m_inventoryItem;
-
-    float m_quantity;
 
 };
 
