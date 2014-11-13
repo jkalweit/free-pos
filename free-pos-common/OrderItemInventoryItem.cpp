@@ -1,7 +1,7 @@
 #include "OrderItemInventoryItem.h"
 
-OrderItemInventoryItem::OrderItemInventoryItem(QObject *parent, quint32 ticketId, quint32 customerId, quint32 orderItemId, quint32 id, quint32 inventoryItemId, QString name, float price, float quantity) :
-    SimpleSerializable(parent), m_ticketId(ticketId), m_customerId(customerId), m_orderItemId(orderItemId), m_id(id), m_inventoryItemId(inventoryItemId), m_name(name), m_price(price), m_quantity(quantity)
+OrderItemInventoryItem::OrderItemInventoryItem(QObject *parent, quint32 ticketId, quint32 customerId, quint32 orderItemId, quint32 id, quint32 inventoryItemId, QString name, QString unit, float price, float quantity, bool isRemoved, bool isAdded) :
+    SimpleSerializable(parent), m_ticketId(ticketId), m_customerId(customerId), m_orderItemId(orderItemId), m_id(id), m_inventoryItemId(inventoryItemId), m_name(name), m_unit(unit), m_price(price), m_quantity(quantity), m_isRemoved(isRemoved), m_isAdded(isAdded)
 {
 }
 
@@ -18,8 +18,30 @@ void OrderItemInventoryItem::setQuantity(float quantity) {
     }
 }
 
+void OrderItemInventoryItem::setIsRemoved(bool isRemoved) {
+    if(m_isRemoved != isRemoved) {
+        m_isRemoved = isRemoved;
+        logPropertyChanged(m_isRemoved, "isRemoved");
+        isRemovedChanged(isRemoved);
+        fireCostChanged();
+    }
+}
+
+void OrderItemInventoryItem::setIsAdded(bool isAdded) {
+    if(m_isAdded != isAdded) {
+        m_isAdded = isAdded;
+        logPropertyChanged(m_isAdded, "isAdded");
+        isAddedChanged(isAdded);
+        fireCostChanged();
+    }
+}
+
 float OrderItemInventoryItem::cost() {
-    return m_quantity * m_price;
+    if(m_isRemoved) {
+        return 0;
+    } else {
+        return m_quantity * m_price;
+    }
 }
 
 quint32 OrderItemInventoryItem::ticketId() {
@@ -45,7 +67,7 @@ void OrderItemInventoryItem::fireCostChanged() {
 
 QString OrderItemInventoryItem::serialize() const {
     QStringList vals;
-    vals  << QString::number(m_ticketId) << QString::number(m_customerId) << QString::number(m_orderItemId) << QString::number(m_id) << QString::number(m_inventoryItemId) << m_name << QString::number(m_price) << QString::number(m_quantity);
+    vals  << QString::number(m_ticketId) << QString::number(m_customerId) << QString::number(m_orderItemId) << QString::number(m_id) << QString::number(m_inventoryItemId) << m_name << m_unit << QString::number(m_price) << QString::number(m_quantity) << QString::number(m_isRemoved) << QString::number(m_isAdded);
     return serializeList(vals);
 }
 
@@ -59,10 +81,13 @@ OrderItemInventoryItem* OrderItemInventoryItem::deserialize(QString serialized, 
     quint32 id = split[3].toUInt();
     quint32 inventoryItemId = split[4].toUInt();
     QString name = split[5];
-    float price = split[6].toFloat();
-    float quantity = split[7].toFloat();
+    QString unit = split[6];
+    float price = split[7].toFloat();
+    float quantity = split[8].toFloat();
+    bool isRemoved = split[9].toInt();
+    bool isAdded = split[10].toInt();
 
-    OrderItemInventoryItem *obj = new OrderItemInventoryItem(parent, ticketId, customerId, orderItemId, id, inventoryItemId, name, price, quantity);
+    OrderItemInventoryItem *obj = new OrderItemInventoryItem(parent, ticketId, customerId, orderItemId, id, inventoryItemId, name, unit, price, quantity, isRemoved, isAdded);
     return obj;
 }
 

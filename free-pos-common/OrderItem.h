@@ -58,7 +58,7 @@ public:
     float margin();
 
     QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems();
-    Q_INVOKABLE OrderItemInventoryItem* addOrderItemInventoryItem(quint32 inventoryItemId, QString name, float price, float quantity);
+    Q_INVOKABLE OrderItemInventoryItem* addOrderItemInventoryItem(quint32 inventoryItemId, QString name, QString unit, float price, float quantity);
     void addOrderItemInventoryItem(OrderItemInventoryItem *orderItemInventoryItem);
     OrderItemInventoryItem* getOrderItemInventoryItem(quint32 id);
     Q_INVOKABLE void removeOrderItemInventoryItem(quint32 id);

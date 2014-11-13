@@ -34,6 +34,7 @@ void MenuItem::setPrice(float price) {
         m_price = price;
         logMenuPropertyChanged(m_price, "price");
         priceChanged(m_price);
+        fireCostChanged();
     }
 }
 

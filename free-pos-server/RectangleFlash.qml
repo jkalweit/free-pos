@@ -14,8 +14,6 @@ Rectangle {
         id: containerInner
         anchors.fill: parent
         anchors.margins: 10
-//        anchors.leftMargin: 10
-//        anchors.rightMargin: 10
         color: "transparent"
     }
 

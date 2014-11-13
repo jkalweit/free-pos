@@ -22,7 +22,7 @@ void MenuItemInventoryItem::setQuantity(float quantity) {
 
 float MenuItemInventoryItem::cost() {
     if(m_inventoryItem) {
-        return m_quantity * m_inventoryItem->property("price").toFloat();
+        return m_quantity * m_inventoryItem->property("unitPrice").toFloat();
     } else {
         //qDebug() << "   ERROR: no InventoryItem for calculating cost.";
         return 0;

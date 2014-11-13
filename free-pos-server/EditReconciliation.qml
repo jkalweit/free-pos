@@ -145,6 +145,18 @@ Rectangle {
                                                 }
                                             }
 
+                                            Repeater {
+                                                model: modelData.orderItemInventoryItems
+
+                                                Text {
+                                                    anchors.left: orderItemInner.left
+                                                    anchors.leftMargin: 40
+                                                    visible: (!modelData.isAdded && modelData.isRemoved) || (modelData.isAdded && !modelData.isRemoved)
+                                                    text: modelData.name
+                                                    font.strikeout: modelData.isRemoved
+                                                }
+                                            }
+
                                             Text {
                                                 anchors.left: parent.left
                                                 anchors.leftMargin: 40
@@ -152,14 +164,6 @@ Rectangle {
                                                 font.italic: true
                                                 font.strikeout: modelData.deleted
                                             }
-
-//                                            Repeater {
-//                                                model: modelData.orderItemInventoryItems
-
-//                                                Text {
-//                                                    text: modelData.name
-//                                                }
-//                                            }
                                         }
 
 
@@ -648,7 +652,7 @@ Rectangle {
                             anchors.left: parent.left
                         }
                         Text {
-                            text: modelData.quantity.toFixed(2) + " " + modelData.inventoryItem.unit + " @ " + (modelData.inventoryItem ? modelData.inventoryItem.price.toFixed(2) + " = " + modelData.cost.toFixed(2) : "?")
+                            text: modelData.quantity.toFixed(2) + " @ " + (modelData.inventoryItem ? modelData.inventoryItem.unitPrice.toFixed(2) + " " + modelData.inventoryItem.unit + " = " + modelData.cost.toFixed(2) : "?")
                             color: "#000000"
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: parent.right
@@ -840,6 +844,14 @@ Rectangle {
         onVisibleChanged: {
             if(editInventoryItem.visible) {
                 editInventoryItem.inventoryItem = editInventoryItem.inventoryItem;
+
+                var units = [ "oz", "Slice", "tsp", "Tbsp", "Each" ];
+                editInventoryItemUnit.model = units;
+                for(var i = 0; i < units.length; i++) {
+                    if(units[i] === editInventoryItem.inventoryItem.unit) {
+                        editInventoryItemUnit.currentIndex = i;
+                    }
+                }
             }
         }
 
@@ -849,7 +861,7 @@ Rectangle {
             if(priceQuantity > 0) {
                 editInventoryItemUnitPrice.text = (price / priceQuantity).toFixed(2);
             } else {
-                editInventoryItemUnitPrice.text = "Invalid";
+                edityItemUnitPrice.text = "Invalid";
             }
         }
 
@@ -888,7 +900,6 @@ Rectangle {
                 ComboBox {
                     id: editInventoryItemUnit
                     width: 150
-                    model: [ "oz", "Slice", "tsp", "Tbsp", "Each" ]
                 }
             }
             TextFieldLabeled {

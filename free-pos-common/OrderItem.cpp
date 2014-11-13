@@ -153,8 +153,8 @@ float OrderItem::margin() {
 
 
 
-OrderItemInventoryItem* OrderItem::addOrderItemInventoryItem(quint32 inventoryItemId, QString name, float price, float quantity) {
-    OrderItemInventoryItem* item = new OrderItemInventoryItem(this, m_ticketId, m_customerId, m_id, ++m_currentOrderItemInventoryItemId, inventoryItemId, name, price, quantity);
+OrderItemInventoryItem* OrderItem::addOrderItemInventoryItem(quint32 inventoryItemId, QString name, QString unit, float price, float quantity) {
+    OrderItemInventoryItem* item = new OrderItemInventoryItem(this, m_ticketId, m_customerId, m_id, ++m_currentOrderItemInventoryItemId, inventoryItemId, name, unit, price, quantity);
     addOrderItemInventoryItem(item);
     return item;
 }
@@ -167,6 +167,9 @@ void OrderItem::addOrderItemInventoryItem(OrderItemInventoryItem *orderItemInven
 //    if(!isMoved) {
 //        Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
 //    }
+    connect(orderItemInventoryItem, SIGNAL(costChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+
     // TODO: check to see if merely moved
     Pos::instance()->appendToHistory("AddOrderItemInventoryItem:" + orderItemInventoryItem->serialize());
     orderItemInventoryItemsChanged(orderItemInventoryItems());
@@ -191,6 +194,8 @@ void OrderItem::removeOrderItemInventoryItem(quint32 id) {
         if(m_orderItemInventoryItems[i]->property("id").toUInt() == id) {
             OrderItemInventoryItem *item = m_orderItemInventoryItems[i];
             m_orderItemInventoryItems.removeAt(i);
+            disconnect(item, SIGNAL(costChanged(float)),
+                       this, SLOT(fireTotalsChanged()));
             QStringList historyEntry;
             historyEntry << "RemoveOrderItemInventoryItem" << item->property("ticketId").toString() << item->property("customerId").toString() << item->property("orderItemId").toString() << item->property("id").toString();
             Pos::instance()->appendToHistory(serializeList(historyEntry));

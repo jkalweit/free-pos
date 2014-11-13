@@ -150,7 +150,7 @@ Rectangle {
                             horizontalAlignment: Text.AlignRight
                             color: {
                                 var priceRatio = modelData.margin / modelData.price;
-                                var marginRatio = modelData.margin / 5;
+                                var marginRatio = modelData.margin / 7;
                                 var green = priceRatio > marginRatio ? priceRatio : marginRatio;
                                 if (green > 1)
                                     green = 1;

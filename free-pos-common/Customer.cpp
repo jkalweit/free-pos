@@ -102,6 +102,7 @@ OrderItem* Customer::addOrderItem(MenuItem* menuItem, float quantity, QString no
     for(MenuItemInventoryItem *item : menuItem->menuItemInventoryItemsList()) {
         orderItem->addOrderItemInventoryItem(item->property("inventoryItemId").toUInt(),
                                              item->inventoryItem()->property("name").toString(),
+                                             item->inventoryItem()->property("unit").toString(),
                                              item->inventoryItem()->property("price").toFloat(),
                                              item->property("quantity").toFloat());
     }
