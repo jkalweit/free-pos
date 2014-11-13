@@ -73,7 +73,7 @@ DialogModal {
             Repeater {
                 model: editOrderItemDialog.model ? editOrderItemDialog.model.orderItemInventoryItems : 0
 
-                RectangleFlash {
+                RectangleFlashButton {
                     width: 200
                     height: inventoryItemName.height + 20
                     visible: !(modelData.isAdded && modelData.isRemoved)

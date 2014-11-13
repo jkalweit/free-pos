@@ -38,15 +38,15 @@ Rectangle {
         model: inventory && inventory.inventoryItems ? inventory.inventoryItems : 0
         clip: true
 
-        delegate: RectangleFlash {
+        delegate: RectangleFlashButton {
             id: inventoryItemContainer
             width: container.width
 
             height: inventoryItemName.height + 10
-            border.color: "white" // menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
-            border.width: 2
-            //color:  modelData.isDisabled ? "#AAAAAA" : "#9575cd"
-            flashColor: "#FFFFFF"
+//            border.color: "#DDDDDD" // menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
+//            border.width: 1
+//            //color:  modelData.isDisabled ? "#AAAAAA" : "#9575cd"
+//            color: "#DDFFDD"
 
 //            visible: {
 //                if(!container.editMode && modelData.isDisabled)
@@ -58,7 +58,7 @@ Rectangle {
 //                return modelData.name.toUpperCase().indexOf(filter) > -1;
 //            }
 
-            onBeforeFlash: {
+            onClicked: {
                 newInventoryItemName.text = "";
                 container.inventoryItemSelected(modelData, false);
             }

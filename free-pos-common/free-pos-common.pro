@@ -29,7 +29,9 @@ SOURCES += \
     InventoryItem.cpp \
     Inventory.cpp \
     MenuItemInventoryItem.cpp \
-    OrderItemInventoryItem.cpp
+    OrderItemInventoryItem.cpp \
+    MenuItemOption.cpp \
+    OrderItemOption.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -46,7 +48,9 @@ HEADERS += \
     InventoryItem.h \
     Inventory.h \
     MenuItemInventoryItem.h \
-    OrderItemInventoryItem.h
+    OrderItemInventoryItem.h \
+    MenuItemOption.h \
+    OrderItemOption.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
