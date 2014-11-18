@@ -33,6 +33,7 @@ class OrderItem : public SimpleSerializable {
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 
     Q_PROPERTY(QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems READ orderItemInventoryItems NOTIFY orderItemInventoryItemsChanged)
+    Q_PROPERTY(QQmlListProperty<OrderItemOption> orderItemOptions READ orderItemOptions NOTIFY orderItemOptionsChanged)
 public:
     explicit OrderItem(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, quint32 customerId = 0, QString name = "", QString type = "", QDateTime createdStamp = QDateTime(), float price = 0, float quantity = 0, QString note = "", bool deleted = false, QDateTime submittedStamp = QDateTime());
 

@@ -14,10 +14,14 @@ class MenuCategory : public SimpleSerializable
     Q_PROPERTY(QQmlListProperty<MenuItem> menuItems READ menuItems NOTIFY menuItemsChanged)
     Q_PROPERTY(bool isDisabled MEMBER m_isDisabled WRITE setIsDisabled NOTIFY isDisabledChanged)
     Q_PROPERTY(MenuItem *selectedItem READ selectedItem WRITE setSelectedItem NOTIFY selectedItemChanged)
+
+    Q_PROPERTY(float averageCost READ averageCost NOTIFY averageCostChanged)
 public:
     explicit MenuCategory(QObject *parent = 0, quint32 id = 0, QString name = "", bool isDisabled = false);
 
     virtual QStringList updatePrefix();
+
+    float averageCost();
 
     QQmlListProperty<MenuItem> menuItems();
     Q_INVOKABLE MenuItem* addMenuItem(QString name, QString type, float price);
@@ -40,8 +44,10 @@ signals:
     void menuItemsChanged(QQmlListProperty<MenuItem>);
     void isDisabledChanged(bool);
     void selectedItemChanged(MenuItem*);
+    void averageCostChanged(float);
 
 public slots:
+    void fireMenuItemsChanged();
 
 private:
     quint32 m_id;

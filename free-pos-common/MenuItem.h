@@ -34,6 +34,7 @@ public:
     void setIsDisabled(bool isDisabled);
 
     float cost();
+    float costWithoutOptions();
     float margin();
 
     QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems();

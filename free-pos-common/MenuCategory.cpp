@@ -12,6 +12,26 @@ QStringList MenuCategory::updatePrefix() {
     return QStringList() << "UpdateMenuCategory" << QString::number(m_id);
 }
 
+float MenuCategory::averageCost() {
+
+    float cost = 0;
+    float count = 0;
+
+    for(MenuItem *item : m_menuItems) {
+        if(!item->property("isDisabled").toBool()) {
+            cost += item->costWithoutOptions();
+            count++;
+        }
+    }
+
+    return count > 0 ? cost / count : 0;
+}
+
+void MenuCategory::fireMenuItemsChanged() {
+    averageCostChanged(averageCost());
+    menuItemsChanged(menuItems());
+}
+
 MenuItem* MenuCategory::addMenuItem(QString name, QString type, float price) {
     MenuItem* item = new MenuItem(this, ++m_currentMenuItemId, m_id, name, type, price);
     addMenuItem(item);
@@ -20,10 +40,17 @@ MenuItem* MenuCategory::addMenuItem(QString name, QString type, float price) {
 
 void MenuCategory::addMenuItem(MenuItem *menuItem) {
     m_menuItems.append(menuItem);
-    if(menuItem->property("id").toUInt() > m_currentMenuItemId)
+    if(menuItem->property("id").toUInt() > m_currentMenuItemId) {
         m_currentMenuItemId = menuItem->property("id").toUInt();
+    }
+
+    connect(menuItem, SIGNAL(costChanged(float)),
+            this, SLOT(fireMenuItemsChanged()));
+    connect(menuItem, SIGNAL(isDisabledChanged(bool)),
+            this, SLOT(fireMenuItemsChanged()));
+
     Pos::instance()->appendToMenuHistory("AddMenuItem:" + menuItem->serialize());
-    menuItemsChanged(menuItems());
+    fireMenuItemsChanged();
 }
 
 MenuItem* MenuCategory::getMenuItem(quint32 id) {

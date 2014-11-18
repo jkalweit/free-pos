@@ -17,7 +17,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width / 2
-        onMenuItemSelected: menuItemSelected(menuItem, isNew)
+        onMenuItemSelected: container.menuItemSelected(menuItem, isNew)
     }
 
     MenuCategoriesView {
@@ -28,7 +28,7 @@ Rectangle {
         width: parent.width / 2
         onMenuCategorySelected: {
             menuItemsView.newMenuItemName.forceActiveFocus();
-            menuCategorySelected(menuCategory, isNew);
+            container.menuCategorySelected(menuCategory, isNew);
         }
     }
 

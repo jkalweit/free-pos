@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MenuItemInventoryItem>("FreePos", 1, 0, "MenuItemInventoryItem");
     qmlRegisterType<OrderItemInventoryItem>("FreePos", 1, 0, "OrderItemInventoryItem");
     qmlRegisterType<MenuItemOption>("FreePos", 1, 0, "MenuItemOption");
+    qmlRegisterType<OrderItemOption>("FreePos", 1, 0, "OrderItemOption");
 
     Pos *pos = Pos::instance();
     pos->readHistory();

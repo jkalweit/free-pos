@@ -47,7 +47,18 @@ void MenuItem::setIsDisabled(bool isDisabled) {
 }
 
 
-float MenuItem::cost() {
+float MenuItem::cost() {    
+
+    float cost = costWithoutOptions();
+
+    for(MenuItemOption *item : m_menuItemOptions) {
+        cost += Pos::instance()->selectedMenu()->getMenuCategory(item->menuCategoryId())->averageCost();
+    }
+
+    return cost;
+}
+
+float MenuItem::costWithoutOptions() {
     float cost = 0;
 
     for(MenuItemInventoryItem *item : m_menuItemInventoryItems) {

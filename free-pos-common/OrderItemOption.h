@@ -14,7 +14,7 @@ class OrderItemOption : public SimpleSerializable
     Q_PROPERTY(quint32 optionMenuCategoryId MEMBER m_optionMenuCategoryId NOTIFY optionMenuCategoryIdChanged)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString menuItemName MEMBER m_menuItemName WRITE setMenuItemName NOTIFY menuItemNameChanged)
-    Q_PROPERTY(float cost MEMBER m_cost WRITE setCost NOTIFY costChanged)
+    Q_PROPERTY(float cost MEMBER m_cost READ cost WRITE setCost NOTIFY costChanged)
 public:
     explicit OrderItemOption(QObject *parent = 0, quint32 ticketId = 0, quint32 customerId = 0, quint32 orderItemId = 0, quint32 id = 0, quint32 optionMenuCategoryId = 0, QString name = "", QString menuItemName = "", float cost = 0);
 
@@ -24,6 +24,7 @@ public:
     quint32 customerId();
     quint32 orderItemId();
     quint32 id();
+    float cost();
 
     void setName(QString name);
     void setMenuItemName(QString menuItemName);

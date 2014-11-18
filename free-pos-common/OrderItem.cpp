@@ -142,6 +142,10 @@ float OrderItem::cost() {
         cost += (m_quantity * item->cost());
     }
 
+    for(OrderItemOption *item : m_orderItemOptions) {
+        cost += (m_quantity * item->cost());
+    }
+
     return cost;
 }
 

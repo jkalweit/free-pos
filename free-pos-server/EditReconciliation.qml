@@ -593,6 +593,7 @@ Rectangle {
         }
 
         customContent: Column {
+            id: innerColumn
             spacing: 5
             Text {
                 text: "Edit Menu Item"
@@ -613,48 +614,60 @@ Rectangle {
                 id: editType
                 model: [ "Food", "Alcohol" ]
             }
-            ListView {
-                width: 300
-                height: 100
-                model: editMenuItem.menuItem ? editMenuItem.menuItem.menuItemOptions : 0
-                clip: true
 
-                delegate: RectangleFlashButton {
+            RectangleFlashButton {
+                text: "Is Disabled: " + (editMenuItem.isItemDisabled ? "Yes" : "No")
+                onClicked: editMenuItem.isItemDisabled = !editMenuItem.isItemDisabled
+            }
+            Row {
+                Button {
+                    text: "Add Menu Item Option"
+                    onClicked: addMenuItemOption.visible = true
+                }
+                Button {
+                    text: "Add Inventory Item"
+                    onClicked: addMenuItemInventoryItemDialog.show()
+                }
+            }
+            Repeater {
+                model: editMenuItem.menuItem ? editMenuItem.menuItem.menuItemOptions : 0
+
+                Rectangle {
                     id: menuItemOptionContainer
-                    width: parent.width
+                    width: innerColumn.width
 
                     height: menuItemOptionName.height + 10
                     border.color: "#55FF55"
                     border.width: 2
 
-                    onClicked: {
-//                        editMenuItemInventoryItem.menuItemInventoryItem = modelData;
-//                        editMenuItemInventoryItem.show();
-                    }
-
-                    customContent: Item {
-                        anchors.fill: parent
-                        Text {
-                            id: menuItemOptionName
-                            text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).name
-                            color: "#000000"
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
+                    Rectangle {
+                        anchors.right: parent.right
+                        border.color: "#FFFF00"
+                        border.width: 2
+                        color: "#FFFF77"
+                        height: parent.height
+                        width: {
+                            var cost = editMenuItem.menuItem.cost;
+                            var ratio = pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).averageCost / cost;
+                            return parent.width * ratio;
                         }
                     }
+                    Text {
+                        id: menuItemOptionName
+                        text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).name
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                    }
+                    Text {
+                        text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).averageCost.toFixed(2)
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
+                    }
                 }
-            }
-            RectangleFlashButton {
-                text: "Add Menu Item Option"
-                onClicked: addMenuItemOption.visible = true
-            }
-            RectangleFlashButton {
-                text: "Is Disabled: " + (editMenuItem.isItemDisabled ? "Yes" : "No")
-                onClicked: editMenuItem.isItemDisabled = !editMenuItem.isItemDisabled
-            }
-            Button {
-                text: "Add Inventory Item"
-                onClicked: addMenuItemInventoryItemDialog.show()
             }
             ListView {
                 width: 300
@@ -680,6 +693,7 @@ Rectangle {
 
                     customContent: Item {
                         anchors.fill: parent
+
                         Text {
                             id: inventoryItemName
                             text: pos.selectedInventory.getInventoryItem(modelData.inventoryItemId).name
@@ -692,6 +706,20 @@ Rectangle {
                             color: "#000000"
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: parent.right
+                        }
+
+                        Rectangle {
+                            anchors.right: inventoryItemContainer.right
+                            border.color: "#FFFF00"
+                            border.width: 2
+                            color: "#FFFF77"
+                            height: inventoryItemContainer.height
+                            width: {
+                                var cost = editMenuItem.menuItem.cost;
+                                var ratio = modelData.cost / cost;
+                                console.log("Cost", cost, ratio, parent.width, parent.width * ratio);
+                                return parent.width * ratio;
+                            }
                         }
                     }
                 }
@@ -914,7 +942,6 @@ Rectangle {
                 onInventoryItemSelected: {
                     editInventoryItem.inventoryItem = inventoryItem;
                     editInventoryItem.show();
-                    console.log('Selected Inventory Item:', inventoryItem.name);
                 }
             }
         }
@@ -946,7 +973,7 @@ Rectangle {
             if(priceQuantity > 0) {
                 editInventoryItemUnitPrice.text = (price / priceQuantity).toFixed(2);
             } else {
-                edityItemUnitPrice.text = "Invalid";
+                editInventoryItemUnitPrice.text = "Invalid";
             }
         }
 

@@ -8,6 +8,7 @@ Rectangle {
     signal clicked
     property string flashColor: "#FF000000"
     property int flashDuration: 100
+    property alias customContentContainer: containerInner
     property alias customContent: containerInner.data    
 
     Rectangle {

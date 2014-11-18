@@ -263,6 +263,20 @@ void Pos::readHistory(QString filename) {
             Customer *customer = ticket->getCustomer(orderItemOption->customerId());
             OrderItem *orderItem = customer->getOrderItem(orderItemOption->orderItemId());
             orderItem->addOrderItemOption(orderItemOption);
+        } else if (command == "UpdateOrderItemOption") {
+            qDebug() << "UpdateOrderItemOption: " << payload;
+            quint32 ticketId = split[0].toUInt();
+            quint32 customerId = split[1].toUInt();
+            quint32 orderItemId = split[2].toUInt();
+            quint32 id = split[3].toUInt();
+            QString property = split[4];
+            QString value = split[5];
+
+            Ticket *ticket = m_selectedRec->getTicket(ticketId);
+            Customer *customer = ticket->getCustomer(customerId);
+            OrderItem *orderItem = customer->getOrderItem(orderItemId);
+            OrderItemOption *item = orderItem->getOrderItemOption(id);
+            item->setProperty(property.toUtf8().data(), value);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }

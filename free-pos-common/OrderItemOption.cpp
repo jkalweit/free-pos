@@ -27,6 +27,10 @@ quint32 OrderItemOption::id() {
     return m_id;
 }
 
+float OrderItemOption::cost() {
+    return m_cost;
+}
+
 void OrderItemOption::setName(QString name) {
     if(m_name != name.trimmed()) {
         m_name = name.trimmed();

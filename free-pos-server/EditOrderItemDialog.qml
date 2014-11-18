@@ -26,6 +26,7 @@ DialogModal {
     }
 
     customContent: Column {
+        id: innerColumn
         spacing: 5
 
 
@@ -70,11 +71,33 @@ DialogModal {
             anchors.left: parent.left
             anchors.leftMargin: 75
             spacing: 2
+
+            Repeater {
+                model: editOrderItemDialog.model ? editOrderItemDialog.model.orderItemOptions : 0
+
+                RectangleFlash {
+                    width: 225
+                    height: selectOrderItemOptionText.height + 20
+                    color: (modelData.menuItemName !== "") ? "#DDDDFF" : "#FFFFDD"
+                    onClicked: {
+                        selectOrderItemOption.orderItemOption = modelData;
+                        selectOrderItemOption.visible = true;
+                    }
+
+                    customContent: Text{
+                        id: selectOrderItemOptionText
+                        text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).name + ": " + modelData.menuItemName + ": " + modelData.cost.toFixed(2)
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+            }
+
+
             Repeater {
                 model: editOrderItemDialog.model ? editOrderItemDialog.model.orderItemInventoryItems : 0
 
                 RectangleFlashButton {
-                    width: 200
+                    width: 225
                     height: inventoryItemName.height + 20
                     visible: !(modelData.isAdded && modelData.isRemoved)
                     color: modelData.isAdded ? "#DDFFDD" : "#FFFFFF";
@@ -101,23 +124,21 @@ DialogModal {
                     }
                 }
             }
-        }
+            RectangleFlash {
+                width: 225
+                height: addOrderItemInventoryItemText.height + 20
+                color: "#DDDDDD"
+                onClicked: {
+                    addOrderItemInventoryItem.visible = true
+                }
 
-        RectangleFlash {
-            width: parent.width
-            height: addOrderItemInventoryItemText.height + 20
-            color: "#DDDDDD"
-            onClicked: {
-                addOrderItemInventoryItem.visible = true
+                customContent: Text{
+                    id: addOrderItemInventoryItemText
+                    text: "Add Extra"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
-
-            customContent: Text{
-                id: addOrderItemInventoryItemText
-                text: "Add Extra"
-                anchors.verticalCenter: parent.verticalCenter
-            }
         }
-
 
         TextFieldLabeled {
             id: editQuantity
@@ -261,5 +282,50 @@ DialogModal {
         id: cannotMoveOrderItem
         title: "Cannot Move Order Item"
         text: "Destination ticket has already been paid."
+    }
+
+
+    DialogModal {
+        id: selectOrderItemOption
+        property var orderItemOption
+
+        property var previousMenuCategory
+
+        onVisibleChanged: {
+            if(selectOrderItemOption.visible) {
+                previousMenuCategory = pos.selectedMenu.selectedCategory;
+                pos.selectedMenu.selectedCategory = pos.selectedMenu.getMenuCategory(orderItemOption.optionMenuCategoryId);
+            } else {
+                pos.selectedMenu.selectedCategory = previousMenuCategory;
+            }
+        }
+
+        customContent: Column {
+            Text {
+                text: "Select Order Item Option"
+                font.pixelSize: 16
+                font.bold: true
+            }
+            MenuItemsView {
+                id: menuItemsView
+                menu: pos.selectedMenu
+                width: 200
+                height: 600
+                onMenuItemSelected: {
+                    selectOrderItemOption.orderItemOption.menuItemName = menuItem.name;
+                    selectOrderItemOption.orderItemOption.cost = menuItem.cost;
+                    selectOrderItemOption.visible = false;
+                }
+            }
+            Button {
+                onClicked: {
+                    if(pos.menu.selectedCategory) {
+                        console.log("Test: " + pos.menu.selectedCategory.name);
+                    }else {
+                        console.log("Nope.");
+                    }
+                }
+            }
+        }
     }
 }
