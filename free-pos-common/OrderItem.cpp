@@ -4,7 +4,7 @@
 #include "Pos.h"
 
 OrderItem::OrderItem(QObject *parent, quint32 id, quint32 ticketId, quint32 customerId, QString name, QString type, QDateTime createdStamp, float price, float quantity, QString note, bool deleted, QDateTime submittedStamp) :
-    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted), m_submittedStamp(submittedStamp), m_currentOrderItemInventoryItemId(0)
+    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted), m_submittedStamp(submittedStamp), m_currentOrderItemInventoryItemId(0), m_currentOrderItemOptionId(0)
 {
     connect(this, SIGNAL(quantityChanged(float)),
             this, SLOT(fireTotalsChanged()));
@@ -205,6 +205,67 @@ void OrderItem::removeOrderItemInventoryItem(quint32 id) {
         }
     }
 }
+
+
+
+
+
+
+
+OrderItemOption* OrderItem::addOrderItemOption(quint32 optionMenuCategoryId) {
+    QString name = Pos::instance()->selectedMenu()->getMenuCategory(optionMenuCategoryId)->property("name").toString();
+    OrderItemOption *item = new OrderItemOption(this, m_ticketId, m_customerId, m_id, ++m_currentOrderItemOptionId, optionMenuCategoryId, "", 0);
+    addOrderItemOption(item);
+    return item;
+}
+
+void OrderItem::addOrderItemOption(OrderItemOption *orderItemOption) {
+    if(orderItemOption->id() > m_currentOrderItemOptionId) m_currentOrderItemOptionId = orderItemOption->id();
+    connect(orderItemOption, SIGNAL(costChanged(float)),
+            this, SLOT(fireTotalsChanged()));
+    m_orderItemOptions.append(orderItemOption);
+//    if(!isMoved) {
+//        Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
+//    }
+
+    // TODO: check to see if merely moved
+    Pos::instance()->appendToHistory("AddOrderItemOption:" + orderItemOption->serialize());
+    orderItemOptionsChanged(orderItemOptions());
+    fireTotalsChanged();
+}
+
+QQmlListProperty<OrderItemOption> OrderItem::orderItemOptions() {
+    return QQmlListProperty<OrderItemOption>(this, m_orderItemOptions);
+}
+
+OrderItemOption* OrderItem::getOrderItemOption(quint32 id) {
+    for(OrderItemOption* item : m_orderItemOptions) {
+        if(item->id() == id){
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+//void OrderItem::removeOrderItemInventoryItem(quint32 id) {
+//    for(int i = 0; i < m_orderItemInventoryItems.length(); i++) {
+//        if(m_orderItemInventoryItems[i]->property("id").toUInt() == id) {
+//            OrderItemInventoryItem *item = m_orderItemInventoryItems[i];
+//            m_orderItemInventoryItems.removeAt(i);
+//            disconnect(item, SIGNAL(costChanged(float)),
+//                       this, SLOT(fireTotalsChanged()));
+//            QStringList historyEntry;
+//            historyEntry << "RemoveOrderItemInventoryItem" << item->property("ticketId").toString() << item->property("customerId").toString() << item->property("orderItemId").toString() << item->property("id").toString();
+//            Pos::instance()->appendToHistory(serializeList(historyEntry));
+//            orderItemInventoryItemsChanged(orderItemInventoryItems());
+//            fireTotalsChanged();
+//            return;
+//        }
+//    }
+//}
+
+
+
 
 
 

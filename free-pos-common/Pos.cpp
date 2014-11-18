@@ -3,6 +3,7 @@
 #include "Customer.h"
 #include "OrderItem.h"
 #include "OrderItemInventoryItem.h"
+#include "MenuItemOption.h"
 
 #include <QDebug>
 #include <QDir>
@@ -249,6 +250,19 @@ void Pos::readHistory(QString filename) {
             Customer *customer = ticket->getCustomer(customerId);
             OrderItem *orderItem = customer->getOrderItem(orderItemId);
             orderItem->removeOrderItemInventoryItem(id);
+        } else if (command == "AddMenuItemOption") {
+            qDebug() << "AddMenuItemOption: " << payload;
+            MenuItemOption *menuItemOption = MenuItemOption::deserialize(payload);
+            MenuCategory* cat = Pos::instance()->selectedMenu()->getMenuCategory(menuItemOption->menuCategoryId());
+            MenuItem *menuItem = cat->getMenuItem(menuItemOption->menuItemId());
+            menuItem->addMenuItemOption(menuItemOption);
+        } else if (command == "AddOrderItemOption") {
+            qDebug() << "AddOrderItemOption: " << payload;
+            OrderItemOption *orderItemOption = OrderItemOption::deserialize(payload);
+            Ticket *ticket = m_selectedRec->getTicket(orderItemOption->ticketId());
+            Customer *customer = ticket->getCustomer(orderItemOption->customerId());
+            OrderItem *orderItem = customer->getOrderItem(orderItemOption->orderItemId());
+            orderItem->addOrderItemOption(orderItemOption);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }

@@ -564,6 +564,7 @@ Rectangle {
             }
         }
     }
+
     DialogModal {
         id: editMenuItem
         property var menuItem
@@ -611,6 +612,41 @@ Rectangle {
             ComboBox {
                 id: editType
                 model: [ "Food", "Alcohol" ]
+            }
+            ListView {
+                width: 300
+                height: 100
+                model: editMenuItem.menuItem ? editMenuItem.menuItem.menuItemOptions : 0
+                clip: true
+
+                delegate: RectangleFlashButton {
+                    id: menuItemOptionContainer
+                    width: parent.width
+
+                    height: menuItemOptionName.height + 10
+                    border.color: "#55FF55"
+                    border.width: 2
+
+                    onClicked: {
+//                        editMenuItemInventoryItem.menuItemInventoryItem = modelData;
+//                        editMenuItemInventoryItem.show();
+                    }
+
+                    customContent: Item {
+                        anchors.fill: parent
+                        Text {
+                            id: menuItemOptionName
+                            text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).name
+                            color: "#000000"
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                        }
+                    }
+                }
+            }
+            RectangleFlashButton {
+                text: "Add Menu Item Option"
+                onClicked: addMenuItemOption.visible = true
             }
             RectangleFlashButton {
                 text: "Is Disabled: " + (editMenuItem.isItemDisabled ? "Yes" : "No")
@@ -676,6 +712,55 @@ Rectangle {
                 Button {
                     text: "Cancel"
                     onClicked: editMenuItem.close(false)
+                }
+            }
+        }
+    }
+
+    DialogModal {
+        id: addMenuItemOption
+
+        function close(save) {
+//            if(save) {
+//                if(addMenuItemOptionName.text.trim() !== "") {
+//                    editMenuItem.menuItem.addMenuItemOption(addMenuItemOptionName.text);
+//                } else {
+//                    return;
+//                }
+//            }
+//            addMenuItemOptionName.text = "";
+            addMenuItemOption.visible = false;
+        }
+
+        customContent: Column {
+            spacing: 5
+            Text {
+                text: "Add Menu Item Option"
+                font.pixelSize: 16
+                font.bold: true
+            }
+//            TextFieldLabeled {
+//                id: addMenuItemOptionName
+//                label: "Name"
+//                placeholderText: "Option Name"
+//            }
+            MenuCategoriesView {
+                width: 200
+                height: 600
+                menu: pos.selectedMenu
+                onMenuCategorySelected: {
+                    editMenuItem.menuItem.addMenuItemOption(menuCategory.id);
+                    addMenuItemOption.close(false);
+                }
+            }
+            Row {
+//                Button {
+//                    text: "Add"
+//                    onClicked: addMenuItemOption.close(true)
+//                }
+                Button {
+                    text: "Cancel"
+                    onClicked: addMenuItemOption.close(false)
                 }
             }
         }

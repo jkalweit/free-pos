@@ -29,8 +29,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<InventoryItem>("FreePos", 1, 0, "InventoryItem");
     qmlRegisterType<MenuItemInventoryItem>("FreePos", 1, 0, "MenuItemInventoryItem");
     qmlRegisterType<OrderItemInventoryItem>("FreePos", 1, 0, "OrderItemInventoryItem");
+    qmlRegisterType<MenuItemOption>("FreePos", 1, 0, "MenuItemOption");
 
-    Pos *pos = Pos::instance();    
+    Pos *pos = Pos::instance();
     pos->readHistory();
     pos->readHistory("currInventory.txt");
     pos->readHistory("currMenu.txt");

@@ -5,7 +5,7 @@
 #include "Pos.h"
 
 MenuItem::MenuItem(QObject *parent, quint32 id, quint32 menuCategoryId, QString name, QString type, float price, bool isDisabled) :
-    SimpleSerializable(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name), m_type(type), m_price(price), m_isDisabled(isDisabled), m_currentMenuItemInventoryItemId(0)
+    SimpleSerializable(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name), m_type(type), m_price(price), m_isDisabled(isDisabled), m_currentMenuItemInventoryItemId(0), m_currentMenuItemOptionId(0)
 {
 }
 
@@ -102,7 +102,6 @@ MenuItemInventoryItem* MenuItem::getMenuItemInventoryItem(quint32 id) {
     return nullptr;
 }
 
-
 void MenuItem::removeMenuItemInventoryItem(quint32 menuItemInventoryItemId) {
     for(int i = 0; i < m_menuItemInventoryItems.length(); i++) {
         if(m_menuItemInventoryItems[i]->property("id").toUInt() == menuItemInventoryItemId) {
@@ -122,6 +121,72 @@ void MenuItem::removeMenuItemInventoryItem(quint32 menuItemInventoryItemId) {
         }
     }
 }
+
+
+
+
+
+
+MenuItemOption* MenuItem::addMenuItemOption(quint32 optionMenuCategoryId) {
+    MenuItemOption* item = new MenuItemOption(this, m_menuCategoryId, m_id, ++m_currentMenuItemOptionId, optionMenuCategoryId);
+    addMenuItemOption(item);
+    return item;
+}
+
+void MenuItem::addMenuItemOption(MenuItemOption *menuItemOption) {
+    if(menuItemOption->id() > m_currentMenuItemOptionId) m_currentMenuItemOptionId = menuItemOption->id();
+
+    m_menuItemOptions.append(menuItemOption);
+    Pos::instance()->appendToMenuHistory("AddMenuItemOption:" + menuItemOption->serialize());
+//    connect(menuItemInventoryItem, SIGNAL(costChanged(float)),
+//            this, SLOT(fireCostChanged()));
+    menuItemOptionsChanged(menuItemOptions());
+
+    //fireCostChanged();
+}
+
+QQmlListProperty<MenuItemOption> MenuItem::menuItemOptions() {
+    return QQmlListProperty<MenuItemOption>(this, m_menuItemOptions);
+}
+
+QList<MenuItemOption*> MenuItem::menuItemOptionsList() {
+    return m_menuItemOptions;
+}
+
+MenuItemOption* MenuItem::getMenuItemOption(quint32 id) {
+    for(MenuItemOption* item : m_menuItemOptions) {
+        if(item->id() == id){
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+void MenuItem::removeMenuItemOption(quint32 menuItemOptionId) {
+    for(int i = 0; i < m_menuItemOptions.length(); i++) {
+        if(m_menuItemOptions[i]->id() == menuItemOptionId) {
+            MenuItemOption *item = m_menuItemOptions[i];
+            m_menuItemOptions.removeAt(i);
+            QStringList historyEntry;
+            historyEntry << "RemoveMenuItemOption" << item->path();
+            Pos::instance()->appendToMenuHistory(serializeList(historyEntry));
+
+//            disconnect(item, SIGNAL(costChanged(float)),
+//                    this, SLOT(fireCostChanged()));
+
+            menuItemOptionsChanged(menuItemOptions());
+
+            //fireCostChanged();
+            return;
+        }
+    }
+}
+
+
+
+
+
+
 
 
 

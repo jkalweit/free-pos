@@ -7,6 +7,7 @@
 #include <QQmlListProperty>
 #include "SimpleSerializable.h"
 #include "OrderItemInventoryItem.h"
+#include "OrderItemOption.h"
 
 class OrderItem : public SimpleSerializable {
 
@@ -63,6 +64,11 @@ public:
     OrderItemInventoryItem* getOrderItemInventoryItem(quint32 id);
     Q_INVOKABLE void removeOrderItemInventoryItem(quint32 id);
 
+    QQmlListProperty<OrderItemOption> orderItemOptions();
+    Q_INVOKABLE OrderItemOption* addOrderItemOption(quint32 optionMenuCategoryId);
+    void addOrderItemOption(OrderItemOption *orderItemOption);
+    OrderItemOption* getOrderItemOption(quint32 id);
+    //Q_INVOKABLE void removeOrderItemOption(quint32 id);
 
     QString serialize() const;
     static OrderItem* deserialize(QString serialized, QObject *parent = 0);
@@ -86,6 +92,7 @@ signals:
     void totalChanged(float);
 
     void orderItemInventoryItemsChanged(QQmlListProperty<OrderItemInventoryItem>);
+    void orderItemOptionsChanged(QQmlListProperty<OrderItemOption>);
 
     void costChanged(float);
     void marginChanged(float);
@@ -105,6 +112,9 @@ private:
 
     QList<OrderItemInventoryItem*> m_orderItemInventoryItems;
     quint32 m_currentOrderItemInventoryItemId;
+
+    QList<OrderItemOption*> m_orderItemOptions;
+    quint32 m_currentOrderItemOptionId;
 
 private slots:
     void fireTotalsChanged();

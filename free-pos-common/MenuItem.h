@@ -6,6 +6,7 @@
 #include <QQmlListProperty>
 #include "SimpleSerializable.h"
 #include "MenuItemInventoryItem.h"
+#include "MenuItemOption.h"
 
 class MenuItem : public SimpleSerializable
 {
@@ -17,6 +18,7 @@ class MenuItem : public SimpleSerializable
     Q_PROPERTY(bool isDisabled MEMBER m_isDisabled WRITE setIsDisabled NOTIFY isDisabledChanged)
 
     Q_PROPERTY(QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems READ menuItemInventoryItems NOTIFY menuItemInventoryItemsChanged)
+    Q_PROPERTY(QQmlListProperty<MenuItemOption> menuItemOptions READ menuItemOptions NOTIFY menuItemOptionsChanged)
 
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
@@ -41,6 +43,13 @@ public:
     MenuItemInventoryItem* getMenuItemInventoryItem(quint32 id);
     Q_INVOKABLE void removeMenuItemInventoryItem(quint32 menuItemInventoryItemId);
 
+    QQmlListProperty<MenuItemOption> menuItemOptions();
+    QList<MenuItemOption*> menuItemOptionsList();
+    Q_INVOKABLE MenuItemOption* addMenuItemOption(quint32 optionMenuCategoryId);
+    void addMenuItemOption(MenuItemOption *menuItemOption);
+    MenuItemOption* getMenuItemOption(quint32 id);
+    Q_INVOKABLE void removeMenuItemOption(quint32 menuItemOption);
+
     QString serialize() const;
     static MenuItem* deserialize(QString serialized, QObject *parent = 0);
 
@@ -52,6 +61,7 @@ signals:
     void isDisabledChanged(bool);
 
     void menuItemInventoryItemsChanged(QQmlListProperty<MenuItemInventoryItem>);
+    void menuItemOptionsChanged(QQmlListProperty<MenuItemOption>);
 
     void costChanged(float);
     void marginChanged(float);
@@ -69,6 +79,9 @@ private:
 
     quint32 m_currentMenuItemInventoryItemId;
     QList<MenuItemInventoryItem*> m_menuItemInventoryItems;
+
+    quint32 m_currentMenuItemOptionId;
+    QList<MenuItemOption*> m_menuItemOptions;
 };
 
 #endif // MENUITEM_H

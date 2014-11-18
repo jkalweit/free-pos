@@ -3,23 +3,36 @@
 
 #include <QObject>
 #include "SimpleSerializable.h"
+//#include "MenuCategory.h"
 
 class MenuItemOption : public SimpleSerializable
 {
     Q_OBJECT
-    Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
+    //Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
+    //Q_PROPERTY(MenuCategory* optionMenuCategory READ optionMenuCategory WRITE setOptionMenuCategory NOTIFY optionMenuCategoryChanged)
+    Q_PROPERTY(quint32 optionMenuCategoryId MEMBER m_optionMenuCategoryId NOTIFY optionMenuCategoryIdChanged)
 public:
-    explicit MenuItemOption(QObject *parent = 0, quint32 menuCategoryId = 0, quint32 menuItemId = 0, quint32 id = 0, QString name = "");
+    explicit MenuItemOption(QObject *parent = 0, quint32 menuCategoryId = 0, quint32 menuItemId = 0, quint32 id = 0, quint32 optionMenuCategoryId = 0); // , QString name = "");
 
+    QStringList path();
     virtual QStringList updatePrefix();
 
-    void setName(QString name);
+    quint32 menuCategoryId();
+    quint32 menuItemId();
+    quint32 id();
+
+//    MenuCategory *optionMenuCategory();
+//    void setOptionMenuCategory(MenuCategory *optionMenuCategory);
+
+    //void setName(QString name);
 
     QString serialize() const;
     static MenuItemOption* deserialize(QString serialized, QObject *parent = 0);
 
 signals:
-    void nameChanged(quint32);
+    void optionMenuCategoryIdChanged(quint32);
+    //void nameChanged(QString);
+    //void optionMenuCategoryChanged(MenuCategory*);
 
 public slots:
 
@@ -28,6 +41,9 @@ private:
     quint32 m_menuItemId;
     quint32 m_id;
     QString m_name;
+    quint32 m_optionMenuCategoryId;
+
+    //MenuCategory *m_optionMenuCategory;
 };
 
 #endif // MENUITEMOPTION_H

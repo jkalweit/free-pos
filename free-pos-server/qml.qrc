@@ -16,5 +16,7 @@
         <file>EditReconciliation.qml</file>
         <file>TextLabeled.qml</file>
         <file>InventoryItems.qml</file>
+        <file>MenuCategoriesView.qml</file>
+        <file>MenuItemsView.qml</file>
     </qresource>
 </RCC>

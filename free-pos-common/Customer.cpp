@@ -4,7 +4,7 @@
 #include <QDebug>
 #include "Pos.h"
 #include "MenuItemInventoryItem.h"
-
+#include "MenuItemOption.h"
 
 Customer::Customer(QObject *parent, quint32 id, quint32 ticketId, QString name) :
     SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_name(name), m_currentOrderItemId(0)
@@ -105,6 +105,11 @@ OrderItem* Customer::addOrderItem(MenuItem* menuItem, float quantity, QString no
                                              item->inventoryItem()->property("unit").toString(),
                                              item->inventoryItem()->property("price").toFloat(),
                                              item->property("quantity").toFloat());
+    }
+
+    for(MenuItemOption *item : menuItem->menuItemOptionsList()) {
+        quint32 optionMenuCategoryId = item->property("optionMenuCategoryId").toUInt();
+        orderItem->addOrderItemOption(optionMenuCategoryId);
     }
 
     return orderItem;
