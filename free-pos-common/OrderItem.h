@@ -59,6 +59,10 @@ public:
     float cost();
     float margin();
 
+    Q_INVOKABLE float getCumulativeCostUpToOption(quint32 orderItemOptionId);
+    Q_INVOKABLE float getCumulativeCostUpToInventoryItem(quint32 inventoryItemId);
+
+
     QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems();
     Q_INVOKABLE OrderItemInventoryItem* addOrderItemInventoryItem(quint32 inventoryItemId, QString name, QString unit, float price, float quantity);
     void addOrderItemInventoryItem(OrderItemInventoryItem *orderItemInventoryItem);

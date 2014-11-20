@@ -75,21 +75,76 @@ DialogModal {
             Repeater {
                 model: editOrderItemDialog.model ? editOrderItemDialog.model.orderItemOptions : 0
 
-                RectangleFlash {
+
+                Rectangle {
+                    id: orderItemOptionContainer
                     width: 225
-                    height: selectOrderItemOptionText.height + 20
-                    color: (modelData.menuItemName !== "") ? "#DDDDFF" : "#FFFFDD"
-                    onClicked: {
-                        selectOrderItemOption.orderItemOption = modelData;
-                        selectOrderItemOption.visible = true;
+
+                    height: orderItemOptionName.height + 10
+                    border.color: "#AAFFAA"
+                    border.width: 2
+
+                    Rectangle {
+                        anchors.right: parent.right
+                        anchors.rightMargin: {
+                            var cost = container.model.cost;
+                            var cumulative = container.model.getCumulativeCostUpToOption(modelData.id);
+                            var ratio = cumulative / cost;
+                            return parent.width * ratio;
+                        }
+                        border.color: "#77AAFFAA"
+                        border.width: 2
+                        color: "#77FFFF77"
+                        height: parent.height
+                        width: {
+                            var cost = container.model.cost;
+                            var ratio = modelData.cost / cost;
+                            return parent.width * ratio;
+                        }
+                    }
+                    Text {
+                        id: orderItemOptionName
+                        text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).name + ": " + modelData.menuItemName
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                    }
+                    Text {
+                        text: modelData.cost.toFixed(2)
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
                     }
 
-                    customContent: Text{
-                        id: selectOrderItemOptionText
-                        text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).name + ": " + modelData.menuItemName + ": " + modelData.cost.toFixed(2)
-                        anchors.verticalCenter: parent.verticalCenter
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            selectOrderItemOption.orderItemOption = modelData;
+                            selectOrderItemOption.visible = true;
+                        }
                     }
                 }
+
+
+//                RectangleFlash {
+//                    width: 225
+//                    height: selectOrderItemOptionText.height + 20
+//                    color: (modelData.menuItemName !== "") ? "#DDDDFF" : "#FFFFDD"
+//                    onClicked: {
+//                        selectOrderItemOption.orderItemOption = modelData;
+//                        selectOrderItemOption.visible = true;
+//                    }
+
+//                    customContent: Text{
+//                        id: selectOrderItemOptionText
+//                        text: pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).name + ": " + modelData.menuItemName + ": " + modelData.cost.toFixed(2)
+//                        anchors.verticalCenter: parent.verticalCenter
+//                    }
+//                }
+
+
             }
 
 

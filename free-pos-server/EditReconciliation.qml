@@ -572,6 +572,7 @@ Rectangle {
 
         onVisibleChanged: {
             if(editMenuItem.visible) {
+
                 editMenuItem.menuItem = editMenuItem.menuItem;
                 editMenuItem.isItemDisabled = editMenuItem.menuItem.isDisabled;
                 if(editMenuItem.menuItem.type === "Alcohol") {
@@ -637,17 +638,23 @@ Rectangle {
                     width: innerColumn.width
 
                     height: menuItemOptionName.height + 10
-                    border.color: "#55FF55"
+                    border.color: "#AAFFAA"
                     border.width: 2
 
                     Rectangle {
                         anchors.right: parent.right
-                        border.color: "#FFFF00"
+                        anchors.rightMargin: {
+                            var cost = editMenuItem.menuItem.cost;
+                            var cumulative = editMenuItem.menuItem.getCumulativeCostUpToOption(modelData.id);
+                            var ratio = cumulative / cost;
+                            return parent.width * ratio;
+                        }
+                        border.color: "#77AAFFAA"
                         border.width: 2
-                        color: "#FFFF77"
+                        color: "#77FFFF77"
                         height: parent.height
                         width: {
-                            var cost = editMenuItem.menuItem.cost;
+                            var cost = editMenuItem.menuItem.cost;                            
                             var ratio = pos.selectedMenu.getMenuCategory(modelData.optionMenuCategoryId).averageCost / cost;
                             return parent.width * ratio;
                         }
@@ -669,58 +676,54 @@ Rectangle {
                     }
                 }
             }
-            ListView {
-                width: 300
-                height: 200
+            Repeater {
                 model: editMenuItem.menuItem ? editMenuItem.menuItem.menuItemInventoryItems : 0
-                clip: true
 
-                delegate: RectangleFlash {
+                Rectangle {
                     id: inventoryItemContainer
-                    width: parent.width
-                    //property alias model: modelData
-
+                    width: innerColumn.width
                     height: inventoryItemName.height + 10
-                    border.color: "blue" // menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
+                    border.color: "#AAAAFF"
                     border.width: 2
-                    //color:  modelData.isDisabled ? "#AAAAAA" : "#9575cd"
-                    flashColor: "#FFFFFF"
 
-                    onClicked: {
-                        editMenuItemInventoryItem.menuItemInventoryItem = modelData;
-                        editMenuItemInventoryItem.show();
+//                    onClicked: {
+//                        editMenuItemInventoryItem.menuItemInventoryItem = modelData;
+//                        editMenuItemInventoryItem.show();
+//                    }
+
+                    Rectangle {
+                        anchors.right: inventoryItemContainer.right
+                        anchors.rightMargin: {
+                            var cost = editMenuItem.menuItem.cost;
+                            var cumulative = editMenuItem.menuItem.getCumulativeCostUpToInventoryItem(modelData.id);
+                            var ratio = cumulative / cost;
+                            return parent.width * ratio;
+                        }
+                        border.color: "#77AAAAFF"
+                        border.width: 2
+                        color: "#77FFFF77"
+                        height: inventoryItemContainer.height
+                        width: {
+                            var cost = editMenuItem.menuItem.cost;
+                            var ratio = modelData.cost / cost;
+                            return parent.width * ratio;
+                        }
                     }
 
-                    customContent: Item {
-                        anchors.fill: parent
-
-                        Text {
-                            id: inventoryItemName
-                            text: pos.selectedInventory.getInventoryItem(modelData.inventoryItemId).name
-                            color: "#000000"
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
-                        }
-                        Text {
-                            text: modelData.quantity.toFixed(2) + " @ " + (modelData.inventoryItem ? modelData.inventoryItem.unitPrice.toFixed(2) + " " + modelData.inventoryItem.unit + " = " + modelData.cost.toFixed(2) : "?")
-                            color: "#000000"
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.right: parent.right
-                        }
-
-                        Rectangle {
-                            anchors.right: inventoryItemContainer.right
-                            border.color: "#FFFF00"
-                            border.width: 2
-                            color: "#FFFF77"
-                            height: inventoryItemContainer.height
-                            width: {
-                                var cost = editMenuItem.menuItem.cost;
-                                var ratio = modelData.cost / cost;
-                                console.log("Cost", cost, ratio, parent.width, parent.width * ratio);
-                                return parent.width * ratio;
-                            }
-                        }
+                    Text {
+                        id: inventoryItemName
+                        text: pos.selectedInventory.getInventoryItem(modelData.inventoryItemId).name
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                    }
+                    Text {
+                        text: modelData.quantity.toFixed(2) + " @ " + (modelData.inventoryItem ? modelData.inventoryItem.unitPrice.toFixed(2) + " " + modelData.inventoryItem.unit + " = " + modelData.cost.toFixed(2) : "?")
+                        color: "#000000"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
                     }
                 }
             }

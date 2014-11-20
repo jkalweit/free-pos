@@ -27,6 +27,10 @@ quint32 MenuItemOption::id() {
     return m_id;
 }
 
+quint32 MenuItemOption::optionMenuCategoryId() {
+    return m_optionMenuCategoryId;
+}
+
 //MenuCategory* MenuItemOption::optionMenuCategory() {
 //    return m_optionMenuCategory;
 //}

@@ -52,7 +52,7 @@ float MenuItem::cost() {
     float cost = costWithoutOptions();
 
     for(MenuItemOption *item : m_menuItemOptions) {
-        cost += Pos::instance()->selectedMenu()->getMenuCategory(item->menuCategoryId())->averageCost();
+        cost += Pos::instance()->selectedMenu()->getMenuCategory(item->optionMenuCategoryId())->averageCost();
     }
 
     return cost;
@@ -75,6 +75,38 @@ float MenuItem::margin() {
 void MenuItem::fireCostChanged() {
     costChanged(cost());
     marginChanged(margin());
+}
+
+
+float MenuItem::getCumulativeCostUpToOption(quint32 menuItemOptionId) {
+
+    float cost = 0;
+
+    for(MenuItemOption *item : m_menuItemOptions) {
+        if(menuItemOptionId == item->id()) {
+            return cost;
+        }
+        cost += Pos::instance()->selectedMenu()->getMenuCategory(item->optionMenuCategoryId())->averageCost();
+    }
+
+    // should only get this far when passing invalid id, such as -1 to get total option cost.
+    return cost;
+}
+
+
+float MenuItem::getCumulativeCostUpToInventoryItem(quint32 inventoryItemId) {
+
+    float cost = getCumulativeCostUpToOption(-1); // get cost of all options
+
+    for(MenuItemInventoryItem *item : m_menuItemInventoryItems) {
+        if(inventoryItemId == item->id()) {
+            return cost;
+        }
+        cost += item->cost();
+    }
+
+    // should only get this far when passing invalid id, such as -1 to get total cost.
+    return cost;
 }
 
 
@@ -152,8 +184,7 @@ void MenuItem::addMenuItemOption(MenuItemOption *menuItemOption) {
 //    connect(menuItemInventoryItem, SIGNAL(costChanged(float)),
 //            this, SLOT(fireCostChanged()));
     menuItemOptionsChanged(menuItemOptions());
-
-    //fireCostChanged();
+    fireCostChanged();
 }
 
 QQmlListProperty<MenuItemOption> MenuItem::menuItemOptions() {

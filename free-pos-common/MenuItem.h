@@ -37,6 +37,9 @@ public:
     float costWithoutOptions();
     float margin();
 
+    Q_INVOKABLE float getCumulativeCostUpToOption(quint32 menuItemOptionId);
+    Q_INVOKABLE float getCumulativeCostUpToInventoryItem(quint32 inventoryItemId);
+
     QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems();
     QList<MenuItemInventoryItem*> menuItemInventoryItemsList();
     Q_INVOKABLE MenuItemInventoryItem* addMenuItemInventoryItem(quint32 inventoryItemId, float quantity);

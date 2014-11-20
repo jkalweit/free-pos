@@ -11,6 +11,10 @@ QStringList MenuItemInventoryItem::updatePrefix() {
     return QStringList() << "UpdateMenuItemInventoryItem" << QString::number(m_id) << QString::number(m_menuCategoryId) << QString::number(m_menuItemId);
 }
 
+quint32 MenuItemInventoryItem::id() {
+    return m_id;
+}
+
 void MenuItemInventoryItem::setQuantity(float quantity) {
     if(m_quantity != quantity) {
         m_quantity = quantity;

@@ -9,7 +9,7 @@
 class MenuItemInventoryItem : public SimpleSerializable
 {
     Q_OBJECT
-    Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
+    Q_PROPERTY(quint32 id MEMBER m_id READ id NOTIFY idChanged)
     Q_PROPERTY(quint32 menuCategoryId MEMBER m_menuCategoryId NOTIFY menuCategoryIdChanged)
     Q_PROPERTY(quint32 menuItemId MEMBER m_menuItemId NOTIFY menuItemIdChanged)
     Q_PROPERTY(quint32 inventoryItemId MEMBER m_inventoryItemId NOTIFY inventoryItemIdChanged)
@@ -20,6 +20,8 @@ public:
     explicit MenuItemInventoryItem(QObject *parent = 0, quint32 id = 0, quint32 menuCategoryId = 0, quint32 menuItemId = 0, quint32 inventoryItemId = 0, float quantity = 0);
 
     virtual QStringList updatePrefix();
+
+    quint32 id();
 
     void setQuantity(float quantity);
     float cost();

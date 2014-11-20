@@ -157,6 +157,45 @@ float OrderItem::margin() {
 
 
 
+
+float OrderItem::getCumulativeCostUpToOption(quint32 orderItemOptionId) {
+
+    float cost = 0;
+
+    for(OrderItemOption *item : m_orderItemOptions) {
+        if(orderItemOptionId == item->id()) {
+            return cost;
+        }
+        cost += item->cost();
+    }
+
+    // should only get this far when passing invalid id, such as -1 to get total option cost.
+    return cost;
+}
+
+
+float OrderItem::getCumulativeCostUpToInventoryItem(quint32 inventoryItemId) {
+
+    float cost = getCumulativeCostUpToOption(-1); // get cost of all options
+
+    for(OrderItemInventoryItem *item : m_orderItemInventoryItems) {
+        if(inventoryItemId == item->id()) {
+            return cost;
+        }
+        cost += item->cost();
+    }
+
+    // should only get this far when passing invalid id, such as -1 to get total cost.
+    return cost;
+}
+
+
+
+
+
+
+
+
 OrderItemInventoryItem* OrderItem::addOrderItemInventoryItem(quint32 inventoryItemId, QString name, QString unit, float price, float quantity) {
     OrderItemInventoryItem* item = new OrderItemInventoryItem(this, m_ticketId, m_customerId, m_id, ++m_currentOrderItemInventoryItemId, inventoryItemId, name, unit, price, quantity);
     addOrderItemInventoryItem(item);

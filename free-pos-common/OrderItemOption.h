@@ -10,7 +10,7 @@ class OrderItemOption : public SimpleSerializable
 //    Q_PROPERTY(quint32 ticketId MEMBER m_ticketId WRITE setTicketId NOTIFY ticketIdChanged)
 //    Q_PROPERTY(quint32 customerId MEMBER m_customerId WRITE setCustomerId NOTIFY customerIdChanged)
 //    Q_PROPERTY(quint32 orderItemId MEMBER m_orderItemId NOTIFY orderItemIdChanged)
-//    Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
+    Q_PROPERTY(quint32 id MEMBER m_id READ id NOTIFY idChanged)
     Q_PROPERTY(quint32 optionMenuCategoryId MEMBER m_optionMenuCategoryId NOTIFY optionMenuCategoryIdChanged)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString menuItemName MEMBER m_menuItemName WRITE setMenuItemName NOTIFY menuItemNameChanged)
@@ -38,7 +38,7 @@ signals:
 //    void ticketIdChanged(quint32);
 //    void customerIdChanged(quint32);
 //    void orderItemIdChanged(quint32);
-//    void idChanged(quint32);
+    void idChanged(quint32);
     void optionMenuCategoryIdChanged(quint32);
     void nameChanged(QString);
     void menuItemNameChanged(QString);
