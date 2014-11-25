@@ -308,6 +308,12 @@ void Pos::appendToInventoryHistory(QString item) {
     appendToFile(item, "currInventory.txt");
 }
 
+void Pos::appendToFixedCostHistory(QString item) {
+    if(m_isHistoryDisabled)
+        return;
+    appendToFile(item, "currFixedCost.txt");
+}
+
 void Pos::appendToFile(QString item, QString filename) {
     QFile file("./data/" + filename);
     file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text);

@@ -151,34 +151,86 @@ DialogModal {
             Repeater {
                 model: editOrderItemDialog.model ? editOrderItemDialog.model.orderItemInventoryItems : 0
 
-                RectangleFlashButton {
+                Rectangle {
                     width: 225
-                    height: inventoryItemName.height + 20
+                    height: inventoryItemName.height + 10
                     visible: !(modelData.isAdded && modelData.isRemoved)
                     color: modelData.isAdded ? "#DDFFDD" : "#FFFFFF";
-                    onClicked: {
-                        modelData.isRemoved = !modelData.isRemoved;
+                    border.color: "#77AAFFAA"
+                    border.width: 2
+
+                    Rectangle {
+                        anchors.right: parent.right
+                        anchors.rightMargin: {
+                            var cost = container.model.cost;
+                            var cumulative = container.model.getCumulativeCostUpToInventoryItem(modelData.id);
+                            var ratio = cumulative / cost;
+                            return parent.width * ratio;
+                        }
+                        border.color: "#77AAFFAA"
+                        border.width: 2
+                        color: "#77FFFF77"
+                        height: parent.height
+                        width: {
+                            var cost = container.model.cost;
+                            var ratio = modelData.cost / cost;
+                            return parent.width * ratio;
+                        }
                     }
 
-                    customContent: Rectangle {
+                    Text {
+                        id: inventoryItemName
+                        text: modelData.name
+                        font.strikeout: modelData.isRemoved
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                    }
+                    Text {
+                        text: modelData.quantity.toFixed(2) + " " + modelData.unit + " = " + modelData.cost.toFixed(2)
+                        font.strikeout: modelData.isRemoved
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
+                    }
+
+                    MouseArea {
                         anchors.fill: parent
-                        color: "transparent"
-                        Text {
-                            id: inventoryItemName
-                            text: modelData.name
-                            font.strikeout: modelData.isRemoved
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
-                        }
-                        Text {
-                            text: modelData.quantity.toFixed(2) + " " + modelData.unit
-                            font.strikeout: modelData.isRemoved
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.right: parent.right
+                        onClicked: {
+                            modelData.isRemoved = !modelData.isRemoved;
                         }
                     }
                 }
             }
+
+//                RectangleFlashButton {
+//                    width: 225
+//                    height: inventoryItemName.height + 20
+//                    visible: !(modelData.isAdded && modelData.isRemoved)
+//                    color: modelData.isAdded ? "#DDFFDD" : "#FFFFFF";
+//                    onClicked: {
+//                        modelData.isRemoved = !modelData.isRemoved;
+//                    }
+
+//                    customContent: Rectangle {
+//                        anchors.fill: parent
+//                        color: "transparent"
+//                        Text {
+//                            id: inventoryItemName
+//                            text: modelData.name
+//                            font.strikeout: modelData.isRemoved
+//                            anchors.verticalCenter: parent.verticalCenter
+//                            anchors.left: parent.left
+//                        }
+//                        Text {
+//                            text: modelData.quantity.toFixed(2) + " " + modelData.unit
+//                            font.strikeout: modelData.isRemoved
+//                            anchors.verticalCenter: parent.verticalCenter
+//                            anchors.right: parent.right
+//                        }
+//                    }
+//                }
+//            }
             RectangleFlash {
                 width: 225
                 height: addOrderItemInventoryItemText.height + 20
@@ -247,12 +299,12 @@ DialogModal {
                     container.close(true);
                 }
             }
-            Button {
-                text: "Cancel"
-                onClicked: {
-                    container.close(false);
-                }
-            }
+//            Button {
+//                text: "Cancel"
+//                onClicked: {
+//                    container.close(false);
+//                }
+//            }
             Button {
                 text: "Move"
                 onClicked: {

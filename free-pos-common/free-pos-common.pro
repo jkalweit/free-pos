@@ -31,7 +31,9 @@ SOURCES += \
     MenuItemInventoryItem.cpp \
     OrderItemInventoryItem.cpp \
     MenuItemOption.cpp \
-    OrderItemOption.cpp
+    OrderItemOption.cpp \
+    FixedCost.cpp \
+    DailyCost.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -50,7 +52,9 @@ HEADERS += \
     MenuItemInventoryItem.h \
     OrderItemInventoryItem.h \
     MenuItemOption.h \
-    OrderItemOption.h
+    OrderItemOption.h \
+    FixedCost.h \
+    DailyCost.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

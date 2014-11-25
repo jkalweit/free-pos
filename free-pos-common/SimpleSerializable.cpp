@@ -19,6 +19,10 @@ void SimpleSerializable::logInventoryPropertyChanged(QVariant value, QString pro
     Pos::instance()->appendToInventoryHistory(serializeList(updatePrefix() << propertyName << escapeString(value.toString())));
 }
 
+void SimpleSerializable::logFixedCostPropertyChanged(QVariant value, QString propertyName) {
+    Pos::instance()->appendToFixedCostHistory(serializeList(updatePrefix() << propertyName << escapeString(value.toString())));
+}
+
 QString SimpleSerializable::escapeString(QString val) {
     return val.replace("\n", "\\n").replace(":", "\\!");
 }

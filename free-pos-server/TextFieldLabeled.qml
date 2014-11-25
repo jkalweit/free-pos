@@ -27,7 +27,6 @@ Row {
         id: editText
         width: 150
 
-        onTextChanged: container.textChanged()
         onEditingFinished: container.editingFinished()
         onAccepted: container.accepted()        
 
