@@ -39,6 +39,7 @@ public:
     void appendToHistory(QString item);
     void appendToMenuHistory(QString item);
     void appendToInventoryHistory(QString item);
+    void appendToTrackerHistory(QString item);
     void appendToFixedCostHistory(QString item);
     void addTestData();
 

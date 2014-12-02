@@ -40,8 +40,6 @@ void Pos::readHistory(QString filename) {
 
     m_isHistoryDisabled = true;
 
-    QDir().mkdir("data");
-
     QFile file("./data/" + filename);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
@@ -291,35 +289,33 @@ void Pos::readHistory(QString filename) {
 
 
 void Pos::appendToHistory(QString item) {
-    if(m_isHistoryDisabled)
-        return;
     appendToFile(item, "currRec.txt");
 }
 
 void Pos::appendToMenuHistory(QString item) {
-    if(m_isHistoryDisabled)
-        return;
     appendToFile(item, "currMenu.txt");
 }
 
 void Pos::appendToInventoryHistory(QString item) {
-    if(m_isHistoryDisabled)
-        return;
     appendToFile(item, "currInventory.txt");
 }
 
-void Pos::appendToFixedCostHistory(QString item) {
-    if(m_isHistoryDisabled)
-        return;
+void Pos::appendToTrackerHistory(QString item) {
+    appendToFile(item, "currTracker.txt");
+}
+
+void Pos::appendToFixedCostHistory(QString item) {    
     appendToFile(item, "currFixedCost.txt");
 }
 
 void Pos::appendToFile(QString item, QString filename) {
-    QFile file("./data/" + filename);
-    file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
-    out << SimpleSerializable::escapeString(QDateTime::currentDateTime().toString()) << ":" << item << endl;
-    file.close();
+    if(!m_isHistoryDisabled) {
+        QFile file("./data/" + filename);
+        file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream out(&file);
+        out << SimpleSerializable::escapeString(QDateTime::currentDateTime().toString()) << ":" << item << endl;
+        file.close();
+    }
 }
 
 

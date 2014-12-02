@@ -33,7 +33,9 @@ SOURCES += \
     MenuItemOption.cpp \
     OrderItemOption.cpp \
     FixedCost.cpp \
-    DailyCost.cpp
+    DailyCost.cpp \
+    DayTracker.cpp \
+    WeekTracker.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -54,7 +56,9 @@ HEADERS += \
     MenuItemOption.h \
     OrderItemOption.h \
     FixedCost.h \
-    DailyCost.h
+    DailyCost.h \
+    DayTracker.h \
+    WeekTracker.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
