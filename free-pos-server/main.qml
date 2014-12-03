@@ -11,21 +11,28 @@ ApplicationWindow {
     title: "CY Pos"
 
 
-    EditReconciliation {
-        id: editReconciliation
-        visible: pos.selectedRec ? pos.selectedRec.isOpen : false
-        model: pos.selectedRec ? pos.selectedRec : 0
+    WeeksView {
+        anchors.fill: parent
+
     }
 
-    DialogModalMessage {
-        title: "No Open Rec"
-        buttonText: "Open New Rec"
-        visible: !pos.selectedRec || !pos.selectedRec.isOpen
-        closeOnAcknowledge: false
-        saveByDefault: false
-        onAcknowledged: {
-            pos.selectedRec = pos.openNewRec()
-        }
-    }
+
+
+//    EditReconciliation {
+//        id: editReconciliation
+//        visible: pos.selectedRec ? pos.selectedRec.isOpen : false
+//        model: pos.selectedRec ? pos.selectedRec : 0
+//    }
+
+//    DialogModalMessage {
+//        title: "No Open Rec"
+//        buttonText: "Open New Rec"
+//        visible: !pos.selectedRec || !pos.selectedRec.isOpen
+//        closeOnAcknowledge: false
+//        saveByDefault: false
+//        onAcknowledged: {
+//            pos.selectedRec = pos.openNewRec()
+//        }
+//    }
 
 }

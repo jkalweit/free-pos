@@ -356,148 +356,188 @@ Rectangle {
     }
 
     Rectangle {
-        id: recTotals
-        width: 200
-        height: recTotalsInner.height + 20
+        id: week
+        width: 400
+        height: 200
         anchors.right: container.right
         anchors.rightMargin: 400
         anchors.bottom: container.bottom
         opacity: 0.50
-        Column {
-            id: recTotalsInner
-            anchors.top: recTotals.top
-            anchors.topMargin: 10
-            anchors.left: recTotals.left
-            anchors.leftMargin: 10
-            anchors.right: recTotals.right
-            anchors.rightMargin: 10
-            spacing: 5                        
+
+
+        Rectangle {
+            id: monday
+            width: 200
+            anchors.left: parent.left
+            anchors.leftMargin: 0
+            anchors.bottom: parent.bottom
+            anchors.top: parent.top
 
             Rectangle {
-                width: parent.width
-                height: 20
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Current Rec:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? model.name : ""
-                }
+                id: fixedCosts
+                width: parent.width / 2
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: currDay.fixedCostTotal
+                color: "#FF4444"
             }
+
             Rectangle {
-                width: parent.width
-                height: 15
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Food:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.foodTotal.toFixed(2) : ""
-                }
-            }
-            Rectangle {
-                width: parent.width
-                height: 15
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Tax:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.taxTotal.toFixed(2) : ""
-                }
-            }
-            Rectangle {
-                width: parent.width
-                height: 20
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Bar:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.barTotal.toFixed(2) : ""
-                }
-            }
-            Rectangle {
-                width: parent.width
-                height: 20
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Total:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.total.toFixed(2) : ""
-                }
-            }
-            Rectangle {
-                width: parent.width
-                height: 20
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Cost:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.cost.toFixed(2) : ""
-                }
-            }
-            Rectangle {
-                width: parent.width
-                height: 20
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Margin:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.margin.toFixed(2) : ""
-                }
+                id: sales
+                width: parent.width / 2
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                height: 75
+                color: "#44FF44"
             }
         }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: editRecDialog.show()
+
+
+        Rectangle {
+            id: recTotals
+            width: 200
+            height: parent.height
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            opacity: 0.80
+            Column {
+                id: recTotalsInner
+                anchors.top: recTotals.top
+                anchors.topMargin: 10
+                anchors.left: recTotals.left
+                anchors.leftMargin: 10
+                anchors.right: recTotals.right
+                anchors.rightMargin: 10
+                spacing: 5
+
+                Rectangle {
+                    width: parent.width
+                    height: 20
+                    color: "transparent"
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        text: "Current Rec:"
+                    }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: model ? model.name : ""
+                    }
+                }
+                Rectangle {
+                    width: parent.width
+                    height: 15
+                    color: "transparent"
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        text: "Food:"
+                    }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: model ? "$" + model.foodTotal.toFixed(2) : ""
+                    }
+                }
+                Rectangle {
+                    width: parent.width
+                    height: 15
+                    color: "transparent"
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        text: "Tax:"
+                    }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: model ? "$" + model.taxTotal.toFixed(2) : ""
+                    }
+                }
+                Rectangle {
+                    width: parent.width
+                    height: 20
+                    color: "transparent"
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        text: "Bar:"
+                    }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: model ? "$" + model.barTotal.toFixed(2) : ""
+                    }
+                }
+                Rectangle {
+                    width: parent.width
+                    height: 20
+                    color: "transparent"
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        text: "Total:"
+                    }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: model ? "$" + model.total.toFixed(2) : ""
+                    }
+                }
+                Rectangle {
+                    width: parent.width
+                    height: 20
+                    color: "transparent"
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        text: "Cost:"
+                    }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: model ? "$" + model.cost.toFixed(2) : ""
+                    }
+                }
+                Rectangle {
+                    width: parent.width
+                    height: 20
+                    color: "transparent"
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        text: "Margin:"
+                    }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: model ? "$" + model.margin.toFixed(2) : ""
+                    }
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: editRecDialog.show()
+            }
         }
+
     }
+
 
     EditCustomerDialog {
         id: editCustomerDialog

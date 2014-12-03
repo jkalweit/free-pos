@@ -23,16 +23,20 @@ class WeekTracker : public SimpleSerializable
     Q_PROPERTY(float cogTotal READ cogTotal NOTIFY cogTotalChanged)
     Q_PROPERTY(float salesTotal READ salesTotal NOTIFY salesTotalChanged)
 
+    Q_PROPERTY(QQmlListProperty<DayTracker> days READ days NOTIFY daysChanged)
 public:
     explicit WeekTracker(QObject *parent = 0, quint32 id = 0, QString name = "", DayTracker* sunday = nullptr, DayTracker* monday = nullptr, DayTracker* tuesday = nullptr, DayTracker* wednesday = nullptr, DayTracker* thursday = nullptr, DayTracker* friday = nullptr, DayTracker* saturday = nullptr);
+
+    virtual QStringList updatePrefix();
+
+    void createDays(QDate startDate);
 
     quint32 id();
     float fixedCostTotal();
     float cogTotal();
     float salesTotal();
 
-
-
+    QQmlListProperty<DayTracker> days();
 
 signals:
     void idChanged(quint32);
@@ -48,7 +52,7 @@ signals:
     void cogTotalChanged(float);
     void salesTotalChanged(float);
 
-
+    void daysChanged(QQmlListProperty<DayTracker>);
 public slots:
 
 private:
@@ -62,6 +66,7 @@ private:
     DayTracker* m_friday;
     DayTracker* m_saturday;
 
+    QList<DayTracker*> m_days;
 
 };
 

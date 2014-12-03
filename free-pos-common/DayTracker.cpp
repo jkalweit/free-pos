@@ -3,9 +3,13 @@
 #include <QMetaProperty>
 #include <QDebug>
 
-DayTracker::DayTracker(QObject *parent, quint32 id, QString name, Reconciliation* lunchRec, Reconciliation* dinnerRec) :
-    SimpleSerializable(parent), m_id(id), m_name(name), m_lunchRec(lunchRec), m_dinnerRec(dinnerRec)
+DayTracker::DayTracker(QObject *parent, quint32 id, QString name, QDate date, Reconciliation* lunchRec, Reconciliation* dinnerRec) :
+    SimpleSerializable(parent), m_id(id), m_name(name), m_date(date), m_lunchRec(lunchRec), m_dinnerRec(dinnerRec), m_fixedCostCurrId(0)
 {
+}
+
+QStringList DayTracker::updatePrefix() {
+    return QStringList() << "UpdateDayTracker"; // << QString::number(m_id) << QString::number(m_id);
 }
 
 quint32 DayTracker::id() {
@@ -17,15 +21,19 @@ QString DayTracker::name() {
 }
 
 float DayTracker::fixedCostTotal() {
-    // TODO: Implement Read
+    float total = 0;
+    for(Cost *cost : m_fixedCosts) {
+        total += cost->cost();
+    }
+    return total;
 }
 
 float DayTracker::cogTotal() {
-    // TODO: Implement Read
+    return m_lunchRec->cost() + m_dinnerRec->cost();
 }
 
-float DayTracker::salesTotal() {
-    // TODO: Implement Read
+float DayTracker::salesTotal() {    
+    return m_lunchRec->total() + m_dinnerRec->total();
 }
 
 
@@ -36,29 +44,39 @@ void DayTracker::setName(QString value) {
     }
 }
 
-
-QQmlListProperty<FixedCost> DayTracker::fixedCosts() {
-     return QQmlListProperty<FixedCost>(this, m_fixedCosts);
+void DayTracker::addDefaultFixedCosts() {
+    addFixedCost("Mortgage", 92.30);
+    addFixedCost("Property Tax", 31.25);
+    addFixedCost("Other", 66.66);
 }
 
-QList<FixedCost*> DayTracker::fixedCostsList() {
+
+QQmlListProperty<Cost> DayTracker::fixedCosts() {
+     return QQmlListProperty<Cost>(this, m_fixedCosts);
+}
+
+QList<Cost*> DayTracker::fixedCostsList() {
      return m_fixedCosts;
 }
 
-FixedCost* DayTracker::addFixedCost() {
-        // TODO: Implement Add
+Cost* DayTracker::addFixedCost(QString name, float cost) {
+    // TODO: Implement Add
+    Cost *obj = new Cost(this, ++m_fixedCostCurrId, name, cost);
+    addFixedCost(obj);
+    return obj;
 }
 
-void DayTracker::addFixedCost(FixedCost *value) {
-     m_fixedCosts.append(value);
-     fixedCostsChanged(fixedCosts());
+void DayTracker::addFixedCost(Cost *value) {
+    if(value->id() > m_fixedCostCurrId) m_fixedCostCurrId = value->id();
+    m_fixedCosts.append(value);
+    fixedCostsChanged(fixedCosts());
 }
 
-FixedCost* DayTracker::getFixedCost(quint32 id) {
-    for(FixedCost *value : m_fixedCosts) {
-        if(value->property("id").toUInt() == id) {
-             return value;
-         }
+Cost* DayTracker::getFixedCost(quint32 id) {
+    for(Cost *value : m_fixedCosts) {
+       if(value->property("id").toUInt() == id) {
+           return value;
+       }
     }
     return nullptr;
 }
@@ -66,11 +84,11 @@ FixedCost* DayTracker::getFixedCost(quint32 id) {
 void DayTracker::removeFixedCost(quint32 id) {
     for(int i = 0; i < m_fixedCosts.length(); i++) {
         if(m_fixedCosts[i]->property("id").toUInt() == id) {
-             FixedCost *item = m_fixedCosts[i];
-             m_fixedCosts.removeAt(i);
-             fixedCostsChanged(fixedCosts());
-              return;
-         }
+            //Cost *item = m_fixedCosts[i];
+            m_fixedCosts.removeAt(i);
+            fixedCostsChanged(fixedCosts());
+            return;
+        }
     }
 }
 

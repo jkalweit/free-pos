@@ -12,6 +12,9 @@
 #include "Inventory.h"
 #include "InventoryItem.h"
 
+#include "WeekTracker.h"
+#include "DayTracker.h"
+#include "Cost.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,17 +35,21 @@ int main(int argc, char *argv[])
     qmlRegisterType<MenuItemOption>("FreePos", 1, 0, "MenuItemOption");
     qmlRegisterType<OrderItemOption>("FreePos", 1, 0, "OrderItemOption");
 
+    qmlRegisterType<WeekTracker>("FreePos", 1, 0, "WeekTracker");
+    qmlRegisterType<DayTracker>("FreePos", 1, 0, "DayTracker");
+    qmlRegisterType<Cost>("FreePos", 1, 0, "Cost");
+
     Pos *pos = Pos::instance();
     pos->readHistory();
     pos->readHistory("currInventory.txt");
     pos->readHistory("currMenu.txt");
     pos->addTestData();
 
-    QQmlApplicationEngine engine;    
+    pos->addWeek(QDate(2014, 12, 7));
+
+    QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("pos", (QObject*)pos);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-
-
 
 
 //    server.openDb();

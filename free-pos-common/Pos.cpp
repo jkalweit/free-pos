@@ -32,7 +32,7 @@ Pos* Pos::instance()
 
 
 Pos::Pos(QObject *parent) :
-    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr), m_selectedInventory(nullptr)
+    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr), m_selectedInventory(nullptr), m_selectedWeek(nullptr), m_weekCurrId(0)
 {
 }
 
@@ -377,6 +377,67 @@ void Pos::addReconciliation(Reconciliation *rec) {
     m_reconciliations.append(rec);
     reconciliationsChanged(reconciliations());
 }
+
+
+
+
+
+
+
+
+
+
+
+WeekTracker* Pos::selectedWeek() {
+    return m_selectedWeek;
+}
+
+QQmlListProperty<WeekTracker> Pos::weeks() {
+    return QQmlListProperty<WeekTracker>(this, m_weeks);
+}
+
+QList<WeekTracker*> Pos::weeksList() {
+    return m_weeks;
+}
+
+WeekTracker* Pos::addWeek(QDate startDate) {
+    WeekTracker *obj = new WeekTracker(this, ++m_weekCurrId);
+    obj->createDays(startDate);
+    addWeek(obj);
+    return obj;
+}
+
+void Pos::addWeek(WeekTracker *value) {
+    if(value->id() > m_weekCurrId) m_weekCurrId = value->id();
+    m_weeks.append(value);
+    weeksChanged(weeks());
+}
+
+WeekTracker* Pos::getWeek(quint32 id) {
+    for(WeekTracker *value : m_weeks) {
+        if(value->property("id").toUInt() == id) {
+            return value;
+        }
+    }
+    return nullptr;
+}
+
+void Pos::removeWeek(quint32 id) {
+    for(int i = 0; i < m_weeks.length(); i++) {
+        if(m_weeks[i]->property("id").toUInt() == id) {
+            //WeekTracker *item = m_weeks[i];
+            m_weeks.removeAt(i);
+            weeksChanged(weeks());
+             return;
+        }
+    }
+}
+
+
+
+
+
+
 
 
 

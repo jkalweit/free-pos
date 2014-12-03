@@ -18,5 +18,6 @@
         <file>InventoryItems.qml</file>
         <file>MenuCategoriesView.qml</file>
         <file>MenuItemsView.qml</file>
+        <file>WeeksView.qml</file>
     </qresource>
 </RCC>
