@@ -13,7 +13,8 @@ class Reconciliation : public SimpleSerializable {
 
     Q_OBJECT
     Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
-    Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QDate date MEMBER m_date NOTIFY dateChanged)
+    Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)    
     Q_PROPERTY(QString note MEMBER m_note WRITE setNote NOTIFY noteChanged)
     Q_PROPERTY(QDateTime openedStamp MEMBER m_openedStamp NOTIFY openedStampChanged)
     Q_PROPERTY(QDateTime closedStamp MEMBER m_closedStamp NOTIFY closedStampChanged)
@@ -42,12 +43,15 @@ class Reconciliation : public SimpleSerializable {
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
-    explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QString name = "", QString note = "",
+    explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QDate date = QDate(), QString name = "", QString note = "",
                             QDateTime openedStamp = QDateTime(), QDateTime closedStamp = QDateTime(),
                             CashDrawer *begginningDrawer = nullptr, CashDrawer *endingDrawer = nullptr,
                             float creditCardTotalActual = 0, float creditCardTotalTips = 0);
 
     virtual QStringList updatePrefix();
+    QString filename();
+    void readHistory();
+    void appendToHistory(QString item);
 
     void setName(QString name);
     void setNote(QString note);
@@ -100,6 +104,7 @@ public:
 
 signals:
     void idChanged(quint32);
+    void dateChanged(QDate);
     void nameChanged(QString);
     void noteChanged(QString);
     void openedStampChanged(QDateTime);
@@ -132,7 +137,8 @@ signals:
 
 private:
     quint32 m_id;
-    QString m_name;
+    QDate m_date;
+    QString m_name;    
     QString m_note;
     QDateTime m_openedStamp;
     QDateTime m_closedStamp;    
@@ -147,10 +153,12 @@ private:
     float m_creditCardTotalActual;
     float m_creditCardTotalTips;
 
+    bool m_isHistoryDisabled;
+
 private slots:
     void fireTotalsChanged();
     void firePaymentTotalsChanged();
-    void fireActualTakeTotalsChanged();
+    void fireActualTakeTotalsChanged();    
 };
 
 

@@ -49,10 +49,18 @@ Rectangle {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 anchors.bottom: parent.bottom
                                 anchors.bottomMargin:  95
+                                color: modelData.lunchRec.isOpen ? "#AAAAFF" : "#AAAAAA"
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "Lunch"
+                                    text: modelData.lunchRec.name + ": " + modelData.lunchRec.total.toFixed(2)
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        pos.selectedRec = modelData.lunchRec;
+                                    }
                                 }
                             }
 
@@ -63,22 +71,29 @@ Rectangle {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 anchors.bottom: parent.bottom
                                 anchors.bottomMargin:  10
+                                color: modelData.dinnerRec.isOpen ? "#AAAAFF" : "#AAAAAA"
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "Dinner"
+                                    text: modelData.dinnerRec.name + ": " + modelData.dinnerRec.total.toFixed(2)
+                                }
+
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: pos.selectedRec = modelData.dinnerRec
                                 }
                             }
                         }
                     }
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        pos.selectedWeek = modelData
-                    }
-                }
+    //                MouseArea {
+    //                    anchors.fill: parent
+    //                    onClicked: {
+    //                        pos.selectedWeek = modelData
+    //                    }
+    //                }
             }
         }
     }

@@ -289,7 +289,9 @@ void Pos::readHistory(QString filename) {
 
 
 void Pos::appendToHistory(QString item) {
-    appendToFile(item, "currRec.txt");
+    if(m_selectedRec) {
+        m_selectedRec->appendToHistory(item);
+    }
 }
 
 void Pos::appendToMenuHistory(QString item) {
@@ -332,16 +334,18 @@ QQmlListProperty<Reconciliation> Pos::reconciliations() {
     return QQmlListProperty<Reconciliation>(this, m_reconciliations);
 }
 
-Reconciliation* Pos::openNewRec() {
-    Reconciliation* rec = new Reconciliation(this, 0, "Lunch", "", QDateTime::currentDateTime());
-    addReconciliation(rec);
-    appendToHistory("OpenRec:" + rec->serialize());
-    return rec;
+
+void Pos::unselectRec() {
+    if(m_selectedRec) {
+        m_selectedRec = nullptr;
+        selectedRecChanged(m_selectedRec);
+    }
 }
 
 Reconciliation* Pos::selectedRec() {
     return m_selectedRec;
 }
+
 
 Menu* Pos::selectedMenu() {
     return m_selectedMenu;
@@ -351,27 +355,6 @@ Inventory* Pos::selectedInventory() {
     return m_selectedInventory;
 }
 
-bool Pos::closeCurrentRec() {
-    if(!m_selectedRec) {
-        qDebug() << "No current rec.";
-        return false;
-    }
-    if(m_selectedRec->isOpen()) {
-        qDebug() << "Rec is still open.";
-        return false;
-    }
-
-    QString newLocation = "./data/" + m_selectedRec->fileName();
-    qDebug() << "Moving rec to " << newLocation;
-    if(QDir().exists(newLocation)) {
-        qDebug() << "File already exists.";
-        QMessageBox::about(nullptr, "Error", "Cannot close rec: file already exists: " + newLocation);
-        return false;
-    }
-
-    QDir().rename("./data/currRec.txt", newLocation);
-    return true;
-}
 
 void Pos::addReconciliation(Reconciliation *rec) {
     m_reconciliations.append(rec);

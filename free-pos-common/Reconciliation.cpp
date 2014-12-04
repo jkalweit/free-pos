@@ -3,18 +3,22 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QFont>
+#include <QDir>
+#include <QFile>
 #include <QMetaProperty>
 #include <QDebug>
 #include "Pos.h"
 
-Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, QString note,
+Reconciliation::Reconciliation(QObject *parent, quint32 id, QDate date, QString name, QString note,
                                QDateTime openedStamp, QDateTime closedStamp,
                                CashDrawer *begginningDrawer, CashDrawer *endingDrawer,
                                float creditCardTotalActual, float creditCardTotalTips) :
-    SimpleSerializable(parent), m_id(id), m_name(name), m_note(note),
+    SimpleSerializable(parent), m_id(id), m_date(date), m_name(name), m_note(note),
     m_openedStamp(openedStamp), m_closedStamp(closedStamp),
     m_beginningDrawer(begginningDrawer), m_endingDrawer(endingDrawer),
-    m_currentTicketId(0), m_selectedTicket(nullptr), m_creditCardTotalActual(creditCardTotalActual), m_creditCardTotalTips(creditCardTotalTips)
+    m_currentTicketId(0), m_selectedTicket(nullptr),
+    m_creditCardTotalActual(creditCardTotalActual), m_creditCardTotalTips(creditCardTotalTips),
+    m_isHistoryDisabled(false)
 {
     if(m_beginningDrawer == nullptr)
         m_beginningDrawer = new CashDrawer(this, 1);
@@ -26,10 +30,147 @@ Reconciliation::Reconciliation(QObject *parent, quint32 id, QString name, QStrin
             this, SLOT(fireActualTakeTotalsChanged()));
     connect(m_endingDrawer, SIGNAL(totalChanged(float)),
             this, SLOT(fireActualTakeTotalsChanged()));
+
+    readHistory();
 }
 
 QStringList Reconciliation::updatePrefix() {
     return QStringList() << "UpdateReconciliation" << QString::number(m_id);
+}
+
+QString Reconciliation::filename() {
+    QString year = QString::number(m_date.year());
+    QString month = QString::number(m_date.month());
+    QString day = QString::number(m_date.day());
+
+    if(month.length() == 1) month = "0" + month;
+    if(day.length() == 1) day = "0" + day;
+
+    return year + "-" + month + "-" + day + "_" + m_name + ".txt";
+}
+
+void Reconciliation::readHistory() {
+
+    m_isHistoryDisabled = true;
+
+    QFile file("./data/" + filename());
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in(&file);
+
+    while(!in.atEnd()) {
+        QString line = in.readLine();
+        int delimit = line.indexOf(":");
+        QString timestamp = line.mid(0, delimit);
+        Q_UNUSED(timestamp);
+        QString theRest = line.mid(delimit+1, line.length() - delimit);
+        delimit = theRest.indexOf(":");
+        QString command = theRest.mid(0, delimit);
+        QString payload = theRest.mid(delimit+1, line.length() - delimit);
+        QStringList split = SimpleSerializable::deserializeList(payload);
+
+        if(command == "OpenRec") {
+//            qDebug() << "Open new rec" << payload;
+//            m_selectedRec = Reconciliation::deserialize(payload, this);
+        } else if(command == "AddTicket") {
+            qDebug() << "AddTicket: " << payload;
+            addTicket(Ticket::deserialize(payload, this));
+        } else if(command == "AddCustomer") {
+            qDebug() << "AddCustomer: " << payload;
+
+            Customer *c = Customer::deserialize(payload, this);
+            Ticket *ticket = getTicket(c->property("ticketId").toInt());
+            if(ticket)
+                ticket->addCustomer(c);
+            else
+                qDebug() << "Ticket does not exist.";
+        } else if(command == "AddOrderItem") {
+            qDebug() << "AddOrderItem: " << payload;
+            OrderItem *i = OrderItem::deserialize(payload);
+            Ticket *ticket = getTicket(i->property("ticketId").toInt());
+            if(!ticket) {
+                qDebug() << "Ticket does not exist.";
+                return;
+            }
+            Customer *customer = ticket->getCustomer(i->property("customerId").toUInt());
+            if(!customer) {
+                qDebug() << "Customer does not exist.";
+                return;
+            }
+            customer->addOrderItem(i);
+        } else if (command == "UpdateReconciliation") {
+            qDebug() << "UpdateReconciliation: " << payload;
+            //quint32 recId = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            setProperty(property.toUtf8().data(), value);
+        } else if (command == "UpdateCashDrawer") {
+            qDebug() << "UpdateCashDrawer: " << payload;
+            //quint32 recId = split[0].toUInt();
+            quint32 cashDrawerId = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            if(cashDrawerId == 1) {
+                beginningDrawer()->setProperty(property.toUtf8().data(), value);
+            } else if(cashDrawerId == 2) {
+                endingDrawer()->setProperty(property.toUtf8().data(), value);
+            }
+        } else if (command == "UpdateTicket") {
+            qDebug() << "UpdateTicket: " << payload;
+            quint32 ticketId = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+            Ticket* ticket = getTicket(ticketId);
+            ticket->setProperty(property.toUtf8().data(), value);
+        } else if (command == "UpdateCustomer") {
+            qDebug() << "UpdateCustomer: " << payload;
+            quint32 ticketId = split[0].toUInt();
+            quint32 customerId = split[1].toUInt();
+            QString property = split[2];
+            QString value = split[3];
+            Customer* customer = getTicket(ticketId)->getCustomer(customerId);
+            customer->setProperty(property.toUtf8().data(), value);
+        } else if (command == "UpdateOrderItem") {
+            qDebug() << "UpdateOrderItem: " << payload;
+            quint32 ticketId = split[0].toUInt();
+            quint32 customerId = split[1].toUInt();
+            quint32 orderItemId = split[2].toUInt();
+            QString property = split[3];
+            QString value = split[4];
+            OrderItem* orderItem = getTicket(ticketId)->getCustomer(customerId)->getOrderItem(orderItemId);
+            if(property == "submittedStamp" && value.trimmed() == "") {
+                orderItem->setProperty("submittedStamp", QDateTime());
+            } else {
+                orderItem->setProperty(property.toUtf8().data(), value);
+            }
+        } else if (command == "MoveOrderItem") {
+            qDebug() << "MoveOrderItem: " << payload;
+            quint32 fromTicketId = split[0].toUInt();
+            quint32 fromCustomerId = split[1].toUInt();
+            quint32 orderItemId = split[2].toUInt();
+            quint32 toTicketId = split[3].toUInt();
+            quint32 toCustomerId = split[4].toUInt();
+
+            OrderItem* orderItem = getTicket(fromTicketId)->getCustomer(fromCustomerId)->getOrderItem(orderItemId);
+            moveOrderItem(orderItem, toTicketId, toCustomerId);
+        } else {
+            qDebug() << "Unknown command: " << command << " " << payload;
+        }
+    }
+
+    // optional, as QFile destructor will already do it:
+    file.close();
+
+    m_isHistoryDisabled = false;
+}
+
+void Reconciliation::appendToHistory(QString item) {
+    if(!m_isHistoryDisabled) {
+        QFile file("./data/" + filename());
+        file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream out(&file);
+        out << SimpleSerializable::escapeString(QDateTime::currentDateTime().toString()) << ":" << item << endl;
+        file.close();
+    }
 }
 
 CashDrawer* Reconciliation::beginningDrawer() {
@@ -67,8 +208,7 @@ void Reconciliation::addTicket(Ticket *ticket) {
             this, SLOT(fireTotalsChanged()));
 
     m_tickets.append(ticket);
-    Pos *pos = Pos::instance();
-    pos->appendToHistory("AddTicket:" + ticket->serialize());
+    Pos::instance()->appendToHistory("AddTicket:" + ticket->serialize());
     ticketsChanged(tickets());
 }
 
@@ -330,13 +470,8 @@ bool Reconciliation::closeRec() {
     }
 
     m_closedStamp = QDateTime::currentDateTime();    
-    logPropertyChanged(m_closedStamp, "closedStamp");
-    if(!Pos::instance()->closeCurrentRec()) {
-        m_closedStamp = QDateTime();
-        logPropertyChanged(m_closedStamp, "closedStamp");
-    } else {
-        qDebug() << "Closed rec: " << m_closedStamp.toString("MM/dd/yyyy hh:mmAP");        
-    }
+    logPropertyChanged(m_closedStamp, "closedStamp");    
+    qDebug() << "Closed rec: " << m_closedStamp.toString("MM/dd/yyyy hh:mmAP");
 
     closedStampChanged(m_closedStamp);
     isOpenChanged(isOpen());
@@ -352,7 +487,7 @@ bool Reconciliation::isOpen() {
 
 QString Reconciliation::serialize() const {
     QStringList vals;
-    vals << QString::number(m_id) << m_name << m_note << m_openedStamp.toString();
+    vals << QString::number(m_id) << m_date.toString() << m_name << m_note;
     return serializeList(vals);
 }
 
@@ -361,11 +496,11 @@ Reconciliation* Reconciliation::deserialize(QString serialized, QObject *parent)
     QStringList split = deserializeList(serialized);
 
     quint32 id = split[0].toInt();
-    QString name = split[1];
-    QString note = split[2];
-    QDateTime opened = QDateTime::fromString(split[3]);
+    QDate date = QDate::fromString(split[1]);
+    QString name = split[2];
+    QString note = split[3];
 
-    Reconciliation *obj = new Reconciliation(parent, id, name, note, opened);
+    Reconciliation *obj = new Reconciliation(parent, id, date, name, note);
     return obj;
 }
 

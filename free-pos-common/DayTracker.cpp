@@ -6,6 +6,8 @@
 DayTracker::DayTracker(QObject *parent, quint32 id, QString name, QDate date, Reconciliation* lunchRec, Reconciliation* dinnerRec) :
     SimpleSerializable(parent), m_id(id), m_name(name), m_date(date), m_lunchRec(lunchRec), m_dinnerRec(dinnerRec), m_fixedCostCurrId(0)
 {
+    m_lunchRec = new Reconciliation(this, 1, m_date, "Lunch", "");
+    m_dinnerRec = new Reconciliation(this, 1, m_date, "Dinner", "");
 }
 
 QStringList DayTracker::updatePrefix() {

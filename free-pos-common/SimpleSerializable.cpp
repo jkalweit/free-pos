@@ -8,7 +8,9 @@ SimpleSerializable::SimpleSerializable(QObject *parent) :
 }
 
 void SimpleSerializable::logPropertyChanged(QVariant value, QString propertyName) {
-    Pos::instance()->appendToHistory(serializeList(updatePrefix() << propertyName << escapeString(value.toString())));
+    if(Pos::instance()) {
+        Pos::instance()->appendToHistory(serializeList(updatePrefix() << propertyName << escapeString(value.toString())));
+    }
 }
 
 void SimpleSerializable::logMenuPropertyChanged(QVariant value, QString propertyName) {

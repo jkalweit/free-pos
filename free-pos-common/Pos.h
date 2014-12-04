@@ -26,18 +26,17 @@ public:
 
     explicit Pos(QObject *parent = 0);
 
-    void readHistory(QString filename = "currRec.txt");
+    void readHistory(QString filename);
     void readMenuHistory(QString filename = "currMenu.txt");
 
     QQmlListProperty<Menu> menus();
     void addMenu(Menu *menu);
 
     QQmlListProperty<Reconciliation> reconciliations();
-    Q_INVOKABLE Reconciliation* openNewRec();
-    Q_INVOKABLE Reconciliation* selectedRec();
-    Q_INVOKABLE Menu* selectedMenu();
-    Q_INVOKABLE Inventory* selectedInventory();
-    bool closeCurrentRec();
+    Q_INVOKABLE void unselectRec();
+    Reconciliation* selectedRec();
+    Menu* selectedMenu();
+    Inventory* selectedInventory();
     void addReconciliation(Reconciliation *rec);
     void appendToHistory(QString item);
     void appendToMenuHistory(QString item);
@@ -65,7 +64,7 @@ signals:
 
 public slots:
 
-private:    
+private:
     static Pos *s_instance;
     QList<QString> m_history;
     bool m_isHistoryDisabled;

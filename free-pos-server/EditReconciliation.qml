@@ -9,6 +9,7 @@ Rectangle {
     visible: model ? true : false
 
 
+
     TicketList {
         id: ticketList
         rec: model
@@ -24,7 +25,14 @@ Rectangle {
         }
     }
 
-
+    Button {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        text: "x"
+        onClicked: {
+            pos.unselectRec();
+        }
+    }
 
     Flickable {
         width: ticket.width
@@ -365,32 +373,32 @@ Rectangle {
         opacity: 0.50
 
 
-        Rectangle {
-            id: monday
-            width: 200
-            anchors.left: parent.left
-            anchors.leftMargin: 0
-            anchors.bottom: parent.bottom
-            anchors.top: parent.top
+//        Rectangle {
+//            id: monday
+//            width: 200
+//            anchors.left: parent.left
+//            anchors.leftMargin: 0
+//            anchors.bottom: parent.bottom
+//            anchors.top: parent.top
 
-            Rectangle {
-                id: fixedCosts
-                width: parent.width / 2
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                height: currDay.fixedCostTotal
-                color: "#FF4444"
-            }
+//            Rectangle {
+//                id: fixedCosts
+//                width: parent.width / 2
+//                anchors.right: parent.right
+//                anchors.bottom: parent.bottom
+//                height: currDay.fixedCostTotal
+//                color: "#FF4444"
+//            }
 
-            Rectangle {
-                id: sales
-                width: parent.width / 2
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-                height: 75
-                color: "#44FF44"
-            }
-        }
+//            Rectangle {
+//                id: sales
+//                width: parent.width / 2
+//                anchors.left: parent.left
+//                anchors.bottom: parent.bottom
+//                height: 75
+//                color: "#44FF44"
+//            }
+//        }
 
 
         Rectangle {

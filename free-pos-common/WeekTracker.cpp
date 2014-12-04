@@ -67,7 +67,6 @@ float WeekTracker::salesTotal() {
 
 
 QQmlListProperty<DayTracker> WeekTracker::days() {
-    qDebug() << "Days!";
     return QQmlListProperty<DayTracker>(this, m_days);
 }
 
