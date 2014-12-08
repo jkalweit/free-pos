@@ -216,38 +216,6 @@ void Pos::readHistory(QString filename) {
             MenuCategory* cat = Pos::instance()->selectedMenu()->getMenuCategory(menuCategoryId);
             MenuItem *menuItem = cat->getMenuItem(menuItemId);
             menuItem->removeMenuItemInventoryItem(id);
-        } else if (command == "AddOrderItemInventoryItem") {
-            qDebug() << "AddOrderItemInventoryItem: " << payload;
-            OrderItemInventoryItem *orderItemInventoryItem = OrderItemInventoryItem::deserialize(payload);
-            Ticket *ticket = m_selectedRec->getTicket(orderItemInventoryItem->ticketId());
-            Customer *customer = ticket->getCustomer(orderItemInventoryItem->customerId());
-            OrderItem *orderItem = customer->getOrderItem(orderItemInventoryItem->orderItemId());
-            orderItem->addOrderItemInventoryItem(orderItemInventoryItem);
-        } else if (command == "UpdateOrderItemInventoryItem") {
-            qDebug() << "UpdateOrderItemInventoryItem: " << payload;
-            quint32 ticketId = split[0].toUInt();
-            quint32 customerId = split[1].toUInt();
-            quint32 orderItemId = split[2].toUInt();
-            quint32 id = split[3].toUInt();
-            QString property = split[4];
-            QString value = split[5];
-
-            Ticket *ticket = m_selectedRec->getTicket(ticketId);
-            Customer *customer = ticket->getCustomer(customerId);
-            OrderItem *orderItem = customer->getOrderItem(orderItemId);
-            OrderItemInventoryItem *item = orderItem->getOrderItemInventoryItem(id);
-            item->setProperty(property.toUtf8().data(), value);
-        } else if (command == "RemoveOrderItemInventoryItem") {
-            qDebug() << "RemoveOrderItemInventoryItem: " << payload;
-            quint32 ticketId = split[0].toUInt();
-            quint32 customerId = split[1].toUInt();
-            quint32 orderItemId = split[2].toUInt();
-            quint32 id = split[3].toUInt();
-
-            Ticket *ticket = m_selectedRec->getTicket(ticketId);
-            Customer *customer = ticket->getCustomer(customerId);
-            OrderItem *orderItem = customer->getOrderItem(orderItemId);
-            orderItem->removeOrderItemInventoryItem(id);
         } else if (command == "AddMenuItemOption") {
             qDebug() << "AddMenuItemOption: " << payload;
             MenuItemOption *menuItemOption = MenuItemOption::deserialize(payload);

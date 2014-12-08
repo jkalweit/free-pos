@@ -21,7 +21,7 @@ Rectangle {
             Rectangle {
                 id: weekContainer
                 width: container.width
-                height: 200
+                height: 300
                 color: pos.selectedWeek && pos.selectedWeek.id === modelData.id ? "#DDFFDD" : "#FFFFFF"
 
                 Row {
@@ -42,47 +42,55 @@ Rectangle {
                                 text: Qt.formatDate(modelData.date, "ddd M/d/yyyy")
                             }
 
-                            Rectangle {
+                            RecSummaryView {
                                 id: lunchRec
-                                width: parent.width -20
+                                width: (parent.width / 2) -20
                                 height: 75
-                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 10
                                 anchors.bottom: parent.bottom
-                                anchors.bottomMargin:  95
-                                color: modelData.lunchRec.isOpen ? "#AAAAFF" : "#AAAAAA"
+                                anchors.bottomMargin:  195
+                                rec: modelData.lunchRec
 
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: modelData.lunchRec.name + ": " + modelData.lunchRec.total.toFixed(2)
+                                onClicked: {
+                                    pos.selectedRec = rec;
                                 }
+                            }
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        pos.selectedRec = modelData.lunchRec;
-                                    }
+                            RecSummaryView {
+                                id: dinnerRec
+                                width: (parent.width / 2) - 20
+                                height: 175
+                                anchors.left: parent.left
+                                anchors.leftMargin: 10
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin:  10
+                                rec: modelData.dinnerRec
+
+                                onClicked: {
+                                    pos.selectedRec = rec;
                                 }
                             }
 
                             Rectangle {
-                                id: dinnerRec
-                                width: parent.width -20
-                                height: 75
-                                anchors.horizontalCenter: parent.horizontalCenter
+                                id: dayCost
+                                width: (parent.width / 2) -20
+                                height: 100 // modelData.costTotal * 0.075
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
                                 anchors.bottom: parent.bottom
-                                anchors.bottomMargin:  10
-                                color: modelData.dinnerRec.isOpen ? "#AAAAFF" : "#AAAAAA"
+                                anchors.bottomMargin: 10
+                                color: "#FF7777"
+                            }
 
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: modelData.dinnerRec.name + ": " + modelData.dinnerRec.total.toFixed(2)
-                                }
-
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: pos.selectedRec = modelData.dinnerRec
-                                }
+                            Rectangle {
+                                width: (parent.width / 2) -20
+                                height: modelData.salesTotal * 0.075
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10 + dayCost.width
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin: 10
+                                color: "#77FF77"
                             }
                         }
                     }

@@ -8,6 +8,16 @@ DayTracker::DayTracker(QObject *parent, quint32 id, QString name, QDate date, Re
 {
     m_lunchRec = new Reconciliation(this, 1, m_date, "Lunch", "");
     m_dinnerRec = new Reconciliation(this, 1, m_date, "Dinner", "");
+
+    connect(m_lunchRec, SIGNAL(costChanged(float)),
+            this, SLOT(fireCostsChanged()));
+    connect(m_dinnerRec, SIGNAL(costChanged(float)),
+            this, SLOT(fireCostsChanged()));
+
+    connect(m_lunchRec, SIGNAL(totalChanged(float)),
+            this, SLOT(fireSalesChanged()));
+    connect(m_dinnerRec, SIGNAL(totalChanged(float)),
+            this, SLOT(fireSalesChanged()));
 }
 
 QStringList DayTracker::updatePrefix() {
@@ -34,10 +44,22 @@ float DayTracker::cogTotal() {
     return m_lunchRec->cost() + m_dinnerRec->cost();
 }
 
+float DayTracker::costTotal() {
+    return fixedCostTotal() + cogTotal();
+}
+
+void DayTracker::fireCostsChanged() {
+    cogTotalChanged(cogTotal());
+    costTotalChanged(costTotal());
+}
+
 float DayTracker::salesTotal() {    
     return m_lunchRec->total() + m_dinnerRec->total();
 }
 
+void DayTracker::fireSalesChanged() {
+    salesTotalChanged(salesTotal());
+}
 
 void DayTracker::setName(QString value) {
     if(m_name != value) {
@@ -72,6 +94,7 @@ void DayTracker::addFixedCost(Cost *value) {
     if(value->id() > m_fixedCostCurrId) m_fixedCostCurrId = value->id();
     m_fixedCosts.append(value);
     fixedCostsChanged(fixedCosts());
+    costTotalChanged(costTotal());
 }
 
 Cost* DayTracker::getFixedCost(quint32 id) {
@@ -89,6 +112,7 @@ void DayTracker::removeFixedCost(quint32 id) {
             //Cost *item = m_fixedCosts[i];
             m_fixedCosts.removeAt(i);
             fixedCostsChanged(fixedCosts());
+            costTotalChanged(costTotal());
             return;
         }
     }

@@ -19,6 +19,7 @@ class DayTracker : public SimpleSerializable
     Q_PROPERTY(Reconciliation* dinnerRec MEMBER m_dinnerRec NOTIFY dinnerRecChanged)
     Q_PROPERTY(float fixedCostTotal READ fixedCostTotal NOTIFY fixedCostTotalChanged)
     Q_PROPERTY(float cogTotal READ cogTotal NOTIFY cogTotalChanged)
+    Q_PROPERTY(float costTotal READ costTotal NOTIFY costTotalChanged)
     Q_PROPERTY(float salesTotal READ salesTotal NOTIFY salesTotalChanged)
 
     Q_PROPERTY(QQmlListProperty<Cost> fixedCosts READ fixedCosts NOTIFY fixedCostsChanged)
@@ -31,7 +32,8 @@ public:
     QString name();
     float fixedCostTotal();
     float cogTotal();
-    float salesTotal();
+    float costTotal();
+    float salesTotal();    
 
     void setName(QString value);
 
@@ -55,11 +57,14 @@ signals:
     void dinnerRecChanged(Reconciliation*);
     void fixedCostTotalChanged(float);
     void cogTotalChanged(float);
+    void costTotalChanged(float);
     void salesTotalChanged(float);
 
     void fixedCostsChanged(QQmlListProperty<Cost>);
 
 public slots:
+    void fireCostsChanged();
+    void fireSalesChanged();
 
 private:
     quint32 m_id;

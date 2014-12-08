@@ -19,5 +19,6 @@
         <file>MenuCategoriesView.qml</file>
         <file>MenuItemsView.qml</file>
         <file>WeeksView.qml</file>
+        <file>RecSummaryView.qml</file>
     </qresource>
 </RCC>

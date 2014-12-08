@@ -365,12 +365,12 @@ Rectangle {
 
     Rectangle {
         id: week
-        width: 400
+        width: 200
         height: 200
         anchors.right: container.right
         anchors.rightMargin: 400
         anchors.bottom: container.bottom
-        opacity: 0.50
+        opacity: 0.75
 
 
 //        Rectangle {
