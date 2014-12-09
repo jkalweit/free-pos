@@ -68,29 +68,60 @@ Rectangle {
                                 rec: modelData.dinnerRec
 
                                 onClicked: {
-                                    pos.selectedRec = rec;
+                                    pos.selectedRec = rec
                                 }
                             }
 
-                            Rectangle {
+                            Column {
                                 id: dayCost
-                                width: (parent.width / 2) -20
-                                height: 100 // modelData.costTotal * 0.075
+                                spacing: 1
+                                width: ((parent.width / 2) - 20) / 2
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10
                                 anchors.bottom: parent.bottom
                                 anchors.bottomMargin: 10
-                                color: "#FF7777"
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.lunchRec.cost * 0.075
+                                    color: "#FF7777"
+                                }
+
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.dinnerRec.cost * 0.075
+                                    color: "#DD1111"
+                                }
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.fixedCostTotal * 0.075
+                                    color: "#AA0000"
+                                }
                             }
 
-                            Rectangle {
-                                width: (parent.width / 2) -20
-                                height: modelData.salesTotal * 0.075
+
+                            Column {
+                                spacing: 1
+                                width: ((parent.width / 2) - 20) / 2
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10 + dayCost.width
                                 anchors.bottom: parent.bottom
                                 anchors.bottomMargin: 10
-                                color: "#77FF77"
+
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.lunchRec.total * 0.075
+                                    color: "#11DD11"
+                                }
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.dinnerRec.total * 0.075
+                                    color: "#00AA00"
+                                }
                             }
                         }
                     }

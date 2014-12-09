@@ -22,7 +22,6 @@ ApplicationWindow {
         id: editReconciliation
         visible: pos.selectedRec ? pos.selectedRec.isOpen : false
         model: pos.selectedRec ? pos.selectedRec : 0
-
     }
 
 //    DialogModalMessage {
