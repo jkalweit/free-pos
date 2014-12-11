@@ -31,6 +31,13 @@ void WeekTracker::createDays(QDate startDate) {
     m_days.append(m_friday);
     m_days.append(m_saturday);
 
+    for(DayTracker *day : m_days) {
+        connect(day, SIGNAL(cogTotalChanged(float)),
+                this, SLOT(fireCogTotalsChanged());
+        connect(day, SIGNAL(salesTotalChanged(float)),
+                this, SLOT(fireSalesTotalsChanged());
+    }
+
 }
 
 QStringList WeekTracker::updatePrefix() {
@@ -49,21 +56,60 @@ float WeekTracker::fixedCostTotal() {
     return total;
 }
 
-float WeekTracker::cogTotal() {
+float WeekTracker::lunchCogTotal() {
     float total = 0;
     for(DayTracker *day : m_days) {
-        total += day->cogTotal();
+        if(day->lunchRec()) total += day->lunchRec()->cost();
+    }
+    return total;
+}
+
+float WeekTracker::dinnerCogTotal() {
+    float total = 0;
+    for(DayTracker *day : m_days) {
+        if(day->dinnerRec()) total += day->dinnerRec()->cost();
+    }
+    return total;
+}
+
+float WeekTracker::cogTotal() {
+    return lunchCogTotal() + dinnerCogTotal();
+}
+
+void WeekTracker::fireCogTotalsChanged() {
+    lunchCogTotalChanged(lunchCogTotal());
+    dinnerCogTotalChanged(dinnerCogTotal());
+    cogTotalChanged(cogTotal());
+}
+
+
+
+float WeekTracker::lunchSalesTotal() {
+    float total = 0;
+    for(DayTracker *day : m_days) {
+        if(day->lunchRec()) total += day->lunchRec()->total();
+    }
+    return total;
+}
+
+float WeekTracker::dinnerSalesTotal() {
+    float total = 0;
+    for(DayTracker *day : m_days) {
+        if(day->dinnerRec()) total += day->dinnerRec()->total();
     }
     return total;
 }
 
 float WeekTracker::salesTotal() {
-    float total = 0;
-    for(DayTracker *day : m_days) {
-        total += day->salesTotal();
-    }
-    return total;
+    return lunchSalesTotal() + dinnerSalesTotal();
 }
+
+void WeekTracker::fireSalesTotalsChanged() {
+    lunchSalesTotalChanged(lunchSalesTotal());
+    dinnerSalesTotalChanged(dinnerSalesTotal());
+    salesTotalChanged(salesTotal());
+}
+
 
 
 QQmlListProperty<DayTracker> WeekTracker::days() {

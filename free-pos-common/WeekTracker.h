@@ -20,8 +20,11 @@ class WeekTracker : public SimpleSerializable
     Q_PROPERTY(DayTracker* friday MEMBER m_friday NOTIFY fridayChanged)
     Q_PROPERTY(DayTracker* saturday MEMBER m_saturday NOTIFY saturdayChanged)
     Q_PROPERTY(float fixedCostTotal READ fixedCostTotal NOTIFY fixedCostTotalChanged)
+    Q_PROPERTY(float lunchCogTotal READ lunchCogTotal NOTIFY lunchCogTotalChanged)
+    Q_PROPERTY(float dinnerCogTotal READ dinnerCogTotal NOTIFY dinnerCogTotalChanged)
     Q_PROPERTY(float cogTotal READ cogTotal NOTIFY cogTotalChanged)
-    Q_PROPERTY(float salesTotal READ salesTotal NOTIFY salesTotalChanged)
+    Q_PROPERTY(float lunchSalesTotal READ lunchSalesTotal NOTIFY lunchSalesTotalChanged)
+    Q_PROPERTY(float dinnerSalesTotal READ dinnerSalesTotal NOTIFY dinnerSalesTotalChanged)
 
     Q_PROPERTY(QQmlListProperty<DayTracker> days READ days NOTIFY daysChanged)
 public:
@@ -33,7 +36,11 @@ public:
 
     quint32 id();
     float fixedCostTotal();
+    float lunchCogTotal();
+    float dinnerCogTotal();
     float cogTotal();
+    float lunchSalesTotal();
+    float dinnerSalesTotal();
     float salesTotal();
 
     QQmlListProperty<DayTracker> days();
@@ -49,11 +56,18 @@ signals:
     void fridayChanged(DayTracker*);
     void saturdayChanged(DayTracker*);
     void fixedCostTotalChanged(float);
+    void lunchCogTotalChanged(float);
+    void dinnerCogTotalChanged(float);
     void cogTotalChanged(float);
+    void lunchSalesTotalChanged(float);
+    void dinnerSalesTotalChanged(float);
     void salesTotalChanged(float);
 
     void daysChanged(QQmlListProperty<DayTracker>);
+
 public slots:
+    void fireCogTotalsChanged();
+    void fireSalesTotalsChanged();
 
 private:
     quint32 m_id;

@@ -72,7 +72,7 @@ void DayTracker::addDefaultFixedCosts() {
 //    addFixedCost("Mortgage", 92.30);
 //    addFixedCost("Property Tax", 31.25);
 //    addFixedCost("Other", 66.66);
-    addFixedCost("Total", 576.92);
+    addFixedCost("Total", 665.92);
 }
 
 

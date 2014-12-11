@@ -29,7 +29,7 @@ Rectangle {
                         model: modelData.days
 
                         Rectangle {
-                            width: weekContainer.width / 7
+                            width: weekContainer.width / 8
                             height: weekContainer.height
                             border.width: 1
                             border.color: "#777777"
@@ -42,40 +42,40 @@ Rectangle {
                                 text: Qt.formatDate(modelData.date, "ddd M/d/yyyy")
                             }
 
-                            RecSummaryView {
-                                id: lunchRec
-                                width: (parent.width / 2) -20
-                                height: 75
-                                anchors.left: parent.left
-                                anchors.leftMargin: 10
-                                anchors.bottom: parent.bottom
-                                anchors.bottomMargin:  195
-                                rec: modelData.lunchRec
+//                            RecSummaryView {
+//                                id: lunchRec
+//                                width: (parent.width / 2) -20
+//                                height: 75
+//                                anchors.left: parent.left
+//                                anchors.leftMargin: 10
+//                                anchors.bottom: parent.bottom
+//                                anchors.bottomMargin:  195
+//                                rec: modelData.lunchRec
 
-                                onClicked: {
-                                    pos.selectedRec = rec;
-                                }
-                            }
+//                                onClicked: {
+//                                    pos.selectedRec = rec;
+//                                }
+//                            }
 
-                            RecSummaryView {
-                                id: dinnerRec
-                                width: (parent.width / 2) - 20
-                                height: 175
-                                anchors.left: parent.left
-                                anchors.leftMargin: 10
-                                anchors.bottom: parent.bottom
-                                anchors.bottomMargin:  10
-                                rec: modelData.dinnerRec
+//                            RecSummaryView {
+//                                id: dinnerRec
+//                                width: (parent.width / 2) - 20
+//                                height: 175
+//                                anchors.left: parent.left
+//                                anchors.leftMargin: 10
+//                                anchors.bottom: parent.bottom
+//                                anchors.bottomMargin:  10
+//                                rec: modelData.dinnerRec
 
-                                onClicked: {
-                                    pos.selectedRec = rec
-                                }
-                            }
+//                                onClicked: {
+//                                    pos.selectedRec = rec
+//                                }
+//                            }
 
                             Column {
                                 id: dayCost
                                 spacing: 1
-                                width: ((parent.width / 2) - 20) / 2
+                                width: (parent.width - 20) / 2
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10
                                 anchors.bottom: parent.bottom
@@ -104,7 +104,7 @@ Rectangle {
 
                             Column {
                                 spacing: 1
-                                width: ((parent.width / 2) - 20) / 2
+                                width: (parent.width - 20) / 2
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10 + dayCost.width
                                 anchors.bottom: parent.bottom
@@ -122,6 +122,60 @@ Rectangle {
                                     height: modelData.dinnerRec.total * 0.075
                                     color: "#00AA00"
                                 }
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        width: weekContainer.width / 8
+                        height: weekContainer.height
+                        border.width: 1
+                        border.color: "#777777"
+                        color: "transparent"
+
+                        Text {
+                            anchors.top: parent.top
+                            anchors.topMargin: 10
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "Week Totals"
+                        }
+
+
+                        Column {
+                            id: weekCost
+                            spacing: 1
+                            width: (parent.width - 20) / 2
+                            anchors.right: parent.right
+                            anchors.rightMargin: 10
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 10
+
+                            Rectangle {
+                                width: parent.width
+                                height: modelData.cogTotal * 0.075
+                                color: "#FF7777"
+                            }
+
+                            Rectangle {
+                                width: parent.width
+                                height: modelData.fixedCostTotal * 0.075
+                                color: "#AA0000"
+                            }
+                        }
+
+
+                        Column {
+                            spacing: 1
+                            width: (parent.width - 20) / 2
+                            anchors.right: parent.right
+                            anchors.rightMargin: 10 + weekCost.width
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 10
+
+                            Rectangle {
+                                width: parent.width
+                                height: modelData.salesTotal * 0.075
+                                color: "#00AA00"
                             }
                         }
                     }

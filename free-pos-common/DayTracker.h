@@ -15,8 +15,8 @@ class DayTracker : public SimpleSerializable
     Q_PROPERTY(quint32 id MEMBER m_id READ id NOTIFY idChanged)
     Q_PROPERTY(QString name MEMBER m_name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QDate date MEMBER m_date NOTIFY dateChanged)
-    Q_PROPERTY(Reconciliation* lunchRec MEMBER m_lunchRec NOTIFY lunchRecChanged)
-    Q_PROPERTY(Reconciliation* dinnerRec MEMBER m_dinnerRec NOTIFY dinnerRecChanged)
+    Q_PROPERTY(Reconciliation* lunchRec MEMBER m_lunchRec READ lunchRec NOTIFY lunchRecChanged)
+    Q_PROPERTY(Reconciliation* dinnerRec MEMBER m_dinnerRec READ dinnerRec NOTIFY dinnerRecChanged)
     Q_PROPERTY(float fixedCostTotal READ fixedCostTotal NOTIFY fixedCostTotalChanged)
     Q_PROPERTY(float cogTotal READ cogTotal NOTIFY cogTotalChanged)
     Q_PROPERTY(float costTotal READ costTotal NOTIFY costTotalChanged)
@@ -30,6 +30,8 @@ public:
 
     quint32 id();
     QString name();
+    Reconciliation* lunchRec();
+    Reconciliation* dinnerRec();
     float fixedCostTotal();
     float cogTotal();
     float costTotal();
