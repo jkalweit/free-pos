@@ -5,16 +5,17 @@ Rectangle {
     width: 100
     height: 100
     property var rec
+    property bool isDinner: false
     signal clicked(var rec)
 
-    color: rec.isOpen ? "#AAAAFF" : "#AAAAAA"    
+    color: rec.isOpen ? "#DDDDFF" : "#AAAAAA"
 
     Rectangle {
         width: container.width / 2
         height: rec.total * 0.075
         anchors.left: container.left
         anchors.bottom: container.bottom
-        color: "#77FF77"
+        color: isDinner ? "#00AA00" : "#11DD11"
 
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -29,7 +30,7 @@ Rectangle {
         height:  rec.cost * 0.075
         anchors.right: container.right
         anchors.bottom: container.bottom
-        color: "#FF7777"
+        color: isDinner ? "#DD1111" : "#FF7777"
 
         Text {
             anchors.horizontalCenter: parent.horizontalCenter

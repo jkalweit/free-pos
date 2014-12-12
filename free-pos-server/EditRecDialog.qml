@@ -305,6 +305,7 @@ DialogModal {
                     Button {
                         width: 100
                         text: "Close Rec"
+                        enabled: model ? model.isOpen : false
                         onClicked: {
                             if(model.hasOpenTickets()) {
                                 message.title = "Cannot Close Rec";

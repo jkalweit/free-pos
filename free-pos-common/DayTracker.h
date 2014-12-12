@@ -35,7 +35,7 @@ public:
     float fixedCostTotal();
     float cogTotal();
     float costTotal();
-    float salesTotal();    
+    float salesTotal();
 
     void setName(QString value);
 

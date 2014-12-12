@@ -32,10 +32,21 @@ void WeekTracker::createDays(QDate startDate) {
     m_days.append(m_saturday);
 
     for(DayTracker *day : m_days) {
+        connect(day, SIGNAL(fixedCostTotalChanged(float)),
+                this, SLOT(fireFixedCostTotalChanged()));
         connect(day, SIGNAL(cogTotalChanged(float)),
-                this, SLOT(fireCogTotalsChanged());
+                this, SLOT(fireCogTotalsChanged()));
         connect(day, SIGNAL(salesTotalChanged(float)),
-                this, SLOT(fireSalesTotalsChanged());
+                this, SLOT(fireSalesTotalsChanged()));
+
+        if(day->lunchRec()) {
+            connect(day->lunchRec(), SIGNAL(totalChanged(float)),
+                    this, SLOT(fireSalesTotalsChanged()));
+        }
+        if(day->dinnerRec()) {
+            connect(day->dinnerRec(), SIGNAL(totalChanged(float)),
+                    this, SLOT(fireSalesTotalsChanged()));
+        }
     }
 
 }
@@ -54,6 +65,11 @@ float WeekTracker::fixedCostTotal() {
         total += day->fixedCostTotal();
     }
     return total;
+}
+
+void WeekTracker::fireFixedCostTotalChanged() {
+    fixedCostTotalChanged(fixedCostTotal());
+    costTotalChanged(costTotal());
 }
 
 float WeekTracker::lunchCogTotal() {
@@ -76,10 +92,15 @@ float WeekTracker::cogTotal() {
     return lunchCogTotal() + dinnerCogTotal();
 }
 
+float WeekTracker::costTotal() {
+    return fixedCostTotal() + cogTotal();
+}
+
 void WeekTracker::fireCogTotalsChanged() {
     lunchCogTotalChanged(lunchCogTotal());
     dinnerCogTotalChanged(dinnerCogTotal());
     cogTotalChanged(cogTotal());
+    costTotalChanged(costTotal());
 }
 
 

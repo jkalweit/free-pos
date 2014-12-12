@@ -32,6 +32,14 @@ QString DayTracker::name() {
     return m_name;
 }
 
+Reconciliation* DayTracker::lunchRec() {
+    return m_lunchRec;
+}
+
+Reconciliation* DayTracker::dinnerRec() {
+    return m_dinnerRec;
+}
+
 float DayTracker::fixedCostTotal() {
     float total = 0;
     for(Cost *cost : m_fixedCosts) {
