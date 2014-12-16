@@ -186,8 +186,8 @@ void Ticket::printKitchen() {
 
 
     printer.setFullPage(true);
-    printer.setOutputFormat(printer.PdfFormat);
-    printer.setOutputFileName("rkitchen.pdf");
+//    printer.setOutputFormat(printer.PdfFormat);
+//    printer.setOutputFileName("rkitchen.pdf");
 
     qreal currentX = 20;
     qreal currentY = 0;

@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     pos->readHistory("currMenu.txt");
     //pos->addTestData();
 
-    pos->addWeek(QDate(2014, 12, 7));
+    pos->addWeek(QDate(2014, 12, 14));
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("pos", (QObject*)pos);

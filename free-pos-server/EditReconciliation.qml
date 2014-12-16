@@ -9,6 +9,14 @@ Rectangle {
     visible: model ? true : false
 
 
+    MouseArea {
+        id: preventClickThrough
+        anchors.fill: parent
+        onClicked: {
+            // do nothing
+        }
+    }
+
 
     TicketList {
         id: ticketList
