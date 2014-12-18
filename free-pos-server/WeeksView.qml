@@ -4,7 +4,7 @@ import QtQuick.Controls 1.2
 Rectangle {
     id: container
     width: parent.width
-    height: 600
+    height: 900
     color: "#555555"
 
     Column {
@@ -72,70 +72,104 @@ Rectangle {
                                 }
                             }
 
-                            Column {
-                                id: dayCost
-                                spacing: 1
-                                width: (parent.width - 20) / 2
-                                anchors.right: parent.right
-                                anchors.rightMargin: 10
-                                anchors.bottom: parent.bottom
-                                anchors.bottomMargin: 10
+                            Rectangle {
+                                id: dayTotals
+                                width: parent.width - 20
+                                height: 275
+                                anchors.left: parent.left
+                                anchors.leftMargin: 10
+                                anchors.top: parent.top
+                                anchors.topMargin: 300
 
-                                Rectangle {
-                                    width: parent.width
-                                    height: modelData.lunchRec.cost * 0.075
-                                    color: "#FF7777"
+
+                                Column {
+                                    id: dayCost
+                                    spacing: 1
+                                    width: (parent.width - 20) / 2
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 10
+                                    anchors.bottom: parent.bottom
+                                    anchors.bottomMargin: 10
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: modelData.lunchRec.cost * 0.075
+                                        color: "#FF7777"
+                                    }
+
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: modelData.dinnerRec.cost * 0.075
+                                        color: "#DD1111"
+                                    }
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: modelData.fixedCostTotal * 0.075
+                                        color: "#AA0000"
+                                    }
+
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+    //                                    anchors.bottom: parent.bottom
+    //                                    anchors.bottomMargin: 10
+                                        text: modelData.costTotal.toFixed(0)
+                                    }
                                 }
 
 
-                                Rectangle {
-                                    width: parent.width
-                                    height: modelData.dinnerRec.cost * 0.075
-                                    color: "#DD1111"
+                                Column {
+                                    spacing: 1
+                                    width: (parent.width - 20) / 2
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 10 + dayCost.width
+                                    anchors.bottom: parent.bottom
+                                    anchors.bottomMargin: 10
+
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: modelData.lunchRec.total * 0.075
+                                        color: "#11DD11"
+                                    }
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: modelData.dinnerRec.total * 0.075
+                                        color: "#00AA00"
+                                    }
+
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+    //                                    anchors.bottom: parent.bottom
+    //                                    anchors.bottomMargin: 10
+                                        text: modelData.salesTotal.toFixed(0)
+                                    }
                                 }
 
-                                Rectangle {
-                                    width: parent.width
-                                    height: modelData.fixedCostTotal * 0.075
-                                    color: "#AA0000"
-                                }
-
-                                Text {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-//                                    anchors.bottom: parent.bottom
-//                                    anchors.bottomMargin: 10
-                                    text: modelData.costTotal.toFixed(0)
-                                }
                             }
 
-
-                            Column {
-                                spacing: 1
-                                width: (parent.width - 20) / 2
+                            EmployeeShiftsView {
+                                id: lunchShifts
+                                height: 125
+                                anchors.left: parent.left
+                                anchors.leftMargin: 10
                                 anchors.right: parent.right
-                                anchors.rightMargin: 10 + dayCost.width
-                                anchors.bottom: parent.bottom
-                                anchors.bottomMargin: 10
+                                anchors.rightMargin: 10
+                                anchors.top: dayTotals.bottom
+                                anchors.topMargin: 10
+                                rec: modelData.lunchRec
+                            }
 
-
-                                Rectangle {
-                                    width: parent.width
-                                    height: modelData.lunchRec.total * 0.075
-                                    color: "#11DD11"
-                                }
-
-                                Rectangle {
-                                    width: parent.width
-                                    height: modelData.dinnerRec.total * 0.075
-                                    color: "#00AA00"
-                                }
-
-                                Text {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-//                                    anchors.bottom: parent.bottom
-//                                    anchors.bottomMargin: 10
-                                    text: modelData.salesTotal.toFixed(0)
-                                }
+                            EmployeeShiftsView {
+                                id: dinnerShifts
+                                width: parent.width - 20
+                                height: 145
+                                anchors.left: parent.left
+                                anchors.leftMargin: 10
+                                anchors.top: lunchShifts.bottom
+                                rec: modelData.dinnerRec
                             }
                         }
                     }
@@ -155,67 +189,80 @@ Rectangle {
                         }
 
 
-                        Column {
-                            id: weekCost
-                            spacing: 1
-                            width: (parent.width - 20) / 2
-                            anchors.right: parent.right
-                            anchors.rightMargin: 10
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 10
+                        Rectangle {
+                            id: weekTotals
+                            width: parent.width - 20
+                            height: 545
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            anchors.top: parent.top
+                            anchors.topMargin: 30
 
-                            Rectangle {
-                                width: parent.width
-                                height: modelData.lunchCogTotal * 0.075
-                                color: "#FF7777"
+
+                            Column {
+                                id: weekCost
+                                spacing: 1
+                                width: (parent.width - 20) / 2
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin: 10
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.lunchCogTotal * 0.075
+                                    color: "#FF7777"
+                                }
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.dinnerCogTotal * 0.075
+                                    color: "#DD1111"
+                                }
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.fixedCostTotal * 0.075
+                                    color: "#AA0000"
+                                }
+
+                                Text {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+    //                                anchors.bottom: parent.bottom
+    //                                anchors.bottomMargin: 10
+                                    text: modelData.costTotal.toFixed(0)
+                                }
                             }
 
-                            Rectangle {
-                                width: parent.width
-                                height: modelData.dinnerCogTotal * 0.075
-                                color: "#DD1111"
+
+                            Column {
+                                spacing: 1
+                                width: (parent.width - 20) / 2
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10 + weekCost.width
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin: 10
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.lunchSalesTotal * 0.075
+                                    color: "#11DD11"
+                                }
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.dinnerSalesTotal * 0.075
+                                    color: "#00AA00"
+                                }
+
+                                Text {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    text: modelData.salesTotal.toFixed(0)
+                                }
                             }
 
-                            Rectangle {
-                                width: parent.width
-                                height: modelData.fixedCostTotal * 0.075
-                                color: "#AA0000"
-                            }
-
-                            Text {
-                                anchors.horizontalCenter: parent.horizontalCenter
-//                                anchors.bottom: parent.bottom
-//                                anchors.bottomMargin: 10
-                                text: modelData.costTotal.toFixed(0)
-                            }
                         }
 
-
-                        Column {
-                            spacing: 1
-                            width: (parent.width - 20) / 2
-                            anchors.right: parent.right
-                            anchors.rightMargin: 10 + weekCost.width
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 10
-
-                            Rectangle {
-                                width: parent.width
-                                height: modelData.lunchSalesTotal * 0.075
-                                color: "#11DD11"
-                            }
-
-                            Rectangle {
-                                width: parent.width
-                                height: modelData.dinnerSalesTotal * 0.075
-                                color: "#00AA00"
-                            }
-
-                            Text {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: modelData.salesTotal.toFixed(0)
-                            }
-                        }
                     }
                 }
             }

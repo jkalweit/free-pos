@@ -8,6 +8,7 @@
 #include "SimpleSerializable.h"
 #include "Ticket.h"
 #include "CashDrawer.h"
+#include "EmployeeShift.h"
 
 class Reconciliation : public SimpleSerializable {
 
@@ -42,6 +43,9 @@ class Reconciliation : public SimpleSerializable {
 
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
+
+    Q_PROPERTY(QQmlListProperty<EmployeeShift> shifts READ shifts NOTIFY shiftsChanged)
+
 public:
     explicit Reconciliation(QObject *parent = 0, quint32 id = 0, QDate date = QDate(), QString name = "", QString note = "",
                             QDateTime openedStamp = QDateTime(), QDateTime closedStamp = QDateTime(),
@@ -99,6 +103,13 @@ public:
 
     Q_INVOKABLE void print();
 
+    QQmlListProperty<EmployeeShift> shifts();
+    QList<EmployeeShift*> shiftsList();
+    Q_INVOKABLE EmployeeShift* addShift(QString name, QString note, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM);
+    void addShift(EmployeeShift *value);
+    Q_INVOKABLE EmployeeShift* getShift(quint32 id);
+    Q_INVOKABLE void removeShift(quint32 id);
+
     QString serialize() const;
     static Reconciliation* deserialize(QString serialized, QObject *parent = 0);
 
@@ -135,6 +146,8 @@ signals:
     void costChanged(float);
     void marginChanged(float);
 
+    void shiftsChanged(QQmlListProperty<EmployeeShift>);
+
 private:
     quint32 m_id;
     QDate m_date;
@@ -154,6 +167,9 @@ private:
     float m_creditCardTotalTips;
 
     bool m_isHistoryDisabled;
+
+    QList<EmployeeShift*> m_shifts;
+    quint32 m_shiftCurrId;
 
 private slots:
     void fireTotalsChanged();

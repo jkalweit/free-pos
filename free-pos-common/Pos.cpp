@@ -55,7 +55,7 @@ void Pos::readHistory(QString filename) {
         QString payload = theRest.mid(delimit+1, line.length() - delimit);
         QStringList split = SimpleSerializable::deserializeList(payload);
 
-        if(command == "OpenRec") {
+        /*if(command == "OpenRec") {
             qDebug() << "Open new rec" << payload;
             m_selectedRec = Reconciliation::deserialize(payload, this);
         } else if(command == "AddTicket") {
@@ -139,19 +139,21 @@ void Pos::readHistory(QString filename) {
 
             OrderItem* orderItem = m_selectedRec->getTicket(fromTicketId)->getCustomer(fromCustomerId)->getOrderItem(orderItemId);
             m_selectedRec->moveOrderItem(orderItem, toTicketId, toCustomerId);
-        } else if (command == "AddMenu") {
-            qDebug() << "AddMenu: " << payload;
+        } else*/
+
+        if (command == "AddMenu") {
+            //qDebug() << "AddMenu: " << payload;
             //quint32 id = split[0].toUInt();
             m_selectedMenu = new Menu(this);
             Pos::instance()->addMenu(m_selectedMenu);
             selectedMenuChanged(m_selectedMenu);
         } else if(command == "AddMenuCategory") {
-            qDebug() << "AddMenuCategory: " << payload;
+            //qDebug() << "AddMenuCategory: " << payload;
             quint32 id = split[0].toUInt();
             QString name = split[1];
             m_selectedMenu->addCategory(new MenuCategory(this, id, name));
         } else if(command == "AddMenuItem") {
-            qDebug() << "AddMenuItem: " << payload;
+            //qDebug() << "AddMenuItem: " << payload;
             quint32 id = split[0].toUInt();
             quint32 menuCategoryId = split[1].toUInt();
             QString name = split[2];
@@ -160,14 +162,14 @@ void Pos::readHistory(QString filename) {
             MenuCategory *category = m_selectedMenu->getMenuCategory(menuCategoryId);
             category->addMenuItem(new MenuItem(this, id, menuCategoryId, name, type, price));
         } else if (command == "UpdateMenuCategory") {
-            qDebug() << "UpdateMenuCategory: " << payload;
+            //qDebug() << "UpdateMenuCategory: " << payload;
             quint32 menuCategoryId = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
             MenuCategory* cat = m_selectedMenu->getMenuCategory(menuCategoryId);
             cat->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateMenuItem") {
-            qDebug() << "UpdateMenuItem: " << payload;
+            //qDebug() << "UpdateMenuItem: " << payload;
             quint32 id = split[0].toUInt();
             quint32 menuCategoryId = split[1].toUInt();
             QString property = split[2];
@@ -176,21 +178,21 @@ void Pos::readHistory(QString filename) {
             MenuItem *item = cat->getMenuItem(id);
             item->setProperty(property.toUtf8().data(), value);
         } else if (command == "AddInventory") {
-            qDebug() << "AddInventory: " << payload;
+            //qDebug() << "AddInventory: " << payload;
             m_selectedInventory = new Inventory(this);
             selectedInventoryChanged(m_selectedInventory);
         } else if(command == "AddInventoryItem") {
-            qDebug() << "AddInventoryItem: " << payload;
+            //qDebug() << "AddInventoryItem: " << payload;
             m_selectedInventory->addInventoryItem(InventoryItem::deserialize(payload, this));
         } else if (command == "UpdateInventoryItem") {
-            qDebug() << "UpdateInventoryItem: " << payload;
+            //qDebug() << "UpdateInventoryItem: " << payload;
             quint32 id = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
             InventoryItem *item = m_selectedInventory->getInventoryItem(id);
             item->setProperty(property.toUtf8().data(), value);
         } else if (command == "AddMenuItemInventoryItem") {
-            qDebug() << "AddMenuItemInventoryItem: " << payload;
+            //qDebug() << "AddMenuItemInventoryItem: " << payload;
             MenuItemInventoryItem *menuItemInventoryItem = MenuItemInventoryItem::deserialize(payload);
             InventoryItem *inventoryItem = Pos::instance()->selectedInventory()->getInventoryItem(menuItemInventoryItem->property("inventoryItemId").toUInt());
             menuItemInventoryItem->setInventoryItem(inventoryItem);
@@ -198,7 +200,7 @@ void Pos::readHistory(QString filename) {
             MenuItem *menuItem = cat->getMenuItem(menuItemInventoryItem->property("menuItemId").toUInt());
             menuItem->addMenuItemInventoryItem(menuItemInventoryItem);
         } else if (command == "UpdateMenuItemInventoryItem") {
-            qDebug() << "UpdateMenuItemInventoryItem: " << payload;
+            //qDebug() << "UpdateMenuItemInventoryItem: " << payload;
             quint32 id = split[0].toUInt();
             quint32 menuCategoryId = split[1].toUInt();
             quint32 menuItemId = split[2].toUInt();
@@ -209,7 +211,7 @@ void Pos::readHistory(QString filename) {
             MenuItemInventoryItem *item = menuItem->getMenuItemInventoryItem(id);
             item->setProperty(property.toUtf8().data(), value);
         } else if (command == "RemoveMenuItemInventoryItem") {
-            qDebug() << "RemoveMenuItemInventoryItem: " << payload;
+            //qDebug() << "RemoveMenuItemInventoryItem: " << payload;
             quint32 id = split[0].toUInt();
             quint32 menuCategoryId = split[1].toUInt();
             quint32  menuItemId = split[2].toUInt();
@@ -217,32 +219,11 @@ void Pos::readHistory(QString filename) {
             MenuItem *menuItem = cat->getMenuItem(menuItemId);
             menuItem->removeMenuItemInventoryItem(id);
         } else if (command == "AddMenuItemOption") {
-            qDebug() << "AddMenuItemOption: " << payload;
+            //qDebug() << "AddMenuItemOption: " << payload;
             MenuItemOption *menuItemOption = MenuItemOption::deserialize(payload);
             MenuCategory* cat = Pos::instance()->selectedMenu()->getMenuCategory(menuItemOption->menuCategoryId());
             MenuItem *menuItem = cat->getMenuItem(menuItemOption->menuItemId());
             menuItem->addMenuItemOption(menuItemOption);
-        } else if (command == "AddOrderItemOption") {
-            qDebug() << "AddOrderItemOption: " << payload;
-            OrderItemOption *orderItemOption = OrderItemOption::deserialize(payload);
-            Ticket *ticket = m_selectedRec->getTicket(orderItemOption->ticketId());
-            Customer *customer = ticket->getCustomer(orderItemOption->customerId());
-            OrderItem *orderItem = customer->getOrderItem(orderItemOption->orderItemId());
-            orderItem->addOrderItemOption(orderItemOption);
-        } else if (command == "UpdateOrderItemOption") {
-            qDebug() << "UpdateOrderItemOption: " << payload;
-            quint32 ticketId = split[0].toUInt();
-            quint32 customerId = split[1].toUInt();
-            quint32 orderItemId = split[2].toUInt();
-            quint32 id = split[3].toUInt();
-            QString property = split[4];
-            QString value = split[5];
-
-            Ticket *ticket = m_selectedRec->getTicket(ticketId);
-            Customer *customer = ticket->getCustomer(customerId);
-            OrderItem *orderItem = customer->getOrderItem(orderItemId);
-            OrderItemOption *item = orderItem->getOrderItemOption(id);
-            item->setProperty(property.toUtf8().data(), value);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }

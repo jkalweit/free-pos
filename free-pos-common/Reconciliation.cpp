@@ -18,7 +18,7 @@ Reconciliation::Reconciliation(QObject *parent, quint32 id, QDate date, QString 
     m_beginningDrawer(begginningDrawer), m_endingDrawer(endingDrawer),
     m_currentTicketId(0), m_selectedTicket(nullptr),
     m_creditCardTotalActual(creditCardTotalActual), m_creditCardTotalTips(creditCardTotalTips),
-    m_isHistoryDisabled(false)
+    m_isHistoryDisabled(false), m_shiftCurrId(0)
 {
     if(m_beginningDrawer == nullptr)
         m_beginningDrawer = new CashDrawer(this, 1);
@@ -72,10 +72,10 @@ void Reconciliation::readHistory() {
 //            qDebug() << "Open new rec" << payload;
 //            m_selectedRec = Reconciliation::deserialize(payload, this);
         } else if(command == "AddTicket") {
-            qDebug() << "AddTicket: " << payload;
+            //qDebug() << "AddTicket: " << payload;
             addTicket(Ticket::deserialize(payload, this));
         } else if(command == "AddCustomer") {
-            qDebug() << "AddCustomer: " << payload;
+            //qDebug() << "AddCustomer: " << payload;
 
             Customer *c = Customer::deserialize(payload, this);
             Ticket *ticket = getTicket(c->property("ticketId").toInt());
@@ -84,7 +84,7 @@ void Reconciliation::readHistory() {
             else
                 qDebug() << "Ticket does not exist.";
         } else if(command == "AddOrderItem") {
-            qDebug() << "AddOrderItem: " << payload;
+            //qDebug() << "AddOrderItem: " << payload;
             OrderItem *i = OrderItem::deserialize(payload);
             Ticket *ticket = getTicket(i->property("ticketId").toInt());
             if(!ticket) {
@@ -98,13 +98,13 @@ void Reconciliation::readHistory() {
             }
             customer->addOrderItem(i);
         } else if (command == "UpdateReconciliation") {
-            qDebug() << "UpdateReconciliation: " << payload;
+            //qDebug() << "UpdateReconciliation: " << payload;
             //quint32 recId = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
             setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateCashDrawer") {
-            qDebug() << "UpdateCashDrawer: " << payload;
+            //qDebug() << "UpdateCashDrawer: " << payload;
             //quint32 recId = split[0].toUInt();
             quint32 cashDrawerId = split[0].toUInt();
             QString property = split[1];
@@ -115,14 +115,14 @@ void Reconciliation::readHistory() {
                 endingDrawer()->setProperty(property.toUtf8().data(), value);
             }
         } else if (command == "UpdateTicket") {
-            qDebug() << "UpdateTicket: " << payload;
+            //qDebug() << "UpdateTicket: " << payload;
             quint32 ticketId = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
             Ticket* ticket = getTicket(ticketId);
             ticket->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateCustomer") {
-            qDebug() << "UpdateCustomer: " << payload;
+            //qDebug() << "UpdateCustomer: " << payload;
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             QString property = split[2];
@@ -130,7 +130,7 @@ void Reconciliation::readHistory() {
             Customer* customer = getTicket(ticketId)->getCustomer(customerId);
             customer->setProperty(property.toUtf8().data(), value);
         } else if (command == "UpdateOrderItem") {
-            qDebug() << "UpdateOrderItem: " << payload;
+            //qDebug() << "UpdateOrderItem: " << payload;
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             quint32 orderItemId = split[2].toUInt();
@@ -153,14 +153,14 @@ void Reconciliation::readHistory() {
             OrderItem* orderItem = getTicket(fromTicketId)->getCustomer(fromCustomerId)->getOrderItem(orderItemId);
             moveOrderItem(orderItem, toTicketId, toCustomerId);
         } else if (command == "AddOrderItemInventoryItem") {
-            qDebug() << "AddOrderItemInventoryItem: " << payload;
+            //qDebug() << "AddOrderItemInventoryItem: " << payload;
             OrderItemInventoryItem *orderItemInventoryItem = OrderItemInventoryItem::deserialize(payload);
             Ticket *ticket = getTicket(orderItemInventoryItem->ticketId());
             Customer *customer = ticket->getCustomer(orderItemInventoryItem->customerId());
             OrderItem *orderItem = customer->getOrderItem(orderItemInventoryItem->orderItemId());
             orderItem->addOrderItemInventoryItem(orderItemInventoryItem);
         } else if (command == "UpdateOrderItemInventoryItem") {
-            qDebug() << "UpdateOrderItemInventoryItem: " << payload;
+            //qDebug() << "UpdateOrderItemInventoryItem: " << payload;
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             quint32 orderItemId = split[2].toUInt();
@@ -174,7 +174,7 @@ void Reconciliation::readHistory() {
             OrderItemInventoryItem *item = orderItem->getOrderItemInventoryItem(id);
             item->setProperty(property.toUtf8().data(), value);
         } else if (command == "RemoveOrderItemInventoryItem") {
-            qDebug() << "RemoveOrderItemInventoryItem: " << payload;
+            //qDebug() << "RemoveOrderItemInventoryItem: " << payload;
             quint32 ticketId = split[0].toUInt();
             quint32 customerId = split[1].toUInt();
             quint32 orderItemId = split[2].toUInt();
@@ -184,6 +184,31 @@ void Reconciliation::readHistory() {
             Customer *customer = ticket->getCustomer(customerId);
             OrderItem *orderItem = customer->getOrderItem(orderItemId);
             orderItem->removeOrderItemInventoryItem(id);
+        } else if (command == "AddOrderItemOption") {
+            qDebug() << "AddOrderItemOption: " << payload;
+            OrderItemOption *orderItemOption = OrderItemOption::deserialize(payload);
+            Ticket *ticket = getTicket(orderItemOption->ticketId());
+            Customer *customer = ticket->getCustomer(orderItemOption->customerId());
+            OrderItem *orderItem = customer->getOrderItem(orderItemOption->orderItemId());
+            orderItem->addOrderItemOption(orderItemOption);
+        } else if (command == "UpdateOrderItemOption") {
+            qDebug() << "UpdateOrderItemOption: " << payload;
+            quint32 ticketId = split[0].toUInt();
+            quint32 customerId = split[1].toUInt();
+            quint32 orderItemId = split[2].toUInt();
+            quint32 id = split[3].toUInt();
+            QString property = split[4];
+            QString value = split[5];
+
+            Ticket *ticket = getTicket(ticketId);
+            Customer *customer = ticket->getCustomer(customerId);
+            OrderItem *orderItem = customer->getOrderItem(orderItemId);
+            OrderItemOption *item = orderItem->getOrderItemOption(id);
+            item->setProperty(property.toUtf8().data(), value);
+        } else if (command == "AddEmployeeShift") {
+            qDebug() << "AddEmployeeShift: " << payload;
+            EmployeeShift *shift = EmployeeShift::deserialize(payload);
+            addShift(shift);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }
@@ -678,5 +703,50 @@ void Reconciliation::print() {
     painter.end();
 
 }
+
+
+
+
+QQmlListProperty<EmployeeShift> Reconciliation::shifts() {
+    return QQmlListProperty<EmployeeShift>(this, m_shifts);
+}
+
+QList<EmployeeShift*> Reconciliation::shiftsList() {
+    return m_shifts;
+}
+
+EmployeeShift* Reconciliation::addShift(QString name, QString note, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM) {
+    EmployeeShift *obj = new EmployeeShift(this, ++m_shiftCurrId, name, note, scheduledStartHour, scheduledStartMinute, scheduledStartAM, scheduledEndHour, scheduledEndMinute, scheduledEndAM);
+    addShift(obj);
+    return obj;
+}
+
+void Reconciliation::addShift(EmployeeShift *value) {
+    if(value->id() > m_shiftCurrId) m_shiftCurrId = value->id();
+    m_shifts.append(value);
+    appendToHistory("AddEmployeeShift:" + value->serialize());
+    shiftsChanged(shifts());
+}
+
+EmployeeShift* Reconciliation::getShift(quint32 id) {
+    for(EmployeeShift *value : m_shifts) {
+        if(value->property("id").toUInt() == id) {
+            return value;
+        }
+    }
+    return nullptr;
+}
+
+void Reconciliation::removeShift(quint32 id) {
+    for(int i = 0; i < m_shifts.length(); i++) {
+        if(m_shifts[i]->property("id").toUInt() == id) {
+            //EmployeeShift *item = m_shifts[i];
+            m_shifts.removeAt(i);
+            shiftsChanged(shifts());
+            return;
+        }
+    }
+}
+
 
 

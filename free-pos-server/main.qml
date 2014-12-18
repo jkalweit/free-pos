@@ -8,11 +8,14 @@ ApplicationWindow {
     visible: true
     width: 1020
     height: 800
+    visibility: "Maximized"
     title: "CY Pos"
 
 
-    WeeksView {
 
+    WeeksView {
+        width: parent.width
+        height: parent.height
     }
 
 

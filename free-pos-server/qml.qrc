@@ -20,5 +20,6 @@
         <file>MenuItemsView.qml</file>
         <file>WeeksView.qml</file>
         <file>RecSummaryView.qml</file>
+        <file>EmployeeShiftsView.qml</file>
     </qresource>
 </RCC>

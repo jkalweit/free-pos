@@ -16,6 +16,8 @@
 #include "DayTracker.h"
 #include "Cost.h"
 
+#include "EmployeeShift.h"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -38,6 +40,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<WeekTracker>("FreePos", 1, 0, "WeekTracker");
     qmlRegisterType<DayTracker>("FreePos", 1, 0, "DayTracker");
     qmlRegisterType<Cost>("FreePos", 1, 0, "Cost");
+
+    qmlRegisterType<EmployeeShift>("FreePos", 1, 0, "EmployeeShift");
 
     Pos *pos = Pos::instance();
     //pos->readHistory();

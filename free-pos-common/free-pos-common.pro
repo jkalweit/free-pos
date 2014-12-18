@@ -34,7 +34,8 @@ SOURCES += \
     OrderItemOption.cpp \
     DayTracker.cpp \
     WeekTracker.cpp \
-    Cost.cpp
+    Cost.cpp \
+    EmployeeShift.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -56,7 +57,8 @@ HEADERS += \
     OrderItemOption.h \
     DayTracker.h \
     WeekTracker.h \
-    Cost.h
+    Cost.h \
+    EmployeeShift.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
