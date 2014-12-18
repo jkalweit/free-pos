@@ -199,11 +199,6 @@ ApplicationWindow {
                     border.color: "#AAAAFF"
                     border.width: 2
 
-//                    onClicked: {
-//                        editMenuItemInventoryItem.menuItemInventoryItem = modelData;
-//                        editMenuItemInventoryItem.show();
-//                    }
-
                     Rectangle {
                         anchors.right: inventoryItemContainer.right
                         anchors.rightMargin: {
@@ -237,6 +232,14 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right
                         anchors.rightMargin: 10
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            editMenuItemInventoryItem.menuItemInventoryItem = modelData;
+                            editMenuItemInventoryItem.show();
+                        }
                     }
                 }
             }
