@@ -207,8 +207,16 @@ void Reconciliation::readHistory() {
             item->setProperty(property.toUtf8().data(), value);
         } else if (command == "AddEmployeeShift") {
             qDebug() << "AddEmployeeShift: " << payload;
-            EmployeeShift *shift = EmployeeShift::deserialize(payload);
+            EmployeeShift *shift = EmployeeShift::deserialize(payload, (QObject*) this);
             addShift(shift);
+        } else if (command == "UpdateEmployeeShift") {
+            qDebug() << "UpdateEmployeeShift: " << payload;
+            quint32 id = split[0].toUInt();
+            QString property = split[1];
+            QString value = split[2];
+
+            EmployeeShift *item = getShift(id);
+            item->setProperty(property.toUtf8().data(), value);
         } else {
             qDebug() << "Unknown command: " << command << " " << payload;
         }
@@ -260,9 +268,9 @@ void Reconciliation::addTicket(Ticket *ticket) {
             this, SLOT(firePaymentTotalsChanged()));
 
     connect(ticket, SIGNAL(costChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+            this, SLOT(fireCostChanged()));
     connect(ticket, SIGNAL(marginChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+            this, SLOT(fireCostChanged()));
 
     m_tickets.append(ticket);
     Pos::instance()->appendToHistory("AddTicket:" + ticket->serialize());
@@ -414,6 +422,10 @@ float Reconciliation::cost() {
         cost += item->cost();
     }
 
+    for(EmployeeShift *item : m_shifts) {
+        cost += item->cost();
+    }
+
     return cost;
 }
 
@@ -423,17 +435,18 @@ float Reconciliation::margin() {
 
 
 
-
+void Reconciliation::fireCostChanged() {
+    costChanged(cost());
+    marginChanged(margin());
+}
 
 void Reconciliation::fireTotalsChanged() {
     foodTotalChanged(foodTotal());
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
-
-    costChanged(cost());
-    marginChanged(margin());
 }
+
 
 void Reconciliation::fireActualTakeTotalsChanged() {
     cashTotalActualChanged(cashTotalActual());    
@@ -715,17 +728,20 @@ QList<EmployeeShift*> Reconciliation::shiftsList() {
     return m_shifts;
 }
 
-EmployeeShift* Reconciliation::addShift(QString name, QString note, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM) {
-    EmployeeShift *obj = new EmployeeShift(this, ++m_shiftCurrId, name, note, scheduledStartHour, scheduledStartMinute, scheduledStartAM, scheduledEndHour, scheduledEndMinute, scheduledEndAM);
+EmployeeShift* Reconciliation::addShift(QString name, QString note, float wage, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM) {
+    EmployeeShift *obj = new EmployeeShift(this, ++m_shiftCurrId, name, note, wage, scheduledStartHour, scheduledStartMinute, scheduledStartAM, scheduledEndHour, scheduledEndMinute, scheduledEndAM);
     addShift(obj);
     return obj;
 }
 
 void Reconciliation::addShift(EmployeeShift *value) {
     if(value->id() > m_shiftCurrId) m_shiftCurrId = value->id();
+    connect(value, SIGNAL(costChanged(float)),
+            this, SLOT(fireCostChanged()));
     m_shifts.append(value);
     appendToHistory("AddEmployeeShift:" + value->serialize());
     shiftsChanged(shifts());
+    fireCostChanged();
 }
 
 EmployeeShift* Reconciliation::getShift(quint32 id) {

@@ -5,6 +5,7 @@ import FreePos 1.0 as FreePos
 
 
 ApplicationWindow {
+    id: mainWindow
     visible: true
     width: 1020
     height: 800
@@ -12,11 +13,12 @@ ApplicationWindow {
     title: "CY Pos"
 
 
-
     WeeksView {
         width: parent.width
         height: parent.height
     }
+
+
 
 
     RectangleFlashButton {

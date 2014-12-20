@@ -152,7 +152,7 @@ Rectangle {
 
                             EmployeeShiftsView {
                                 id: lunchShifts
-                                height: 125
+                                height: 150
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
                                 anchors.right: parent.right
@@ -165,10 +165,12 @@ Rectangle {
                             EmployeeShiftsView {
                                 id: dinnerShifts
                                 width: parent.width - 20
-                                height: 145
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
                                 anchors.top: lunchShifts.bottom
+                                anchors.topMargin: 10
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin: 10
                                 rec: modelData.dinnerRec
                             }
                         }

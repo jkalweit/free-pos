@@ -21,7 +21,7 @@ signals:
 public slots:
 
 protected:
-    void logPropertyChanged(QVariant value, QString propertyName);
+    virtual void logPropertyChanged(QVariant value, QString propertyName);
     void logMenuPropertyChanged(QVariant value, QString propertyName);
     void logInventoryPropertyChanged(QVariant value, QString propertyName);
     void logTrackerPropertyChanged(QVariant value, QString propertyName);

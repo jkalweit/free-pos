@@ -105,7 +105,7 @@ public:
 
     QQmlListProperty<EmployeeShift> shifts();
     QList<EmployeeShift*> shiftsList();
-    Q_INVOKABLE EmployeeShift* addShift(QString name, QString note, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM);
+    Q_INVOKABLE EmployeeShift* addShift(QString name, QString note, float wage, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM);
     void addShift(EmployeeShift *value);
     Q_INVOKABLE EmployeeShift* getShift(quint32 id);
     Q_INVOKABLE void removeShift(quint32 id);
@@ -172,6 +172,7 @@ private:
     quint32 m_shiftCurrId;
 
 private slots:
+    void fireCostChanged();
     void fireTotalsChanged();
     void firePaymentTotalsChanged();
     void fireActualTakeTotalsChanged();    

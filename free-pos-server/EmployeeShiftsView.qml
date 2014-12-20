@@ -6,12 +6,13 @@ Rectangle {
     id: container
     width: 200
     height: 125
+    color: "#DDDDFF"
     property var rec
 
     Text {
         anchors.top: parent.top
         anchors.topMargin: 10
-        anchors.left: parent.left
+        anchors.horizontalCenter: parent.horizontalCenter
         text: container.rec.name + " Shifts"
     }
 
@@ -28,7 +29,7 @@ Rectangle {
     }
 
     Column {
-        width: parent.width
+        width: container.width
         anchors.top: parent.top
         anchors.topMargin: 35
 
@@ -36,29 +37,43 @@ Rectangle {
         Repeater {
             model: container.rec.shifts
             Rectangle {
-                width: parent.width
+                width: container.width
                 height: 20
-
-                Rectangle {
-                    width: 10
-                    height: 10
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    anchors.verticalCenter: parent.verticalCenter
-                    color: "#DDDDDD"
-                }
 
                 Text {
                     anchors.left: parent.left
-                    anchors.leftMargin: 20
+                    anchors.leftMargin: 0
                     anchors.verticalCenter: parent.verticalCenter
                     text: modelData.name
                 }
 
-                Text {
+                Row {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    text: modelData.scheduledHours.toFixed(2) + ": " + modelData.scheduledStartFormatted + " - " + modelData.scheduledEndFormatted
+                    Text {
+                        width: 25
+                        color: modelData.isClockedIn ? "#00AA00" : "#000000"
+                        text: modelData.scheduledOrActualHours.toFixed(2)
+                    }
+                    Text {
+                        width: 32
+                        color: modelData.isClockedIn ? "#00AA00" : "#000000"
+                        text: modelData.scheduledOrActualStartFormatted + "-"
+                    }
+                    Text {
+                        width: 30
+                        color: modelData.isClockedOut ? "#00AA00" : "#000000"
+                        text: modelData.scheduledOrActualEndFormatted
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        editShift.rec = container.rec;
+                        editShift.shift = modelData;
+                        editShift.visible = true;
+                    }
                 }
             }
         }
@@ -78,6 +93,7 @@ Rectangle {
 
                 editShiftDialog.rec.addShift(employeeName.currentText,
                                          editNote.text,
+                                         wage.text,
                                          scheduledStartHour.text,
                                          scheduledStartMinute.text,
                                          scheduledStartAMbool,
@@ -104,6 +120,13 @@ Rectangle {
                 label: "Note:"
                 //text: model ? model.note : ""
                 placeholderText: "Note"
+            }
+
+            TextFieldLabeled {
+                id: wage
+                label: "Wage:"
+                //text: model ? model.note : ""
+                placeholderText: "Wage"
             }
 
             Row {
@@ -160,6 +183,109 @@ Rectangle {
                     text: "Cancel"
                     onClicked: {
                         editShiftDialog.close(false)
+                    }
+                }
+            }
+        }
+    }
+
+    DialogModal {
+        id: editShift
+        title: "Shift"
+        color: "#FF0000"
+        defaultFocus: employeeNote
+        property var rec
+        property var shift
+
+        function close(save) {
+            if (save) {
+                editShift.shift.note = employeeNote.text;
+            }
+
+            editShift.visible = false
+        }
+
+        customContent: Column {
+            spacing: 5
+
+
+            TextLabeled {
+                text: editShift.shift ? editShift.shift.name : ""
+            }
+
+            TextFieldLabeled {
+                id: employeeNote
+                label: "Note:"
+                text: editShift.shift ? editShift.shift.note : ""
+                placeholderText: "Note"
+            }
+
+
+            Row {
+                spacing: 5
+                Text {
+                    width: 75
+                    text: "Scheduled:"
+                }
+                Text {
+                    color: modelData.isClockedIn ? "#00AA00" : "#000000"
+                    text: editShift.shift ? editShift.shift.scheduledHours.toFixed(2) : ""
+                }
+                Text {
+                    text: editShift.shift ? editShift.shift.scheduledStartFormatted : ""
+                }
+                Text {
+                    text: "-"
+                }
+                Text {
+                    text: editShift.shift ? editShift.shift.scheduledEndFormatted : ""
+                }
+            }
+
+
+            Row {
+                spacing: 5
+                Text {
+                    width: 75
+                    text: "Actual:"
+                }
+                Text {
+                    color: modelData.isClockedIn ? "#00AA00" : "#000000"
+                    text: editShift.shift ? editShift.shift.scheduledOrActualHours.toFixed(2) : ""
+                }
+                Text {
+                    color: modelData.isClockedIn ? "#00AA00" : "#000000"
+                    text: editShift.shift ? editShift.shift.startFormatted : ""
+                }
+                Text {
+                    color: modelData.isClockedIn ? "#00AA00" : "#000000"
+                    text: "-"
+                }
+                Text {
+                    color: modelData.isClockedOut ? "#00AA00" : "#000000"
+                    text: editShift.shift ? editShift.shift.endFormatted : ""
+                }
+                Text {
+                    color: modelData.isClockedOut ? "#00AA00" : "#000000"
+                    text: editShift.shift ? "$" + editShift.shift.cost.toFixed(2) : ""
+                }
+            }
+
+            Row {
+                Button {
+                    text: "Clock In"
+                    onClicked: editShift.shift.clockIn();
+                    enabled: editShift.shift ? editShift.shift.canClockIn : false;
+                }
+                Button {
+                    text: "Clock Out"
+                    onClicked: editShift.shift.clockOut();
+                    enabled: editShift.shift ? editShift.shift.canClockOut : false;
+                }
+                Button {
+                    text: "Ok"
+                    onClicked: {
+                        editShift.close(true)
                     }
                 }
             }

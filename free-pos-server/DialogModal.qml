@@ -16,6 +16,7 @@ Rectangle {
         id: preventClickThrough
         anchors.fill: parent
         onClicked: {
+
             if(saveByDefault) {
                 if(dialogModal.close) {
                     dialogModal.close(true);
