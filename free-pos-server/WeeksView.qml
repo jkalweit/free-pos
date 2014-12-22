@@ -93,15 +93,26 @@ Rectangle {
 
                                     Rectangle {
                                         width: parent.width
-                                        height: modelData.lunchRec.cost * 0.075
+                                        height: modelData.lunchRec.cog * 0.075
                                         color: "#FF7777"
                                     }
 
+                                    Rectangle {
+                                        width: parent.width
+                                        height: modelData.dinnerRec.cog * 0.075
+                                        color: "#DD1111"
+                                    }
 
                                     Rectangle {
                                         width: parent.width
-                                        height: modelData.dinnerRec.cost * 0.075
-                                        color: "#DD1111"
+                                        height: modelData.lunchRec.laborCost * 0.075
+                                        color: "#7777FF"
+                                    }
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: modelData.dinnerRec.laborCost * 0.075
+                                        color: "#1111DD"
                                     }
 
                                     Rectangle {
@@ -177,6 +188,7 @@ Rectangle {
                     }
 
                     Rectangle {
+                        id: totals
                         width: weekContainer.width / 8
                         height: weekContainer.height
                         border.width: 1
@@ -220,6 +232,18 @@ Rectangle {
                                     width: parent.width
                                     height: modelData.dinnerCogTotal * 0.075
                                     color: "#DD1111"
+                                }
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.lunchLaborCostTotal * 0.075
+                                    color: "#7777FF"
+                                }
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: modelData.dinnerLaborCostTotal * 0.075
+                                    color: "#7777DD"
                                 }
 
                                 Rectangle {

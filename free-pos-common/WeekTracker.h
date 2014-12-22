@@ -23,6 +23,9 @@ class WeekTracker : public SimpleSerializable
     Q_PROPERTY(float lunchCogTotal READ lunchCogTotal NOTIFY lunchCogTotalChanged)
     Q_PROPERTY(float dinnerCogTotal READ dinnerCogTotal NOTIFY dinnerCogTotalChanged)
     Q_PROPERTY(float cogTotal READ cogTotal NOTIFY cogTotalChanged)
+    Q_PROPERTY(float lunchLaborCostTotal READ lunchLaborCostTotal NOTIFY lunchLaborCostTotalChanged)
+    Q_PROPERTY(float dinnerLaborCostTotal READ dinnerLaborCostTotal NOTIFY dinnerLaborCostTotalChanged)
+    Q_PROPERTY(float laborCostTotal READ laborCostTotal NOTIFY laborCostTotalChanged)
     Q_PROPERTY(float costTotal READ costTotal NOTIFY costTotalChanged)
     Q_PROPERTY(float lunchSalesTotal READ lunchSalesTotal NOTIFY lunchSalesTotalChanged)
     Q_PROPERTY(float dinnerSalesTotal READ dinnerSalesTotal NOTIFY dinnerSalesTotalChanged)
@@ -39,8 +42,11 @@ public:
     quint32 id();
     float fixedCostTotal();
     float lunchCogTotal();
-    float dinnerCogTotal();
+    float dinnerCogTotal();    
     float cogTotal();
+    float lunchLaborCostTotal();
+    float dinnerLaborCostTotal();
+    float laborCostTotal();
     float costTotal();
     float lunchSalesTotal();
     float dinnerSalesTotal();
@@ -62,6 +68,9 @@ signals:
     void lunchCogTotalChanged(float);
     void dinnerCogTotalChanged(float);
     void cogTotalChanged(float);
+    void lunchLaborCostTotalChanged(float);
+    void dinnerLaborCostTotalChanged(float);
+    void laborCostTotalChanged(float);
     void costTotalChanged(float);
     void lunchSalesTotalChanged(float);
     void dinnerSalesTotalChanged(float);
@@ -72,6 +81,7 @@ signals:
 public slots:
     void fireFixedCostTotalChanged();
     void fireCogTotalsChanged();
+    void fireLaborCostTotalsChanged();
     void fireSalesTotalsChanged();
 
 private:

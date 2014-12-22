@@ -41,6 +41,9 @@ class Reconciliation : public SimpleSerializable {
     Q_PROPERTY(CashDrawer *beginningDrawer READ beginningDrawer NOTIFY beginningDrawerChanged)
     Q_PROPERTY(CashDrawer *endingDrawer READ endingDrawer NOTIFY endingDrawerChanged)
 
+    Q_PROPERTY(float cog READ cog NOTIFY cogChanged)
+    Q_PROPERTY(float laborHours READ laborHours NOTIFY laborHoursChanged)
+    Q_PROPERTY(float laborCost READ laborCost NOTIFY laborCostChanged)
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 
@@ -96,6 +99,9 @@ public:
     Q_INVOKABLE bool closeRec();
     Q_INVOKABLE bool isOpen();
 
+    float cog();
+    float laborHours();
+    float laborCost();
     float cost();
     float margin();
 
@@ -143,6 +149,9 @@ signals:
     void beginningDrawerChanged(CashDrawer*);
     void endingDrawerChanged(CashDrawer*);
 
+    void cogChanged(float);
+    void laborHoursChanged(float);
+    void laborCostChanged(float);
     void costChanged(float);
     void marginChanged(float);
 
@@ -172,7 +181,8 @@ private:
     quint32 m_shiftCurrId;
 
 private slots:
-    void fireCostChanged();
+    void fireCogChanged();
+    void fireLaborCostChanged();
     void fireTotalsChanged();
     void firePaymentTotalsChanged();
     void fireActualTakeTotalsChanged();    

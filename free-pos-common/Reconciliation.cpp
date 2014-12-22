@@ -268,9 +268,9 @@ void Reconciliation::addTicket(Ticket *ticket) {
             this, SLOT(firePaymentTotalsChanged()));
 
     connect(ticket, SIGNAL(costChanged(float)),
-            this, SLOT(fireCostChanged()));
+            this, SLOT(fireCogChanged()));
     connect(ticket, SIGNAL(marginChanged(float)),
-            this, SLOT(fireCostChanged()));
+            this, SLOT(fireCogChanged()));
 
     m_tickets.append(ticket);
     Pos::instance()->appendToHistory("AddTicket:" + ticket->serialize());
@@ -414,13 +414,24 @@ float Reconciliation::total() {
 
 
 
-
-float Reconciliation::cost() {
+float Reconciliation::cog() {
     float cost = 0;
-
     for(Ticket *item : m_tickets) {
         cost += item->cost();
     }
+    return cost;
+}
+
+float Reconciliation::laborHours() {
+    float hours = 0;
+    for(EmployeeShift *item : m_shifts) {
+        hours += item->scheduledOrActualHours();
+    }
+    return hours;
+}
+
+float Reconciliation::laborCost() {
+    float cost = 0;
 
     for(EmployeeShift *item : m_shifts) {
         cost += item->cost();
@@ -429,13 +440,27 @@ float Reconciliation::cost() {
     return cost;
 }
 
+
+
+float Reconciliation::cost() {
+    return cog() + laborCost();
+}
+
 float Reconciliation::margin() {
     return foodTotal() + barTotal() - cost();
 }
 
 
 
-void Reconciliation::fireCostChanged() {
+void Reconciliation::fireCogChanged() {
+    cogChanged(cog());
+    costChanged(cost());
+    marginChanged(margin());
+}
+
+void Reconciliation::fireLaborCostChanged() {
+    laborHoursChanged(laborHours());
+    laborCostChanged(laborCost());
     costChanged(cost());
     marginChanged(margin());
 }
@@ -737,11 +762,11 @@ EmployeeShift* Reconciliation::addShift(QString name, QString note, float wage, 
 void Reconciliation::addShift(EmployeeShift *value) {
     if(value->id() > m_shiftCurrId) m_shiftCurrId = value->id();
     connect(value, SIGNAL(costChanged(float)),
-            this, SLOT(fireCostChanged()));
+            this, SLOT(fireLaborCostChanged()));
     m_shifts.append(value);
     appendToHistory("AddEmployeeShift:" + value->serialize());
     shiftsChanged(shifts());
-    fireCostChanged();
+    fireLaborCostChanged();
 }
 
 EmployeeShift* Reconciliation::getShift(quint32 id) {

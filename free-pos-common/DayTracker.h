@@ -19,6 +19,7 @@ class DayTracker : public SimpleSerializable
     Q_PROPERTY(Reconciliation* dinnerRec MEMBER m_dinnerRec READ dinnerRec NOTIFY dinnerRecChanged)
     Q_PROPERTY(float fixedCostTotal READ fixedCostTotal NOTIFY fixedCostTotalChanged)
     Q_PROPERTY(float cogTotal READ cogTotal NOTIFY cogTotalChanged)
+    Q_PROPERTY(float laborCostTotal READ laborCostTotal NOTIFY laborCostTotalChanged)
     Q_PROPERTY(float costTotal READ costTotal NOTIFY costTotalChanged)
     Q_PROPERTY(float salesTotal READ salesTotal NOTIFY salesTotalChanged)
 
@@ -34,6 +35,7 @@ public:
     Reconciliation* dinnerRec();
     float fixedCostTotal();
     float cogTotal();
+    float laborCostTotal();
     float costTotal();
     float salesTotal();
 
@@ -59,6 +61,7 @@ signals:
     void dinnerRecChanged(Reconciliation*);
     void fixedCostTotalChanged(float);
     void cogTotalChanged(float);
+    void laborCostTotalChanged(float);
     void costTotalChanged(float);
     void salesTotalChanged(float);
 

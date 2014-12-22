@@ -52,12 +52,17 @@ float DayTracker::cogTotal() {
     return m_lunchRec->cost() + m_dinnerRec->cost();
 }
 
+float DayTracker::laborCostTotal() {
+    return m_lunchRec->laborCost() + m_dinnerRec->laborCost();
+}
+
 float DayTracker::costTotal() {
-    return fixedCostTotal() + cogTotal();
+    return fixedCostTotal() + cogTotal() + laborCostTotal();
 }
 
 void DayTracker::fireCostsChanged() {
     cogTotalChanged(cogTotal());
+    laborCostTotalChanged(laborCostTotal());
     costTotalChanged(costTotal());
 }
 

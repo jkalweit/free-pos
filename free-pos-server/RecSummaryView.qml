@@ -26,11 +26,33 @@ Rectangle {
     }
 
     Rectangle {
+        color: "transparent"
         width: container.width / 2
-        height:  rec.cost * 0.075
         anchors.right: container.right
+        anchors.top: container.top
         anchors.bottom: container.bottom
-        color: isDinner ? "#DD1111" : "#FF7777"
+
+        Column {
+            spacing: 1
+            width: parent.width
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+
+            Rectangle {
+                id: cog
+                width: parent.width
+                height:  rec.cog * 0.075
+                color: isDinner ? "#DD1111" : "#FF7777"
+            }
+
+            Rectangle {
+                id: laborCost
+                width: parent.width
+                height:  rec.laborCost * 0.075
+                color: isDinner ? "#1111DD" : "#7777FF"
+            }
+
+        }
 
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -38,6 +60,7 @@ Rectangle {
             anchors.bottomMargin: 10
             text: rec.cost.toFixed(0)
         }
+
     }
 
     Text {

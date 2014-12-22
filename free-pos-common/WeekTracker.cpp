@@ -75,7 +75,7 @@ void WeekTracker::fireFixedCostTotalChanged() {
 float WeekTracker::lunchCogTotal() {
     float total = 0;
     for(DayTracker *day : m_days) {
-        if(day->lunchRec()) total += day->lunchRec()->cost();
+        if(day->lunchRec()) total += day->lunchRec()->cog();
     }
     return total;
 }
@@ -83,7 +83,7 @@ float WeekTracker::lunchCogTotal() {
 float WeekTracker::dinnerCogTotal() {
     float total = 0;
     for(DayTracker *day : m_days) {
-        if(day->dinnerRec()) total += day->dinnerRec()->cost();
+        if(day->dinnerRec()) total += day->dinnerRec()->cog();
     }
     return total;
 }
@@ -92,9 +92,31 @@ float WeekTracker::cogTotal() {
     return lunchCogTotal() + dinnerCogTotal();
 }
 
-float WeekTracker::costTotal() {
-    return fixedCostTotal() + cogTotal();
+float WeekTracker::lunchLaborCostTotal() {
+    float total = 0;
+    for(DayTracker *day : m_days) {
+        if(day->lunchRec()) total += day->lunchRec()->laborCost();
+    }
+    return total;
 }
+
+float WeekTracker::dinnerLaborCostTotal() {
+    float total = 0;
+    for(DayTracker *day : m_days) {
+        if(day->dinnerRec()) total += day->dinnerRec()->laborCost();
+    }
+    return total;
+}
+
+float WeekTracker::laborCostTotal() {
+    return lunchLaborCostTotal() + dinnerLaborCostTotal();
+}
+
+float WeekTracker::costTotal() {
+    return fixedCostTotal() + cogTotal() + laborCostTotal();
+}
+
+
 
 void WeekTracker::fireCogTotalsChanged() {
     lunchCogTotalChanged(lunchCogTotal());
@@ -103,6 +125,12 @@ void WeekTracker::fireCogTotalsChanged() {
     costTotalChanged(costTotal());
 }
 
+void WeekTracker::fireLaborCostTotalsChanged() {
+    lunchLaborCostTotalChanged(lunchLaborCostTotal());
+    dinnerLaborCostTotalChanged(dinnerLaborCostTotal());
+    laborCostTotalChanged(laborCostTotal());
+    costTotalChanged(costTotal());
+}
 
 
 float WeekTracker::lunchSalesTotal() {
