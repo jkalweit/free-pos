@@ -206,11 +206,11 @@ void Reconciliation::readHistory() {
             OrderItemOption *item = orderItem->getOrderItemOption(id);
             item->setProperty(property.toUtf8().data(), value);
         } else if (command == "AddEmployeeShift") {
-            qDebug() << "AddEmployeeShift: " << payload;
+            //qDebug() << "AddEmployeeShift: " << payload;
             EmployeeShift *shift = EmployeeShift::deserialize(payload, (QObject*) this);
             addShift(shift);
         } else if (command == "UpdateEmployeeShift") {
-            qDebug() << "UpdateEmployeeShift: " << payload;
+            //qDebug() << "UpdateEmployeeShift: " << payload;
             quint32 id = split[0].toUInt();
             QString property = split[1];
             QString value = split[2];
@@ -255,25 +255,25 @@ Ticket* Reconciliation::addTicket(QString name) {
 void Reconciliation::addTicket(Ticket *ticket) {
     if(ticket->property("id").toUInt() > m_currentTicketId) m_currentTicketId = ticket->property("id").toUInt();
 
-    connect(ticket, SIGNAL(foodTotalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(ticket, SIGNAL(taxTotalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(ticket, SIGNAL(barTotalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+//    connect(ticket, SIGNAL(foodTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
+//    connect(ticket, SIGNAL(taxTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
+//    connect(ticket, SIGNAL(barTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
     connect(ticket, SIGNAL(totalChanged(float)),
             this, SLOT(fireTotalsChanged()));
 
     connect(ticket, SIGNAL(paymentTypeChanged(QString)),
             this, SLOT(firePaymentTotalsChanged()));
 
-    connect(ticket, SIGNAL(costChanged(float)),
+    connect(ticket, SIGNAL(cogChanged(float)),
             this, SLOT(fireCogChanged()));
-    connect(ticket, SIGNAL(marginChanged(float)),
-            this, SLOT(fireCogChanged()));
+//    connect(ticket, SIGNAL(marginChanged(float)),
+//            this, SLOT(fireCogChanged()));
 
     m_tickets.append(ticket);
-    Pos::instance()->appendToHistory("AddTicket:" + ticket->serialize());
+    appendToHistory("AddTicket:" + ticket->serialize());
     ticketsChanged(tickets());
 }
 
@@ -385,41 +385,53 @@ QString Reconciliation::fileName() {
 }
 
 float Reconciliation::foodTotal() {
-    float sum = 0;
+    float total = 0;
     for(Ticket *c : m_tickets) {\
-        sum += c->foodTotal();
+        total += c->foodTotal();
     }
-    return sum;
+    return total;
 }
 
 float Reconciliation::taxTotal() {
-    float sum = 0;
+    float total = 0;
     for(Ticket *c : m_tickets) {\
-        sum += c->taxTotal();
+        total += c->taxTotal();
     }
-    return sum;
+    return total;
 }
 
 float Reconciliation::barTotal() {
-    float sum = 0;
+    float total = 0;
     for(Ticket *c : m_tickets) {\
-        sum += c->barTotal();
+        total += c->barTotal();
     }
-    return sum;
+    return total;
 }
 
 float Reconciliation::total() {
-    return foodTotal() + taxTotal() + barTotal();
+    float total = 0;
+    for(Ticket *c : m_tickets) {\
+        total += c->total();
+    }
+    return total;
 }
 
 
 
 float Reconciliation::cog() {
-    float cost = 0;
+    float total = 0;
     for(Ticket *item : m_tickets) {
-        cost += item->cost();
+        total += item->cog();
     }
-    return cost;
+    return total;
+}
+
+float Reconciliation::actualTax() {
+    float total = 0;
+    for(Ticket *item : m_tickets) {
+        total += item->actualTax();
+    }
+    return total;
 }
 
 float Reconciliation::laborHours() {
@@ -431,29 +443,33 @@ float Reconciliation::laborHours() {
 }
 
 float Reconciliation::laborCost() {
-    float cost = 0;
-
+    float total = 0;
     for(EmployeeShift *item : m_shifts) {
-        cost += item->cost();
+        total += item->cost();
     }
-
-    return cost;
+    return total;
 }
 
 
 
 float Reconciliation::cost() {
-    return cog() + laborCost();
+    return cog() + actualTax() + laborCost();
 }
 
 float Reconciliation::margin() {
-    return foodTotal() + barTotal() - cost();
+    return total() - cost();
 }
 
 
 
 void Reconciliation::fireCogChanged() {
     cogChanged(cog());
+    costChanged(cost());
+    marginChanged(margin());
+}
+
+void Reconciliation::fireActualTaxChanged() {
+    actualTaxChanged(actualTax());
     costChanged(cost());
     marginChanged(margin());
 }
@@ -470,6 +486,8 @@ void Reconciliation::fireTotalsChanged() {
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
+    marginChanged(margin());
+    actualTaxChanged(actualTax());
 }
 
 

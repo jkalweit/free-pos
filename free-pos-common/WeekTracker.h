@@ -20,6 +20,8 @@ class WeekTracker : public SimpleSerializable
     Q_PROPERTY(DayTracker* friday MEMBER m_friday NOTIFY fridayChanged)
     Q_PROPERTY(DayTracker* saturday MEMBER m_saturday NOTIFY saturdayChanged)
     Q_PROPERTY(float fixedCostTotal READ fixedCostTotal NOTIFY fixedCostTotalChanged)
+    Q_PROPERTY(float lunchActualTaxTotal READ lunchActualTaxTotal NOTIFY lunchActualTaxTotalChanged)
+    Q_PROPERTY(float dinnerActualTaxTotal READ dinnerActualTaxTotal NOTIFY dinnerActualTaxTotalChanged)
     Q_PROPERTY(float lunchCogTotal READ lunchCogTotal NOTIFY lunchCogTotalChanged)
     Q_PROPERTY(float dinnerCogTotal READ dinnerCogTotal NOTIFY dinnerCogTotalChanged)
     Q_PROPERTY(float cogTotal READ cogTotal NOTIFY cogTotalChanged)
@@ -41,6 +43,8 @@ public:
 
     quint32 id();
     float fixedCostTotal();
+    float lunchActualTaxTotal();
+    float dinnerActualTaxTotal();
     float lunchCogTotal();
     float dinnerCogTotal();    
     float cogTotal();
@@ -65,6 +69,8 @@ signals:
     void fridayChanged(DayTracker*);
     void saturdayChanged(DayTracker*);
     void fixedCostTotalChanged(float);
+    void lunchActualTaxTotalChanged(float);
+    void dinnerActualTaxTotalChanged(float);
     void lunchCogTotalChanged(float);
     void dinnerCogTotalChanged(float);
     void cogTotalChanged(float);

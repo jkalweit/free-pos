@@ -32,7 +32,7 @@ float Customer::foodTotal() {
     QString type;
     for(OrderItem *o : m_orderItems) {
         type = o->property("type").toString();
-        if(type != "Alcohol") {
+        if(!o->isAlcohol()) {
             sum += o->subTotal();
         }
     }
@@ -45,10 +45,8 @@ float Customer::taxTotal() {
 
 float Customer::barTotal() {
     float sum = 0;
-    QString type;
-    for(OrderItem *o : m_orderItems) {
-        type = o->property("type").toString();
-        if(type == "Alcohol") {
+    for(OrderItem *o : m_orderItems) {        
+        if(o->isAlcohol()) {
             sum += o->subTotal();
         }
     }
@@ -59,29 +57,54 @@ float Customer::total() {
     return foodTotal() + taxTotal() + barTotal();
 }
 
+
+
+
+void Customer::fireCogChanged() {
+    cogChanged(cog());
+    marginChanged(margin());
+}
+
 void Customer::fireTotalsChanged() {
     foodTotalChanged(foodTotal());
     taxTotalChanged(taxTotal());
+    barTotalChanged(barTotal());
     totalChanged(total());
 
-    costChanged(cost());
+    actualTaxChanged(actualTax());
     marginChanged(margin());
 }
 
 
 
-float Customer::cost() {
-    float cost = 0;
+float Customer::actualTax() {
+    float total = 0;
 
     for(OrderItem *item : m_orderItems) {
-        cost += item->cost();
+        total += item->actualTax();
     }
 
-    return cost;
+    return total;
+}
+
+float Customer::cog() {
+    float total = 0;
+
+    for(OrderItem *item : m_orderItems) {
+        total += item->cog();
+    }
+
+    return total;
 }
 
 float Customer::margin() {
-    return foodTotal() + barTotal() - cost();
+    float total = 0;
+
+    for(OrderItem *item : m_orderItems) {
+        total += item->margin();
+    }
+
+    return total;
 }
 
 
@@ -117,17 +140,17 @@ OrderItem* Customer::addOrderItem(MenuItem* menuItem, float quantity, QString no
 
 void Customer::addOrderItem(OrderItem *orderItem, bool isMoved) {
     if(orderItem->property("id").toUInt() > m_currentOrderItemId) m_currentOrderItemId = orderItem->property("id").toUInt();
-    connect(orderItem, SIGNAL(subTotalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(orderItem, SIGNAL(taxChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+//    connect(orderItem, SIGNAL(subTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
+//    connect(orderItem, SIGNAL(taxChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
     connect(orderItem, SIGNAL(totalChanged(float)),
             this, SLOT(fireTotalsChanged()));
 
-    connect(orderItem, SIGNAL(costChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(orderItem, SIGNAL(marginChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+    connect(orderItem, SIGNAL(cogChanged(float)),
+            this, SLOT(fireCogChanged()));
+//    connect(orderItem, SIGNAL(marginChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
 
     m_orderItems.append(orderItem);
     if(!isMoved) {

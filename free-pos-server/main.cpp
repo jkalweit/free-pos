@@ -44,12 +44,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<EmployeeShift>("FreePos", 1, 0, "EmployeeShift");
 
     Pos *pos = Pos::instance();
-    //pos->readHistory();
     pos->readHistory("currInventory.txt");
     pos->readHistory("currMenu.txt");
-    //pos->addTestData();
 
-    pos->addWeek(QDate(2014, 12, 14));
+    WeekTracker* week = pos->addWeek(QDate(2014, 12, 21));
+    pos->setProperty("selectedWeek", QVariant::fromValue(week));
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("pos", (QObject*)pos);

@@ -113,7 +113,7 @@ Rectangle {
                 Text {
                     id: menuItemName
                     text: modelData.name
-                    color: "#FFFFFF"
+                    color: modelData.hasInventory ? "#FFFFFF" : "#DD0000"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     //anchors.leftMargin: 5

@@ -42,6 +42,7 @@ class Reconciliation : public SimpleSerializable {
     Q_PROPERTY(CashDrawer *endingDrawer READ endingDrawer NOTIFY endingDrawerChanged)
 
     Q_PROPERTY(float cog READ cog NOTIFY cogChanged)
+    Q_PROPERTY(float actualTax READ actualTax NOTIFY actualTaxChanged)
     Q_PROPERTY(float laborHours READ laborHours NOTIFY laborHoursChanged)
     Q_PROPERTY(float laborCost READ laborCost NOTIFY laborCostChanged)
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
@@ -100,6 +101,7 @@ public:
     Q_INVOKABLE bool isOpen();
 
     float cog();
+    float actualTax();
     float laborHours();
     float laborCost();
     float cost();
@@ -150,6 +152,7 @@ signals:
     void endingDrawerChanged(CashDrawer*);
 
     void cogChanged(float);
+    void actualTaxChanged(float);
     void laborHoursChanged(float);
     void laborCostChanged(float);
     void costChanged(float);
@@ -182,6 +185,7 @@ private:
 
 private slots:
     void fireCogChanged();
+    void fireActualTaxChanged();
     void fireLaborCostChanged();
     void fireTotalsChanged();
     void firePaymentTotalsChanged();

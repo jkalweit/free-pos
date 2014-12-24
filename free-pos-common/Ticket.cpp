@@ -75,13 +75,18 @@ void Ticket::cyclePaymentType() {
 }
 
 
+
+void Ticket::fireCogChanged() {
+    cogChanged(cog());
+    marginChanged(margin());
+}
+
 void Ticket::fireTotalsChanged() {
     foodTotalChanged(foodTotal());
     taxTotalChanged(taxTotal());
     barTotalChanged(barTotal());
     totalChanged(total());
 
-    costChanged(cost());
     marginChanged(margin());
 }
 
@@ -99,25 +104,26 @@ Customer* Ticket::addCustomer(QString name) {
 void Ticket::addCustomer(Customer *customer) {
     connect(customer, SIGNAL(nameChanged(QString)),
             this, SLOT(fireNamesChanged()));
-    connect(customer, SIGNAL(foodTotalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(customer, SIGNAL(taxTotalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(customer, SIGNAL(barTotalChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+//    connect(customer, SIGNAL(foodTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
+//    connect(customer, SIGNAL(taxTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
+//    connect(customer, SIGNAL(barTotalChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
     connect(customer, SIGNAL(totalChanged(float)),
             this, SLOT(fireTotalsChanged()));
 
-    connect(customer, SIGNAL(costChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(customer, SIGNAL(marginChanged(float)),
-            this, SLOT(fireTotalsChanged()));
+    connect(customer, SIGNAL(cogChanged(float)),
+            this, SLOT(fireCogChanged()));
+//    connect(customer, SIGNAL(marginChanged(float)),
+//            this, SLOT(fireTotalsChanged()));
 
     m_customers.append(customer);
     Pos::instance()->appendToHistory("AddCustomer:" + customer->serialize());
     customersChanged(customers());
     customerNamesChanged(customerNames());
     longNameChanged(longName());
+    fireCogChanged();
     fireTotalsChanged();
 }
 
@@ -157,23 +163,39 @@ float Ticket::barTotal() {
 }
 
 float Ticket::total() {
-    return foodTotal() + taxTotal() + barTotal();
+    float total = 0;
+    for(Customer *item : m_customers) {
+        total += item->total();
+    }
+    return total;
 }
 
 
 
-float Ticket::cost() {
-    float cost = 0;
 
+
+float Ticket::actualTax() {
+    float total = 0;
     for(Customer *item : m_customers) {
-        cost += item->cost();
+        total += item->actualTax();
     }
+    return total;
+}
 
-    return cost;
+float Ticket::cog() {
+    float total = 0;
+    for(Customer *item : m_customers) {
+        total += item->cog();
+    }
+    return total;
 }
 
 float Ticket::margin() {
-    return foodTotal() + barTotal() - cost();
+    float total = 0;
+    for(Customer *item : m_customers) {
+        total += item->margin();
+    }
+    return total;
 }
 
 

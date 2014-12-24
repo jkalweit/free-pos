@@ -46,6 +46,9 @@ void MenuItem::setIsDisabled(bool isDisabled) {
     }
 }
 
+bool MenuItem::hasInventory() {
+    return m_menuItemInventoryItems.length() > 0;
+}
 
 float MenuItem::cost() {    
 
@@ -125,6 +128,7 @@ void MenuItem::addMenuItemInventoryItem(MenuItemInventoryItem *menuItemInventory
             this, SLOT(fireCostChanged()));
     menuItemInventoryItemsChanged(menuItemInventoryItems());
 
+    hasInventoryChanged(hasInventory());
     fireCostChanged();
 }
 
@@ -159,6 +163,7 @@ void MenuItem::removeMenuItemInventoryItem(quint32 menuItemInventoryItemId) {
 
             menuItemInventoryItemsChanged(menuItemInventoryItems());
 
+            hasInventoryChanged(hasInventory());
             fireCostChanged();
             return;
         }

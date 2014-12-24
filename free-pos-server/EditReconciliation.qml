@@ -334,7 +334,7 @@ Rectangle {
                                 anchors.left: parent.left
                             }
                             Text {
-                                text: model.selectedTicket ? model.selectedTicket.cost.toFixed(2) : ""
+                                text: model.selectedTicket ? model.selectedTicket.cog.toFixed(2) + "+" + model.selectedTicket.actualTax.toFixed(2) : ""
                                 anchors.right: parent.right
                             }
                         }
@@ -485,40 +485,40 @@ Rectangle {
                     text: model ? "$" + model.total.toFixed(2) : ""
                 }
             }
-            Rectangle {
-                width: parent.width
-                height: 20
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Cost:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.cost.toFixed(2) : ""
-                }
-            }
-            Rectangle {
-                width: parent.width
-                height: 20
-                color: "transparent"
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    text: "Margin:"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-                    text: model ? "$" + model.margin.toFixed(2) : ""
-                }
-            }
+//            Rectangle {
+//                width: parent.width
+//                height: 20
+//                color: "transparent"
+//                Text {
+//                    anchors.verticalCenter: parent.verticalCenter
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 5
+//                    text: "Cost:"
+//                }
+//                Text {
+//                    anchors.verticalCenter: parent.verticalCenter
+//                    anchors.right: parent.right
+//                    anchors.rightMargin: 5
+//                    text: model ? "$" + model.cost.toFixed(2) : ""
+//                }
+//            }
+//            Rectangle {
+//                width: parent.width
+//                height: 20
+//                color: "transparent"
+//                Text {
+//                    anchors.verticalCenter: parent.verticalCenter
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 5
+//                    text: "Margin:"
+//                }
+//                Text {
+//                    anchors.verticalCenter: parent.verticalCenter
+//                    anchors.right: parent.right
+//                    anchors.rightMargin: 5
+//                    text: model ? "$" + model.margin.toFixed(2) : ""
+//                }
+//            }
         }
         MouseArea {
             anchors.fill: parent

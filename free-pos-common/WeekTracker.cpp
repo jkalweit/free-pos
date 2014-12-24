@@ -72,6 +72,22 @@ void WeekTracker::fireFixedCostTotalChanged() {
     costTotalChanged(costTotal());
 }
 
+float WeekTracker::lunchActualTaxTotal() {
+    float total = 0;
+    for(DayTracker *day : m_days) {
+        if(day->lunchRec()) total += day->lunchRec()->actualTax();
+    }
+    return total;
+}
+
+float WeekTracker::dinnerActualTaxTotal() {
+    float total = 0;
+    for(DayTracker *day : m_days) {
+        if(day->dinnerRec()) total += day->dinnerRec()->actualTax();
+    }
+    return total;
+}
+
 float WeekTracker::lunchCogTotal() {
     float total = 0;
     for(DayTracker *day : m_days) {
@@ -154,6 +170,8 @@ float WeekTracker::salesTotal() {
 }
 
 void WeekTracker::fireSalesTotalsChanged() {
+    lunchActualTaxTotalChanged(lunchActualTaxTotal());
+    dinnerActualTaxTotalChanged(dinnerActualTaxTotal());
     lunchSalesTotalChanged(lunchSalesTotal());
     dinnerSalesTotalChanged(dinnerSalesTotal());
     salesTotalChanged(salesTotal());

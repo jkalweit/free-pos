@@ -29,7 +29,9 @@ class Ticket : public SimpleSerializable {
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 
-    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
+    Q_PROPERTY(float actualTax READ actualTax NOTIFY actualTaxChanged)
+    Q_PROPERTY(float cog READ cog NOTIFY cogChanged)
+    //Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
     explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime createdStamp = QDateTime(),
@@ -57,7 +59,9 @@ public:
     float barTotal();
     float total();
 
-    float cost();
+    float actualTax();
+    float cog();
+    //float cost();
     float margin();
 
 
@@ -86,7 +90,9 @@ signals:
     void barTotalChanged(float);
     void totalChanged(float);
 
-    void costChanged(float);
+    void actualTaxChanged(float);
+    //void costChanged(float);
+    void cogChanged(float);
     void marginChanged(float);
 
 private:
@@ -102,6 +108,7 @@ private:
 
 
 private slots:
+    void fireCogChanged();
     void fireTotalsChanged();
     void fireNamesChanged();
 };

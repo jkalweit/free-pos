@@ -49,7 +49,7 @@ float DayTracker::fixedCostTotal() {
 }
 
 float DayTracker::cogTotal() {
-    return m_lunchRec->cost() + m_dinnerRec->cost();
+    return m_lunchRec->cog() + m_dinnerRec->cog();
 }
 
 float DayTracker::laborCostTotal() {

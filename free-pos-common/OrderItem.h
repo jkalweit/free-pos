@@ -23,13 +23,16 @@ class OrderItem : public SimpleSerializable {
     Q_PROPERTY(QString note MEMBER m_note WRITE setNote NOTIFY noteChanged)
     Q_PROPERTY(bool deleted MEMBER m_deleted WRITE setDeleted NOTIFY deletedChanged)
     Q_PROPERTY(QDateTime submittedStamp MEMBER m_submittedStamp WRITE setSubmittedStamp NOTIFY submittedStampChanged)
+
     Q_PROPERTY(bool isSubmitted READ isSubmitted NOTIFY isSubmittedChanged)
+    Q_PROPERTY(bool isAlcohol READ isAlcohol NOTIFY isAlcoholChanged)
 
     Q_PROPERTY(float subTotal READ subTotal NOTIFY subTotalChanged)
     Q_PROPERTY(float tax READ tax NOTIFY taxChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 
-    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
+    Q_PROPERTY(float actualTax READ actualTax NOTIFY actualTaxChanged)
+    Q_PROPERTY(float cog READ cog NOTIFY cogChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 
     Q_PROPERTY(QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems READ orderItemInventoryItems NOTIFY orderItemInventoryItemsChanged)
@@ -49,6 +52,7 @@ public:
     void setSubmittedStamp(QDateTime submittedStamp);
 
     bool isSubmitted();
+    bool isAlcohol();
 
     Q_INVOKABLE void cycleSubmittedStamp();
 
@@ -56,7 +60,8 @@ public:
     float tax();
     float total();
 
-    float cost();
+    float actualTax();
+    float cog();
     float margin();
 
     Q_INVOKABLE float getCumulativeCostUpToOption(quint32 orderItemOptionId);
@@ -90,6 +95,8 @@ signals:
     void noteChanged(QVariant value, QString propertyName = "note");
     void deletedChanged(bool);
     void submittedStampChanged(QDateTime);
+
+    void isAlcoholChanged(bool);
     void isSubmittedChanged(bool);
 
     void subTotalChanged(float);
@@ -99,7 +106,8 @@ signals:
     void orderItemInventoryItemsChanged(QQmlListProperty<OrderItemInventoryItem>);
     void orderItemOptionsChanged(QQmlListProperty<OrderItemOption>);
 
-    void costChanged(float);
+    void actualTaxChanged(float);
+    void cogChanged(float);
     void marginChanged(float);
 
 private:
@@ -122,6 +130,7 @@ private:
     quint32 m_currentOrderItemOptionId;
 
 private slots:
+    void fireCogChanged();
     void fireTotalsChanged();
 };
 

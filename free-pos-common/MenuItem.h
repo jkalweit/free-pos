@@ -20,6 +20,7 @@ class MenuItem : public SimpleSerializable
     Q_PROPERTY(QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems READ menuItemInventoryItems NOTIFY menuItemInventoryItemsChanged)
     Q_PROPERTY(QQmlListProperty<MenuItemOption> menuItemOptions READ menuItemOptions NOTIFY menuItemOptionsChanged)
 
+    Q_PROPERTY(bool hasInventory READ hasInventory NOTIFY hasInventoryChanged)
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
@@ -33,6 +34,7 @@ public:
     void setPrice(float price);
     void setIsDisabled(bool isDisabled);
 
+    bool hasInventory();
     float cost();
     float costWithoutOptions();
     float margin();
@@ -67,6 +69,7 @@ signals:
     void menuItemInventoryItemsChanged(QQmlListProperty<MenuItemInventoryItem>);
     void menuItemOptionsChanged(QQmlListProperty<MenuItemOption>);
 
+    void hasInventoryChanged(bool);
     void costChanged(float);
     void marginChanged(float);
 

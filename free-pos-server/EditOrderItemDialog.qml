@@ -269,7 +269,7 @@ DialogModal {
 
         TextLabeled {
             label: "Cost"
-            text: model ? model.cost.toFixed(2) : ""
+            text: model ? model.cog.toFixed(2) : ""
         }
 
         TextLabeled {

@@ -23,7 +23,8 @@ class Customer : public SimpleSerializable {
     Q_PROPERTY(float barTotal READ barTotal NOTIFY barTotalChanged)
     Q_PROPERTY(float total READ total NOTIFY totalChanged)
 
-    Q_PROPERTY(float cost READ cost NOTIFY costChanged)
+    Q_PROPERTY(float actualTax READ actualTax NOTIFY actualTaxChanged)
+    Q_PROPERTY(float cog READ cog NOTIFY cogChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
     explicit Customer(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, QString name = "");
@@ -37,7 +38,8 @@ public:
     float barTotal();
     float total();
 
-    float cost();
+    float actualTax();
+    float cog();
     float margin();
 
     QQmlListProperty<OrderItem> orderItems();
@@ -61,7 +63,8 @@ signals:
     void barTotalChanged(float);
     void totalChanged(float);
 
-    void costChanged(float);
+    void actualTaxChanged(float);
+    void cogChanged(float);
     void marginChanged(float);
 
 
@@ -75,6 +78,7 @@ private:
 
 
 private slots:
+    void fireCogChanged();
     void fireTotalsChanged();    
 };
 

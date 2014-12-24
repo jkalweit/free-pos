@@ -337,7 +337,11 @@ float EmployeeShift::computeTimeDifference(quint8 startHour, quint8 startMinute,
     if(!endAM) {
         endHour += 12;
     } else if(endAM && !startAM) {
-        endHour += 24;
+        if(endHour == 12) {
+            endHour += 12;
+        } else {
+            endHour += 24;
+        }
     }
 
     float startMinuteFraction = ((float) startMinute) / 60;

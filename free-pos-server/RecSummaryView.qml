@@ -39,6 +39,13 @@ Rectangle {
             anchors.bottom: parent.bottom
 
             Rectangle {
+                id: tax
+                width: parent.width
+                height:  rec.actualTax * 0.075
+                color: isDinner ? "#DD7700" : "#FF9922"
+            }
+
+            Rectangle {
                 id: cog
                 width: parent.width
                 height:  rec.cog * 0.075

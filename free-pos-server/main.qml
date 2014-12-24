@@ -16,6 +16,7 @@ ApplicationWindow {
     WeeksView {
         width: parent.width
         height: parent.height
+        week: pos.selectedWeek
     }
 
 

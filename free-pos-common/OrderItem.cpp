@@ -6,12 +6,6 @@
 OrderItem::OrderItem(QObject *parent, quint32 id, quint32 ticketId, quint32 customerId, QString name, QString type, QDateTime createdStamp, float price, float quantity, QString note, bool deleted, QDateTime submittedStamp) :
     SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted), m_submittedStamp(submittedStamp), m_currentOrderItemInventoryItemId(0), m_currentOrderItemOptionId(0)
 {
-    connect(this, SIGNAL(quantityChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(this, SIGNAL(priceChanged(float)),
-            this, SLOT(fireTotalsChanged()));
-    connect(this, SIGNAL(deletedChanged(bool)),
-            this, SLOT(fireTotalsChanged()));
 }
 
 QStringList OrderItem::updatePrefix() {
@@ -47,7 +41,8 @@ void OrderItem::setQuantity(float quantity) {
         m_quantity = quantity;
         logPropertyChanged(m_quantity, "quantity");
         quantityChanged(m_quantity);
-        fireTotalsChanged();
+        fireCogChanged();
+        fireTotalsChanged();        
     }
 }
 
@@ -98,14 +93,33 @@ void OrderItem::cycleSubmittedStamp() {
     }
 }
 
+bool OrderItem::isAlcohol() {
+    return m_type == "Alcohol";
+}
+
+
+
+
+void OrderItem::fireCogChanged() {
+    cogChanged(cog());
+    // TODO: costChanged(cost());
+    marginChanged(margin());
+}
+
 void OrderItem::fireTotalsChanged() {
     subTotalChanged(subTotal());
     taxChanged(tax());
     totalChanged(total());
 
-    costChanged(cost());
+    actualTaxChanged(actualTax());
+    // TODO: costChanged(cost());
     marginChanged(margin());
 }
+
+
+
+
+
 
 float OrderItem::subTotal() {
     if(m_deleted)
@@ -129,8 +143,15 @@ float OrderItem::total() {
 
 
 
+float OrderItem::actualTax() {
+    // This is the Tax PAID by the company, where as tax() is the Tax shown on the receipt,
+    //      for items that don't include the tax in the price (in our case: none-alcohol items)
+    // TODO: Include Liquor Tax?
+    // 0.09 = 0.06 state sales + 0.01 capital projects + 0.02 city hospitality
+    return subTotal() * 0.09;
+}
 
-float OrderItem::cost() {
+float OrderItem::cog() {
 
     if(m_deleted) {
         return 0;
@@ -150,7 +171,7 @@ float OrderItem::cost() {
 }
 
 float OrderItem::margin() {
-    return subTotal() - cost();  // m_deleted case handled in subTotal() and cost()
+    return subTotal() - cog() - actualTax();  // m_deleted case handled in subTotal() and cost()
 }
 
 
@@ -204,19 +225,14 @@ OrderItemInventoryItem* OrderItem::addOrderItemInventoryItem(quint32 inventoryIt
 
 void OrderItem::addOrderItemInventoryItem(OrderItemInventoryItem *orderItemInventoryItem) {
     if(orderItemInventoryItem->property("id").toUInt() > m_currentOrderItemInventoryItemId) m_currentOrderItemInventoryItemId = orderItemInventoryItem->property("id").toUInt();
-//    connect(orderItem, SIGNAL(subTotalChanged(float)),
-//            this, SLOT(fireTotalsChanged()));
-    m_orderItemInventoryItems.append(orderItemInventoryItem);
-//    if(!isMoved) {
-//        Pos::instance()->appendToHistory("AddOrderItem:" + orderItem->serialize());
-//    }
-    connect(orderItemInventoryItem, SIGNAL(costChanged(float)),
-            this, SLOT(fireTotalsChanged()));
 
-    // TODO: check to see if merely moved
+    m_orderItemInventoryItems.append(orderItemInventoryItem);
+    connect(orderItemInventoryItem, SIGNAL(costChanged(float)),
+            this, SLOT(fireCogChanged()));
+
     Pos::instance()->appendToHistory("AddOrderItemInventoryItem:" + orderItemInventoryItem->serialize());
     orderItemInventoryItemsChanged(orderItemInventoryItems());
-    fireTotalsChanged();
+    fireCogChanged();
 }
 
 QQmlListProperty<OrderItemInventoryItem> OrderItem::orderItemInventoryItems() {
@@ -238,12 +254,12 @@ void OrderItem::removeOrderItemInventoryItem(quint32 id) {
             OrderItemInventoryItem *item = m_orderItemInventoryItems[i];
             m_orderItemInventoryItems.removeAt(i);
             disconnect(item, SIGNAL(costChanged(float)),
-                       this, SLOT(fireTotalsChanged()));
+                       this, SLOT(fireCogChanged()));
             QStringList historyEntry;
             historyEntry << "RemoveOrderItemInventoryItem" << item->property("ticketId").toString() << item->property("customerId").toString() << item->property("orderItemId").toString() << item->property("id").toString();
             Pos::instance()->appendToHistory(serializeList(historyEntry));
             orderItemInventoryItemsChanged(orderItemInventoryItems());
-            fireTotalsChanged();
+            fireCogChanged();
             return;
         }
     }

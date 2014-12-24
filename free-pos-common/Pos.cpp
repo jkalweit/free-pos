@@ -238,8 +238,9 @@ void Pos::readHistory(QString filename) {
 
 
 void Pos::appendToHistory(QString item) {
-    if(m_selectedRec) {
+    if(!m_selectedRec) {
         qDebug() << "No selected rec!";
+    } else {
         m_selectedRec->appendToHistory(item);
     }
 }
