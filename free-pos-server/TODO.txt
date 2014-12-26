@@ -1,0 +1,4 @@
+Add date and time to receipts
+Add Vendor to InventoryItems
+Implement delete for InventoryItems - only unused items, implement Disable for used
+--Find and Fix COG cost bug 12/26

@@ -80,7 +80,7 @@ Rectangle {
                     anchors.leftMargin: 150
                 }
                 Text {
-                    text: modelData.price.toFixed(2)
+                    text: modelData.unitPrice.toFixed(2)
                     color: "#000000"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right

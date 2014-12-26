@@ -65,7 +65,7 @@ Rectangle {
                     Rectangle {
                         id: dayTotals
                         width: parent.width - 20
-                        height: 275
+                        height: 225
                         anchors.left: parent.left
                         anchors.leftMargin: 10
                         anchors.top: parent.top
@@ -165,7 +165,7 @@ Rectangle {
 
                     EmployeeShiftsView {
                         id: lunchShifts
-                        height: 150
+                        height: 110
                         anchors.left: parent.left
                         anchors.leftMargin: 10
                         anchors.right: parent.right

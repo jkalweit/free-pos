@@ -126,7 +126,7 @@ OrderItem* Customer::addOrderItem(MenuItem* menuItem, float quantity, QString no
         orderItem->addOrderItemInventoryItem(item->property("inventoryItemId").toUInt(),
                                              item->inventoryItem()->property("name").toString(),
                                              item->inventoryItem()->property("unit").toString(),
-                                             item->inventoryItem()->property("price").toFloat(),
+                                             item->inventoryItem()->unitPrice(),
                                              item->property("quantity").toFloat());
     }
 
@@ -178,15 +178,15 @@ QList<OrderItem*> Customer::orderItemsList() {
 }
 
 void Customer::removeOrderItem(OrderItem *orderItem) {
-    Q_UNUSED(orderItem);
-//    for(int i = 0; i < m_orderItems.length(); i++) {
-//        if(m_orderItems[i] == orderItem) {
-//            m_orderItems.removeAt(i);
-//            orderItemsChanged(orderItems());
-//            fireTotalsChanged();
-//            return;
-//        }
-//    }
+    for(int i = 0; i < m_orderItems.length(); i++) {
+        if(m_orderItems[i] == orderItem) {
+            m_orderItems.removeAt(i);
+            orderItemsChanged(orderItems());
+            fireCogChanged();
+            fireTotalsChanged();
+            return;
+        }
+    }
 }
 
 QString Customer::serialize() const {
