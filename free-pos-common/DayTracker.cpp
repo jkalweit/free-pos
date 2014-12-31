@@ -52,12 +52,16 @@ float DayTracker::cogTotal() {
     return m_lunchRec->cog() + m_dinnerRec->cog();
 }
 
+float DayTracker::actualTax() {
+    return m_lunchRec->actualTax() + m_dinnerRec->actualTax();
+}
+
 float DayTracker::laborCostTotal() {
     return m_lunchRec->laborCost() + m_dinnerRec->laborCost();
 }
 
 float DayTracker::costTotal() {
-    return fixedCostTotal() + cogTotal() + laborCostTotal();
+    return fixedCostTotal() + cogTotal() + actualTax() + laborCostTotal();
 }
 
 void DayTracker::fireCostsChanged() {
@@ -72,6 +76,7 @@ float DayTracker::salesTotal() {
 
 void DayTracker::fireSalesChanged() {
     salesTotalChanged(salesTotal());
+    actualTaxChanged(actualTax());
 }
 
 void DayTracker::setName(QString value) {
