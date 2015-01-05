@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
     pos->readHistory("currMenu.txt");
 
     WeekTracker* week = pos->addWeek(QDate(2015, 1, 4));
+
     pos->setProperty("selectedWeek", QVariant::fromValue(week));
 
     QQmlApplicationEngine engine;

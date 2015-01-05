@@ -17,6 +17,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width / 2
+        editMode: container.editMode
         onMenuItemSelected: container.menuItemSelected(menuItem, isNew)
     }
 
@@ -26,6 +27,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width / 2
+        editMode: container.editMode
         onMenuCategorySelected: {
             menuItemsView.newMenuItemName.forceActiveFocus();
             container.menuCategorySelected(menuCategory, isNew);
