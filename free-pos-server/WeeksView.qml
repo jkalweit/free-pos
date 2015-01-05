@@ -201,7 +201,7 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.topMargin: 10
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: "Week Totals"
+                    text: "Week Totals -"
                 }
 
 
@@ -349,7 +349,7 @@ Rectangle {
             ComboBox {
                 id: employeeName
                 width: 150
-                model: [ "Aerin", "Heffner", "Jake", "Jay", "Jessica", "Justin", "Keely", "Kelly", "Khallid", "Leslie", "Stassie", "Thatcher", "Will" ]
+                model: [ "Aerin", "Heffner", "Jake", "Jay", "Jessica", "Justin", "Keely", "Kelly", "Kahllid", "Leslie", "Stassie", "Thatcher", "Will" ]
             }
 
             TextFieldLabeled {
