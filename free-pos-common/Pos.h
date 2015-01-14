@@ -19,7 +19,7 @@ class Pos : public QObject
     Q_PROPERTY(Reconciliation* selectedRec MEMBER m_selectedRec READ selectedRec NOTIFY selectedRecChanged)
     Q_PROPERTY(Inventory* selectedInventory MEMBER m_selectedInventory READ selectedInventory NOTIFY selectedInventoryChanged)
     Q_PROPERTY(QQmlListProperty<WeekTracker> weeks READ weeks NOTIFY weeksChanged)
-    Q_PROPERTY(WeekTracker* selectedWeek MEMBER m_selectedWeek READ selectedWeek NOTIFY selectedWeekChanged)
+    Q_PROPERTY(WeekTracker* selectedWeek MEMBER m_selectedWeek NOTIFY selectedWeekChanged)
 public:    
 
     static Pos *instance();
@@ -45,13 +45,14 @@ public:
     void appendToFixedCostHistory(QString item);
     void addTestData();
 
-    Q_INVOKABLE WeekTracker* selectedWeek();
+    Q_INVOKABLE WeekTracker* previousWeek();
+    Q_INVOKABLE WeekTracker* nextWeek();
     QQmlListProperty<WeekTracker> weeks();
     QList<WeekTracker*> weeksList();
     Q_INVOKABLE WeekTracker* addWeek(QDate startDate);
-    void addWeek(WeekTracker *value);
-    Q_INVOKABLE WeekTracker* getWeek(quint32 id);
-    Q_INVOKABLE void removeWeek(quint32 id);
+//    void addWeek(WeekTracker *value);
+    Q_INVOKABLE WeekTracker* getWeek(QDate date);
+//    Q_INVOKABLE void removeWeek(quint32 id);
 
 signals:
     void menusChanged(QQmlListProperty<Menu>);
@@ -76,7 +77,7 @@ private:
 
     WeekTracker *m_selectedWeek;
     QList<WeekTracker*> m_weeks;
-    quint32 m_weekCurrId;
+    //quint32 m_weekCurrId;
 
     void appendToFile(QString item, QString filename);
 };

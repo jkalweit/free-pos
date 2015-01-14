@@ -59,6 +59,10 @@ quint32 WeekTracker::id() {
     return m_id;
 }
 
+QDate WeekTracker::date() {
+    return m_sunday->date();
+}
+
 float WeekTracker::fixedCostTotal() {
     float total = 0;
     for(DayTracker *day : m_days) {
@@ -183,5 +187,23 @@ QQmlListProperty<DayTracker> WeekTracker::days() {
     return QQmlListProperty<DayTracker>(this, m_days);
 }
 
+
+bool WeekTracker::containsDate(QDate date) {
+    return date >= m_sunday->date() && date <= m_saturday->date();
+}
+
+QQmlListProperty<EmployeeShift> WeekTracker::getShiftsByEmployee(QString name) {
+    QList<EmployeeShift*> shifts;
+
+    for(DayTracker* day : m_days) {
+        for(EmployeeShift* shift : day->lunchRec()->shiftsList()) {
+            if(shift->name() == name) {
+                shifts.append(shift);
+            }
+        }
+    }
+
+    return QQmlListProperty<EmployeeShift>(shifts);
+}
 
 

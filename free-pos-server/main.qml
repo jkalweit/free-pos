@@ -22,6 +22,28 @@ ApplicationWindow {
 
 
 
+
+    RectangleFlashButton {
+        width: 100
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        text: "<---"
+        onClicked: pos.selectedWeek = pos.previousWeek()
+    }
+
+    RectangleFlashButton {
+        width: 100
+        anchors.left: parent.left
+        anchors.leftMargin: 100
+        anchors.bottom: parent.bottom
+        text: "--->"
+        onClicked: pos.selectedWeek = pos.nextWeek()
+    }
+
+
+
+
+
     RectangleFlashButton {
         width: 200
         anchors.right: parent.right

@@ -32,7 +32,7 @@ Pos* Pos::instance()
 
 
 Pos::Pos(QObject *parent) :
-    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr), m_selectedInventory(nullptr), m_selectedWeek(nullptr), m_weekCurrId(0)
+    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr), m_selectedInventory(nullptr), m_selectedWeek(nullptr) //, m_weekCurrId(0)
 {
 }
 
@@ -317,13 +317,12 @@ void Pos::addReconciliation(Reconciliation *rec) {
 
 
 
+WeekTracker* Pos::previousWeek() {
+    return getWeek(m_selectedWeek->date().addDays(-7));
+}
 
-
-
-
-
-WeekTracker* Pos::selectedWeek() {
-    return m_selectedWeek;
+WeekTracker* Pos::nextWeek() {
+    return getWeek(m_selectedWeek->date().addDays(7));
 }
 
 QQmlListProperty<WeekTracker> Pos::weeks() {
@@ -335,37 +334,59 @@ QList<WeekTracker*> Pos::weeksList() {
 }
 
 WeekTracker* Pos::addWeek(QDate startDate) {
-    WeekTracker *obj = new WeekTracker(this, ++m_weekCurrId);
+    WeekTracker *obj = new WeekTracker(this);
     obj->createDays(startDate);
-    addWeek(obj);
+    //addWeek(obj);
+    m_weeks.append(obj);
+    weeksChanged(weeks());
     return obj;
 }
 
-void Pos::addWeek(WeekTracker *value) {
-    if(value->id() > m_weekCurrId) m_weekCurrId = value->id();
-    m_weeks.append(value);
-    weeksChanged(weeks());
-}
+//void Pos::addWeek(WeekTracker *value) {
+//    if(value->id() > m_weekCurrId) m_weekCurrId = value->id();
+//    m_weeks.append(value);
+//    weeksChanged(weeks());
+//}
 
-WeekTracker* Pos::getWeek(quint32 id) {
+//WeekTracker* Pos::getWeek(quint32 id) {
+//    for(WeekTracker *value : m_weeks) {
+//        if(value->property("id").toUInt() == id) {
+//            return value;
+//        }
+//    }
+//    return nullptr;
+//}
+
+WeekTracker* Pos::getWeek(QDate date) {
     for(WeekTracker *value : m_weeks) {
-        if(value->property("id").toUInt() == id) {
+        if(value->containsDate(date)) {
             return value;
         }
     }
-    return nullptr;
+
+    // Week isn't loaded yet, add it:
+    int dayOfWeek = date.dayOfWeek();
+    QDate sunday;
+    // if not Sunday, then make it Sunday
+    if(dayOfWeek < 7) {
+        sunday = date.addDays(-1 * dayOfWeek);
+    } else {
+        sunday = date;
+    }
+
+    return addWeek(sunday);
 }
 
-void Pos::removeWeek(quint32 id) {
-    for(int i = 0; i < m_weeks.length(); i++) {
-        if(m_weeks[i]->property("id").toUInt() == id) {
-            //WeekTracker *item = m_weeks[i];
-            m_weeks.removeAt(i);
-            weeksChanged(weeks());
-             return;
-        }
-    }
-}
+//void Pos::removeWeek(quint32 id) {
+//    for(int i = 0; i < m_weeks.length(); i++) {
+//        if(m_weeks[i]->property("id").toUInt() == id) {
+//            //WeekTracker *item = m_weeks[i];
+//            m_weeks.removeAt(i);
+//            weeksChanged(weeks());
+//             return;
+//        }
+//    }
+//}
 
 
 

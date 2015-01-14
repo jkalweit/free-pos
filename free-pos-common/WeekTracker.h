@@ -42,6 +42,7 @@ public:
     void createDays(QDate startDate);
 
     quint32 id();
+    QDate date();
     float fixedCostTotal();
     float lunchActualTaxTotal();
     float dinnerActualTaxTotal();
@@ -57,6 +58,10 @@ public:
     float salesTotal();
 
     QQmlListProperty<DayTracker> days();
+
+    bool containsDate(QDate date);
+
+    Q_INVOKABLE QQmlListProperty<EmployeeShift> getShiftsByEmployee(QString name);
 
 signals:
     void idChanged(quint32);

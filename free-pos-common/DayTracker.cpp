@@ -32,6 +32,10 @@ QString DayTracker::name() {
     return m_name;
 }
 
+QDate DayTracker::date() {
+    return m_date;
+}
+
 Reconciliation* DayTracker::lunchRec() {
     return m_lunchRec;
 }
