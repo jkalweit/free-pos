@@ -17,6 +17,7 @@
 #include "Cost.h"
 
 #include "EmployeeShift.h"
+#include "EmployeeShiftsSummary.h"
 
 int main(int argc, char *argv[])
 {
@@ -42,6 +43,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<Cost>("FreePos", 1, 0, "Cost");
 
     qmlRegisterType<EmployeeShift>("FreePos", 1, 0, "EmployeeShift");
+    qmlRegisterType<EmployeeShiftsSummary>("FreePos", 1, 0, "EmployeeShiftsSummary");
 
     Pos *pos = Pos::instance();
     pos->readHistory("currInventory.txt");

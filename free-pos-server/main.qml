@@ -1,7 +1,6 @@
 import QtQuick 2.3
 import QtQuick.Controls 1.2
 import FreePos 1.0 as FreePos
-//import QtMultimedia 5.0
 
 
 ApplicationWindow {
@@ -13,14 +12,21 @@ ApplicationWindow {
     title: "CY Pos"
 
 
+
+
+
+
+
+
+
+
+
+
     WeeksView {
         width: parent.width
         height: parent.height
         week: pos.selectedWeek
     }
-
-
-
 
 
     RectangleFlashButton {
@@ -39,6 +45,7 @@ ApplicationWindow {
         text: "--->"
         onClicked: pos.selectedWeek = pos.nextWeek()
     }
+
 
 
 

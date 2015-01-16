@@ -192,18 +192,62 @@ bool WeekTracker::containsDate(QDate date) {
     return date >= m_sunday->date() && date <= m_saturday->date();
 }
 
-QQmlListProperty<EmployeeShift> WeekTracker::getShiftsByEmployee(QString name) {
+
+
+QQmlListProperty<EmployeeShift> WeekTracker::selectedEmployeeShifts() {
+    qDebug() << "Doing this";
+    return QQmlListProperty<EmployeeShift>(this, getShiftsByEmployee("Jake"));
+}
+
+QList<EmployeeShift*> WeekTracker::getAllEmployeeShifts() {
     QList<EmployeeShift*> shifts;
 
     for(DayTracker* day : m_days) {
         for(EmployeeShift* shift : day->lunchRec()->shiftsList()) {
-            if(shift->name() == name) {
-                shifts.append(shift);
-            }
+            shifts.append(shift);
+        }
+        for(EmployeeShift* shift : day->dinnerRec()->shiftsList()) {
+            shifts.append(shift);
         }
     }
 
-    return QQmlListProperty<EmployeeShift>(shifts);
+    qDebug() << "   All shifts: " << shifts.count();
+    return shifts;
 }
 
+QList<EmployeeShift*> WeekTracker::getShiftsByEmployee(QString name) {
+    qDebug() << "Getting shifts for " << name;
+    QList<EmployeeShift*> allShifts = getAllEmployeeShifts();
+    QList<EmployeeShift*> shifts;
 
+    for(EmployeeShift* shift : allShifts) {
+        qDebug() << "   Shift: " << shift->name();
+        if(shift->name() == name) {
+            shifts.append(shift);
+        }
+    }
+
+    qDebug() << "   Number of shifts: " << shifts.count();
+    return shifts;
+}
+
+QList<EmployeeShiftsSummary*> WeekTracker::getEmployeeShiftsSummaries() {
+    QList<EmployeeShiftsSummary*> summaries;
+    QList<EmployeeShift*> allShifts = getAllEmployeeShifts();
+    EmployeeShiftsSummary *existingSummary;
+    for(EmployeeShift* shift : allShifts){
+        existingSummary = nullptr;
+        for(EmployeeShiftsSummary *summary : summaries) {
+            if(summary->name() == shift->name()) {
+                existingSummary = summary;
+                continue;
+            }
+        }
+        if(!existingSummary) {
+            existingSummary = new EmployeeShiftsSummary(this, shift->name());
+            summaries.append(existingSummary);
+        }
+        existingSummary->addShift(shift);
+    }
+    return summaries;
+}

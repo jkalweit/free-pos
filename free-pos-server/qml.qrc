@@ -22,5 +22,6 @@
         <file>RecSummaryView.qml</file>
         <file>EmployeeShiftsView.qml</file>
         <file>EmployeeShiftsEdit.qml</file>
+        <file>EmployeeShiftsByWeek.qml</file>
     </qresource>
 </RCC>
