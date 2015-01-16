@@ -69,6 +69,35 @@ ApplicationWindow {
         onClicked: editInventoryDialog.show()
     }
 
+
+
+
+    RectangleFlashButton {
+        width: 100
+        anchors.left: parent.left
+        anchors.leftMargin: 200
+        anchors.bottom: parent.bottom
+        text: "Payroll Hours"
+        onClicked: {
+//            var summaries = pos.selectedWeek.getEmployeeShiftsSummaries()
+//            console.log("Got the summaries: " + summaries.length);
+//            shiftsByWeek.summaries = summaries;
+            shiftsByWeek.visible = true;
+        }
+    }
+
+
+
+    EmployeeShiftsByWeek {
+        id: shiftsByWeek
+        anchors.fill: parent
+        visible: false
+        summaries: pos.selectedWeek.employeeShiftsSummaries
+    }
+
+
+
+
     EditReconciliation {
         id: editReconciliation
         visible: pos.selectedRec // ? pos.selectedRec.isOpen : false

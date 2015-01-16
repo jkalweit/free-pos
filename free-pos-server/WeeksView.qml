@@ -522,24 +522,8 @@ Rectangle {
                         editShift.close(true)
                     }
                 }
-
-                Button {
-                    text: "Week Totals"
-                    onClicked: {
-                        var shifts = pos.selectedWeek.getShiftsByEmployee(editShift.shift.name);
-                        console.log("Got the shifts: " + shifts.length);
-                        shiftsByWeek.shifts = shifts;
-                        shiftsByWeek.visible = true;
-                    }
-                }
             }
         }
-    }
-
-    EmployeeShiftsByWeek {
-        id: shiftsByWeek
-        anchors.fill: parent
-        visible: false
     }
 
 }

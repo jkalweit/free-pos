@@ -38,7 +38,7 @@ class WeekTracker : public SimpleSerializable
 
     Q_PROPERTY(QQmlListProperty<DayTracker> days READ days NOTIFY daysChanged)
 
-    Q_PROPERTY(QQmlListProperty<EmployeeShift> selectedEmployeeShifts READ selectedEmployeeShifts NOTIFY selectedEmployeeShiftsChanged)
+    Q_PROPERTY(QQmlListProperty<EmployeeShiftsSummary> employeeShiftsSummaries READ employeeShiftsSummaries NOTIFY employeeShiftsSummariesChanged)
 public:
     explicit WeekTracker(QObject *parent = 0, quint32 id = 0, QString name = "", DayTracker* sunday = nullptr, DayTracker* monday = nullptr, DayTracker* tuesday = nullptr, DayTracker* wednesday = nullptr, DayTracker* thursday = nullptr, DayTracker* friday = nullptr, DayTracker* saturday = nullptr);
 
@@ -67,10 +67,12 @@ public:
     bool containsDate(QDate date);
 
 
-    QQmlListProperty<EmployeeShift> selectedEmployeeShifts();
+//    QQmlListProperty<EmployeeShift> selectedEmployeeShifts();
     QList<EmployeeShift*> getAllEmployeeShifts();
     QList<EmployeeShift*> getShiftsByEmployee(QString name);
-    QList<EmployeeShiftsSummary*> getEmployeeShiftsSummaries();
+    QQmlListProperty<EmployeeShiftsSummary> employeeShiftsSummaries();
+
+    Q_INVOKABLE void fireEmployeeShiftsSummariesChanged();
 
 signals:
     void idChanged(quint32);
@@ -97,7 +99,7 @@ signals:
     void salesTotalChanged(float);
 
     void daysChanged(QQmlListProperty<DayTracker>);
-    void selectedEmployeeShiftsChanged(QQmlListProperty<EmployeeShift>);
+    void employeeShiftsSummariesChanged(QQmlListProperty<EmployeeShiftsSummary>);
 
 public slots:
     void fireFixedCostTotalChanged();

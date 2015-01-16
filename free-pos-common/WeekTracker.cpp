@@ -193,11 +193,10 @@ bool WeekTracker::containsDate(QDate date) {
 }
 
 
-
-QQmlListProperty<EmployeeShift> WeekTracker::selectedEmployeeShifts() {
-    qDebug() << "Doing this";
-    return QQmlListProperty<EmployeeShift>(this, getShiftsByEmployee("Jake"));
-}
+//QQmlListProperty<EmployeeShift> WeekTracker::selectedEmployeeShifts() {
+//    qDebug() << "Doing this";
+//    return QQmlListProperty<EmployeeShift>(this, getShiftsByEmployee("Jake"));
+//}
 
 QList<EmployeeShift*> WeekTracker::getAllEmployeeShifts() {
     QList<EmployeeShift*> shifts;
@@ -231,23 +230,30 @@ QList<EmployeeShift*> WeekTracker::getShiftsByEmployee(QString name) {
     return shifts;
 }
 
-QList<EmployeeShiftsSummary*> WeekTracker::getEmployeeShiftsSummaries() {
+QQmlListProperty<EmployeeShiftsSummary> WeekTracker::employeeShiftsSummaries() {
     QList<EmployeeShiftsSummary*> summaries;
     QList<EmployeeShift*> allShifts = getAllEmployeeShifts();
     EmployeeShiftsSummary *existingSummary;
     for(EmployeeShift* shift : allShifts){
         existingSummary = nullptr;
+        qDebug() << "Shift: " << shift->name();
         for(EmployeeShiftsSummary *summary : summaries) {
+            qDebug() << "   Checking: " << summary->name();
             if(summary->name() == shift->name()) {
+                qDebug() << "       found: " << summary->name();
                 existingSummary = summary;
-                continue;
             }
         }
-        if(!existingSummary) {
+        if(!existingSummary) {            
             existingSummary = new EmployeeShiftsSummary(this, shift->name());
+            qDebug() << "   Created new: " << existingSummary->name();
             summaries.append(existingSummary);
         }
         existingSummary->addShift(shift);
     }
-    return summaries;
+    return QQmlListProperty<EmployeeShiftsSummary>(this, summaries);
+}
+
+void WeekTracker::fireEmployeeShiftsSummariesChanged() {
+    employeeShiftsSummariesChanged(employeeShiftsSummaries());
 }

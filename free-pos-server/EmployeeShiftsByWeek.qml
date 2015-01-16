@@ -6,16 +6,16 @@ Rectangle {
     width: 100
     height: 62
     color: "blue"
-    property var shifts
+    property var summaries
 
-    onShiftsChanged: {
-        console.log(container.shifts);
-        console.log("Shifts changed!" + container.shifts.length);
+    onSummariesChanged: {
+        console.log("hello" + container.summaries);
+//        console.log("Summaries changed!" + container.summaries.length);
     }
 
     Column {
         Repeater {
-            model: container.shifts ? container.shifts : 10
+            model: container.summaries ? container.summaries : 1
 
             Rectangle {
                 width: 200
@@ -66,8 +66,8 @@ Rectangle {
         }
 
         Button {
-            text: "Text"
-            onClicked: container.shifts = pos.selectedWeek.getShiftsByEmployee("Jake")
+            text: "Refresh"
+            onClicked: pos.selectedWeek.fireEmployeeShiftsSummariesChanged()
         }
     }
 }
