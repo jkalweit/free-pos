@@ -70,9 +70,11 @@ public:
 //    QQmlListProperty<EmployeeShift> selectedEmployeeShifts();
     QList<EmployeeShift*> getAllEmployeeShifts();
     QList<EmployeeShift*> getShiftsByEmployee(QString name);
+    QList<EmployeeShiftsSummary*> getEmployeeShiftsSummariesList();
     QQmlListProperty<EmployeeShiftsSummary> employeeShiftsSummaries();
 
     Q_INVOKABLE void fireEmployeeShiftsSummariesChanged();
+    Q_INVOKABLE void printEmployeeShiftsSummaries();
 
 signals:
     void idChanged(quint32);

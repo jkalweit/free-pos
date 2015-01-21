@@ -182,7 +182,6 @@ void WeekTracker::fireSalesTotalsChanged() {
 }
 
 
-
 QQmlListProperty<DayTracker> WeekTracker::days() {
     return QQmlListProperty<DayTracker>(this, m_days);
 }
@@ -230,7 +229,7 @@ QList<EmployeeShift*> WeekTracker::getShiftsByEmployee(QString name) {
     return shifts;
 }
 
-QQmlListProperty<EmployeeShiftsSummary> WeekTracker::employeeShiftsSummaries() {
+QList<EmployeeShiftsSummary*> WeekTracker::getEmployeeShiftsSummariesList() {
     QList<EmployeeShiftsSummary*> summaries;
     QList<EmployeeShift*> allShifts = getAllEmployeeShifts();
     EmployeeShiftsSummary *existingSummary;
@@ -239,21 +238,34 @@ QQmlListProperty<EmployeeShiftsSummary> WeekTracker::employeeShiftsSummaries() {
         qDebug() << "Shift: " << shift->name();
         for(EmployeeShiftsSummary *summary : summaries) {
             qDebug() << "   Checking: " << summary->name();
-            if(summary->name() == shift->name()) {
-                qDebug() << "       found: " << summary->name();
+            if(summary->name() == shift->name() && summary->wage() == shift->wage()) {
+                qDebug() << "       found: " << summary->name() << " " << summary->wage();
                 existingSummary = summary;
             }
         }
-        if(!existingSummary) {            
-            existingSummary = new EmployeeShiftsSummary(this, shift->name());
-            qDebug() << "   Created new: " << existingSummary->name();
+        if(!existingSummary) {
+            existingSummary = new EmployeeShiftsSummary(this, shift->name(), shift->wage());
+            qDebug() << "   Created new: " << existingSummary->name() << " " << existingSummary->wage();
             summaries.append(existingSummary);
         }
         existingSummary->addShift(shift);
     }
+    return summaries;
+}
+
+QQmlListProperty<EmployeeShiftsSummary> WeekTracker::employeeShiftsSummaries() {
+    QList<EmployeeShiftsSummary*> summaries = getEmployeeShiftsSummariesList();
     return QQmlListProperty<EmployeeShiftsSummary>(this, summaries);
 }
 
 void WeekTracker::fireEmployeeShiftsSummariesChanged() {
     employeeShiftsSummariesChanged(employeeShiftsSummaries());
+}
+
+void WeekTracker::printEmployeeShiftsSummaries() {
+    QList<EmployeeShiftsSummary*> summaries = getEmployeeShiftsSummariesList();
+    qDebug() << "Printing " << summaries.count() << " summaries....";
+    for(EmployeeShiftsSummary *summary : summaries) {
+        qDebug() << summary->name() << " $" << summary->wage() << " " << summary->hours();
+    }
 }

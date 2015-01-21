@@ -82,18 +82,19 @@ ApplicationWindow {
 //            var summaries = pos.selectedWeek.getEmployeeShiftsSummaries()
 //            console.log("Got the summaries: " + summaries.length);
 //            shiftsByWeek.summaries = summaries;
-            shiftsByWeek.visible = true;
+//            shiftsByWeek.visible = true;
+            pos.selectedWeek.printEmployeeShiftsSummaries();
         }
     }
 
 
 
-    EmployeeShiftsByWeek {
-        id: shiftsByWeek
-        anchors.fill: parent
-        visible: false
-        summaries: pos.selectedWeek.employeeShiftsSummaries
-    }
+//    EmployeeShiftsByWeek {
+//        id: shiftsByWeek
+//        anchors.fill: parent
+//        visible: false
+//        summaries: pos.selectedWeek.employeeShiftsSummaries
+//    }
 
 
 
