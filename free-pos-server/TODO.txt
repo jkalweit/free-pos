@@ -1,3 +1,4 @@
+FIX "Ending Drawer" on Rec Printout, it currently includes payouts. Needs to be without payouts.
 Add date and time to receipts
 Add Vendor to InventoryItems
 Implement delete for InventoryItems - only unused items, implement Disable for used

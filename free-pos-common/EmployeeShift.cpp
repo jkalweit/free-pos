@@ -5,8 +5,8 @@
 #include <QDateTime>
 #include "Reconciliation.h"
 
-EmployeeShift::EmployeeShift(QObject *parent, quint32 id, QString name, QString note, float wage, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM, quint8 startHour, quint8 startMinute, bool startAM, quint8 endHour, quint8 endMinute, bool endAM) :
-    SimpleSerializable(parent), m_id(id), m_name(name), m_note(note), m_wage(wage), m_scheduledStartHour(scheduledStartHour), m_scheduledStartMinute(scheduledStartMinute), m_scheduledStartAM(scheduledStartAM), m_scheduledEndHour(scheduledEndHour), m_scheduledEndMinute(scheduledEndMinute), m_scheduledEndAM(scheduledEndAM), m_startHour(startHour), m_startMinute(startMinute), m_startAM(startAM), m_endHour(endHour), m_endMinute(endMinute), m_endAM(endAM)
+EmployeeShift::EmployeeShift(QObject *parent, quint32 id, QString name, QString note, float wage, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM, quint8 startHour, quint8 startMinute, bool startAM, quint8 endHour, quint8 endMinute, bool endAM, QDate date, QString shiftName) :
+    SimpleSerializable(parent), m_id(id), m_name(name), m_note(note), m_wage(wage), m_scheduledStartHour(scheduledStartHour), m_scheduledStartMinute(scheduledStartMinute), m_scheduledStartAM(scheduledStartAM), m_scheduledEndHour(scheduledEndHour), m_scheduledEndMinute(scheduledEndMinute), m_scheduledEndAM(scheduledEndAM), m_startHour(startHour), m_startMinute(startMinute), m_startAM(startAM), m_endHour(endHour), m_endMinute(endMinute), m_endAM(endAM), m_date(date), m_shiftName(shiftName)
 {
 }
 
@@ -81,6 +81,15 @@ quint8 EmployeeShift::endMinute() {
 bool EmployeeShift::endAM() {
     return m_endAM;
 }
+
+QDate EmployeeShift::date() {
+    return m_date;
+}
+
+QString EmployeeShift::shiftName() {
+    return m_shiftName;
+}
+
 
 
 void EmployeeShift::setName(QString value) {
@@ -213,6 +222,22 @@ void EmployeeShift::setEndAM(bool value) {
         logPropertyChanged(m_endAM, "endAM");
         endAMChanged(m_endAM);
         fireEndChanged();
+    }
+}
+
+void EmployeeShift::setDate(QDate value) {
+    if(m_date != value) {
+        m_date = value;
+        logPropertyChanged(m_date, "date");
+        dateChanged(m_date);
+    }
+}
+
+void EmployeeShift::setShiftName(QString value) {
+    if(m_shiftName != value) {
+        m_shiftName = value;
+        logPropertyChanged(m_shiftName, "shiftName");
+        shiftNameChanged(m_shiftName);
     }
 }
 

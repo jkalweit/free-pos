@@ -2,6 +2,7 @@
 #define EMPLOYEESHIFT_H
 
 #include <QObject>
+#include <QDate>
 #include <QQmlListProperty>
 #include "SimpleSerializable.h"
 
@@ -43,7 +44,7 @@ class EmployeeShift : public SimpleSerializable
     Q_PROPERTY(bool canClockIn READ canClockIn NOTIFY canClockInChanged)
     Q_PROPERTY(bool canClockOut READ canClockOut NOTIFY canClockOutChanged)
 public:
-    explicit EmployeeShift(QObject *parent = 0, quint32 id = 0, QString name = "", QString note = "", float wage = 0, quint8 scheduledStartHour = 0, quint8 scheduledStartMinute = 0, bool scheduledStartAM = false, quint8 scheduledEndHour = 0, quint8 scheduledEndMinute = 0, bool scheduledEndAM = false, quint8 startHour = 0, quint8 startMinute = 0, bool startAM = false, quint8 endHour = 0, quint8 endMinute = 0, bool endAM = false);
+    explicit EmployeeShift(QObject *parent = 0, quint32 id = 0, QString name = "", QString note = "", float wage = 0, quint8 scheduledStartHour = 0, quint8 scheduledStartMinute = 0, bool scheduledStartAM = false, quint8 scheduledEndHour = 0, quint8 scheduledEndMinute = 0, bool scheduledEndAM = false, quint8 startHour = 0, quint8 startMinute = 0, bool startAM = false, quint8 endHour = 0, quint8 endMinute = 0, bool endAM = false, QDate date = QDate(), QString shiftName = "");
 
     virtual QStringList updatePrefix();
 
@@ -63,6 +64,8 @@ public:
     quint8 endHour();
     quint8 endMinute();
     bool endAM();
+    QDate date();
+    QString shiftName();
 
     void setName(QString value);
     void setNote(QString value);
@@ -79,6 +82,8 @@ public:
     void setEndHour(quint8 value);
     void setEndMinute(quint8 value);
     void setEndAM(bool value);
+    void setDate(QDate value);
+    void setShiftName(QString value);
 
     float cost();
 
@@ -118,6 +123,8 @@ signals:
     void endHourChanged(quint8);
     void endMinuteChanged(quint8);
     void endAMChanged(bool);
+    void dateChanged(QDate);
+    void shiftNameChanged(QString);
 
     void costChanged(float);
 
@@ -158,6 +165,9 @@ private:
     quint8 m_endHour;
     quint8 m_endMinute;
     bool m_endAM;
+
+    QDate m_date;
+    QString m_shiftName;
 
     QString formatTime(quint8 hour, quint8 minute, bool am);
     float computeTimeDifference(quint8 startHour, quint8 startMinute, bool startAM, quint8 endHour, quint8 endMinute, bool endAM);

@@ -263,9 +263,14 @@ void WeekTracker::fireEmployeeShiftsSummariesChanged() {
 }
 
 void WeekTracker::printEmployeeShiftsSummaries() {
+    QLocale english(QLocale::English);
     QList<EmployeeShiftsSummary*> summaries = getEmployeeShiftsSummariesList();
     qDebug() << "Printing " << summaries.count() << " summaries....";
     for(EmployeeShiftsSummary *summary : summaries) {
-        qDebug() << summary->name() << " $" << summary->wage() << " " << summary->hours();
+        qDebug() <<  "$" + english.toString(summary->wage(), 'f', 2) << " " << english.toString(summary->hours(), 'f', 2) << summary->name();
+        //qDebug() << " $" << QString::number(summary->wage(), "f", 2) << " " << QString::number(summary->hours(), "f", 2) << summary->name();
+        for(EmployeeShift *shift : summary->shiftsList()) {
+            qDebug() << "                   " << english.toString(shift->scheduledOrActualHours(), 'f', 2) << "   " << shift->startFormatted() + "-" + shift->endFormatted() << QDate::shortDayName(shift->date().dayOfWeek()) << shift->shiftName() << shift->note();
+        }
     }
 }

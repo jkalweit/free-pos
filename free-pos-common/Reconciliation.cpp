@@ -281,6 +281,9 @@ void Reconciliation::setName(QString name) {
     if(m_name != name.trimmed()) {
         m_name = name.trimmed();
         logPropertyChanged(m_name, "name");
+        for(EmployeeShift *shift : m_shifts) {
+            shift->setShiftName(m_name);
+        }
         nameChanged(m_name);
     }
 }
@@ -772,7 +775,7 @@ QList<EmployeeShift*> Reconciliation::shiftsList() {
 }
 
 EmployeeShift* Reconciliation::addShift(QString name, QString note, float wage, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM) {
-    EmployeeShift *obj = new EmployeeShift(this, ++m_shiftCurrId, name, note, wage, scheduledStartHour, scheduledStartMinute, scheduledStartAM, scheduledEndHour, scheduledEndMinute, scheduledEndAM);
+    EmployeeShift *obj = new EmployeeShift(this, ++m_shiftCurrId, name, note, wage, scheduledStartHour, scheduledStartMinute, scheduledStartAM, scheduledEndHour, scheduledEndMinute, scheduledEndAM, 0, 0, false, 0, 0, false, m_date, m_name);
     addShift(obj);
     return obj;
 }
