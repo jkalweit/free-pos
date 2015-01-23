@@ -775,7 +775,7 @@ QList<EmployeeShift*> Reconciliation::shiftsList() {
 }
 
 EmployeeShift* Reconciliation::addShift(QString name, QString note, float wage, quint8 scheduledStartHour, quint8 scheduledStartMinute, bool scheduledStartAM, quint8 scheduledEndHour, quint8 scheduledEndMinute, bool scheduledEndAM) {
-    EmployeeShift *obj = new EmployeeShift(this, ++m_shiftCurrId, name, note, wage, scheduledStartHour, scheduledStartMinute, scheduledStartAM, scheduledEndHour, scheduledEndMinute, scheduledEndAM, 0, 0, false, 0, 0, false, m_date, m_name);
+    EmployeeShift *obj = new EmployeeShift(this, ++m_shiftCurrId, name, note, wage, scheduledStartHour, scheduledStartMinute, scheduledStartAM, scheduledEndHour, scheduledEndMinute, scheduledEndAM);
     addShift(obj);
     return obj;
 }
@@ -784,6 +784,8 @@ void Reconciliation::addShift(EmployeeShift *value) {
     if(value->id() > m_shiftCurrId) m_shiftCurrId = value->id();
     connect(value, SIGNAL(costChanged(float)),
             this, SLOT(fireLaborCostChanged()));
+    value->setDate(m_date);
+    value->setShiftName(m_name);
     m_shifts.append(value);
     appendToHistory("AddEmployeeShift:" + value->serialize());
     shiftsChanged(shifts());
