@@ -261,20 +261,47 @@ void Ticket::printKitchen() {
         textRect.setY(textRect.y() + 5);
         for(OrderItem *o : c->orderItemsList()) {
             if(!o->property("deleted").toBool() && o->property("type").toString() != "Alcohol" && !o->isSubmitted()) {
-                textRect.setX(currentX + 20);
-                textRect.setWidth(width - 20);
+                textRect.setX(currentX + 10);
+                textRect.setWidth(width - 10);
                 textRect.setY(textRect.y() + bounding.height() + lineSpacing + 5);
                 fontMedium.setBold(true);
                 painter.setFont(fontMedium);
                 if(o->property("quantity").toFloat() != 1) {
                     painter.drawText(textRect, Qt::AlignLeft, o->property("quantity").toString(), &bounding);
                 }
-                textRect.setX(currentX + 50);
-                textRect.setWidth(width - 50);
+                textRect.setX(currentX + 20);
+                textRect.setWidth(width - 20);
                 painter.drawText(textRect, Qt::AlignLeft, o->property("name").toString(), &bounding);
                 fontMedium.setBold(false);
 
+                for(OrderItemOption *op : o->orderItemOptionsList()) {
+                    textRect.setX(currentX + 40);
+                    textRect.setWidth(width - 40);
+                    textRect.setY(textRect.y() + bounding.height() + lineSpacing + 5);
+                    fontMedium.setBold(true);
+                    painter.setFont(fontMedium);
+                    painter.drawText(textRect, Qt::AlignLeft, "*" + op->property("menuItemName").toString(), &bounding);
+                    fontMedium.setBold(false);
+                }
+
+                for(OrderItemInventoryItem *oi : o->orderItemInventoryItemsList()) {
+
+                    if((!oi->isAdded() && oi->isRemoved()) || (oi->isAdded() && !oi->isRemoved())) {
+                        textRect.setX(currentX + 40);
+                        textRect.setWidth(width - 40);
+                        textRect.setY(textRect.y() + bounding.height() + lineSpacing + 5);
+                        if(oi->isRemoved()) {
+                            fontMedium.setStrikeOut(true);
+                        }
+                        painter.setFont(fontMedium);
+                        painter.drawText(textRect, Qt::AlignLeft, oi->property("name").toString(), &bounding);
+                        fontMedium.setStrikeOut(false);
+                    }
+                }
+
                 if(o->property("note").toString().trimmed() != "") {
+                    textRect.setX(currentX + 40);
+                    textRect.setWidth(width - 40);
                     textRect.setY(textRect.y() + bounding.height() + lineSpacing);
                     fontMedium.setItalic(true);
                     painter.setFont(fontMedium);
@@ -341,7 +368,10 @@ void Ticket::printReceipt() {
     textRect.setY(textRect.y() + bounding.height() + lineSpacing);
     painter.drawText(textRect, Qt::AlignHCenter, "803.684.9653", &bounding);
 
-    textRect.setY(textRect.y() + bounding.height() + 20);
+    textRect.setY(textRect.y() + bounding.height() + 10);
+    painter.drawText(textRect, Qt::AlignHCenter, QDateTime::currentDateTime().toString("ddd MM/dd/yyyy hh:mm AP"), &bounding);
+
+    textRect.setY(textRect.y() + bounding.height() + 10);
 
     for(Customer *c : m_customers) {
         textRect.setX(currentX);

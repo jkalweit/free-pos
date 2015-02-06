@@ -783,11 +783,12 @@ EmployeeShift* Reconciliation::addShift(QString name, QString note, float wage, 
 void Reconciliation::addShift(EmployeeShift *value) {
     if(value->id() > m_shiftCurrId) m_shiftCurrId = value->id();
     connect(value, SIGNAL(costChanged(float)),
-            this, SLOT(fireLaborCostChanged()));
-    value->setDate(m_date);
-    value->setShiftName(m_name);
+            this, SLOT(fireLaborCostChanged()));    
     m_shifts.append(value);
     appendToHistory("AddEmployeeShift:" + value->serialize());
+    // Hack: set values after appending to history to make history order correct:
+    value->setDate(m_date);
+    value->setShiftName(m_name);
     shiftsChanged(shifts());
     fireLaborCostChanged();
 }

@@ -162,6 +162,16 @@ Rectangle {
                                             }
 
                                             Repeater {
+                                                model: modelData.orderItemOptions
+
+                                                Text {
+                                                    anchors.left: orderItemInner.left
+                                                    anchors.leftMargin: 40
+                                                    text: "*" + modelData.menuItemName
+                                                }
+                                            }
+
+                                            Repeater {
                                                 model: modelData.orderItemInventoryItems
 
                                                 Text {

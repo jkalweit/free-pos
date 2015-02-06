@@ -15,8 +15,8 @@ class OrderItemInventoryItem : public SimpleSerializable
     Q_PROPERTY(float price MEMBER m_price NOTIFY priceChanged)
     Q_PROPERTY(float quantity MEMBER m_quantity WRITE setQuantity NOTIFY quantityChanged)
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
-    Q_PROPERTY(bool isRemoved MEMBER m_isRemoved WRITE setIsRemoved NOTIFY isRemovedChanged)
-    Q_PROPERTY(bool isAdded MEMBER m_isAdded WRITE setIsAdded NOTIFY isAddedChanged)
+    Q_PROPERTY(bool isRemoved READ isRemoved WRITE setIsRemoved NOTIFY isRemovedChanged)
+    Q_PROPERTY(bool isAdded READ isAdded WRITE setIsAdded NOTIFY isAddedChanged)
 public:
     explicit OrderItemInventoryItem(QObject *parent = 0, quint32 ticketId = 0, quint32 customerId = 0, quint32 orderItemId = 0, quint32 id = 0, quint32 inventoryItemId = 0, QString name = "", QString unit = "", float price = 0, float quantity = 0, bool isRemoved = false, bool isAdded = false);
 
@@ -31,6 +31,8 @@ public:
     quint32 customerId();
     quint32 orderItemId();
     quint32 id();
+    bool isAdded();
+    bool isRemoved();
 
     QString serialize() const;
     static OrderItemInventoryItem* deserialize(QString serialized, QObject *parent = 0);

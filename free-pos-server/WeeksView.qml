@@ -347,7 +347,7 @@ Rectangle {
             ComboBox {
                 id: employeeName
                 width: 150
-                model: [ "Aerin", "Heffner", "Jake", "Jay", "Jessica", "Justin", "Keely", "Kelly", "Kahllid", "Leslie", "Stassie", "Thatcher", "Will" ]
+                model: [ "Aerin", "Brooke", "Heffner", "Jake", "Jay", "Jessica", "Justin", "Keely", "Kelly", "Kahllid", "Leslie", "Stassie", "Thatcher", "Will" ]
             }
 
             TextFieldLabeled {

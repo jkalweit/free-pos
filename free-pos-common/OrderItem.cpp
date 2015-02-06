@@ -239,6 +239,10 @@ QQmlListProperty<OrderItemInventoryItem> OrderItem::orderItemInventoryItems() {
     return QQmlListProperty<OrderItemInventoryItem>(this, m_orderItemInventoryItems);
 }
 
+QList<OrderItemInventoryItem*> OrderItem::orderItemInventoryItemsList() {
+    return m_orderItemInventoryItems;
+}
+
 OrderItemInventoryItem* OrderItem::getOrderItemInventoryItem(quint32 id) {
     for(OrderItemInventoryItem* item : m_orderItemInventoryItems) {
         if(item->property("id").toUInt() == id){
@@ -295,6 +299,10 @@ void OrderItem::addOrderItemOption(OrderItemOption *orderItemOption) {
 
 QQmlListProperty<OrderItemOption> OrderItem::orderItemOptions() {
     return QQmlListProperty<OrderItemOption>(this, m_orderItemOptions);
+}
+
+QList<OrderItemOption*> OrderItem::orderItemOptionsList() {
+    return m_orderItemOptions;
 }
 
 OrderItemOption* OrderItem::getOrderItemOption(quint32 id) {

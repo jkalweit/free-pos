@@ -69,12 +69,14 @@ public:
 
 
     QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems();
+    QList<OrderItemInventoryItem*> orderItemInventoryItemsList();
     Q_INVOKABLE OrderItemInventoryItem* addOrderItemInventoryItem(quint32 inventoryItemId, QString name, QString unit, float price, float quantity);
     void addOrderItemInventoryItem(OrderItemInventoryItem *orderItemInventoryItem);
     OrderItemInventoryItem* getOrderItemInventoryItem(quint32 id);
     Q_INVOKABLE void removeOrderItemInventoryItem(quint32 id);
 
     QQmlListProperty<OrderItemOption> orderItemOptions();
+    QList<OrderItemOption*> orderItemOptionsList();
     Q_INVOKABLE OrderItemOption* addOrderItemOption(quint32 optionMenuCategoryId);
     void addOrderItemOption(OrderItemOption *orderItemOption);
     OrderItemOption* getOrderItemOption(quint32 id);

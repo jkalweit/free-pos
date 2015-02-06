@@ -60,6 +60,14 @@ quint32 OrderItemInventoryItem::id() {
     return m_id;
 }
 
+bool OrderItemInventoryItem::isAdded() {
+    return m_isAdded;
+}
+
+bool OrderItemInventoryItem::isRemoved() {
+    return m_isRemoved;
+}
+
 
 void OrderItemInventoryItem::fireCostChanged() {
     costChanged(cost());
