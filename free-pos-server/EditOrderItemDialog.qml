@@ -80,7 +80,7 @@ DialogModal {
                     id: orderItemOptionContainer
                     width: 225
 
-                    height: orderItemOptionName.height + 10
+                    height: orderItemOptionName.height + 30
                     border.color: "#AAFFAA"
                     border.width: 2
 
@@ -153,7 +153,7 @@ DialogModal {
 
                 Rectangle {
                     width: 225
-                    height: inventoryItemName.height + 10
+                    height: inventoryItemName.height + 30
                     visible: !(modelData.isAdded && modelData.isRemoved)
                     color: modelData.isAdded ? "#DDFFDD" : "#FFFFFF";
                     border.color: "#77AAFFAA"
@@ -233,7 +233,7 @@ DialogModal {
 //            }
             RectangleFlash {
                 width: 225
-                height: addOrderItemInventoryItemText.height + 20
+                height: addOrderItemInventoryItemText.height + 30
                 color: "#DDDDDD"
                 onClicked: {
                     addOrderItemInventoryItem.visible = true
@@ -279,7 +279,7 @@ DialogModal {
 
         RectangleFlash {
             width: parent.width
-            height: submittedText.height + 10
+            height: submittedText.height + 30
             onClicked: {
                 editOrderItemDialog.model.cycleSubmittedStamp();
             }

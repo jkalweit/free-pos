@@ -232,7 +232,7 @@ Rectangle {
 
                         RectangleFlash {
                             width: parent.width
-                            height: printKitchen.height + 10
+                            height: printKitchen.height + 30
                             onClicked: {
                                 model.selectedTicket.printKitchen();
                             }
@@ -246,7 +246,7 @@ Rectangle {
 
                         RectangleFlash {
                             width: parent.width
-                            height: printReceipt.height + 10
+                            height: printReceipt.height + 30
                             onClicked: {
                                 model.selectedTicket.printReceipt();
                             }
@@ -260,7 +260,7 @@ Rectangle {
 
                         RectangleFlash {
                             width: parent.width
-                            height: paidText.height + 10
+                            height: paidText.height + 30
                             onClicked: {
                                 model.selectedTicket.cyclePaymentType();
                             }
