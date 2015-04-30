@@ -328,7 +328,7 @@ Rectangle {
 
                 editShiftDialog.rec.addShift(employeeName.currentText,
                                          editNote.text,
-                                         wage.text,
+                                         0, //wage.text,
                                          scheduledStartHour.text,
                                          scheduledStartMinute.text,
                                          scheduledStartAMbool,
@@ -347,7 +347,7 @@ Rectangle {
             ComboBox {
                 id: employeeName
                 width: 150
-                model: [ "Aerin", "Brooke", "Heffner", "Jake", "Jay", "Jessica", "Justin", "Keely", "Kelly", "Kahllid", "Leslie", "Stassie", "Thatcher", "Will" ]
+                model: [ "Aerin", "Brooke", "Derek", "Jake", "Jay", "Keely", "Kelly", "Stassie", "Thatcher", "[Guest]" ]
             }
 
             TextFieldLabeled {
@@ -357,12 +357,12 @@ Rectangle {
                 placeholderText: "Note"
             }
 
-            TextFieldLabeled {
-                id: wage
-                label: "Wage:"
+            //TextFieldLabeled {
+            //    id: wage
+            //    label: "Wage:"
                 //text: model ? model.note : ""
-                placeholderText: "Wage"
-            }
+            //    placeholderText: "Wage"
+            //}
 
             Row {
                 Text {
