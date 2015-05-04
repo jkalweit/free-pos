@@ -6,8 +6,8 @@
 #include "MenuItemInventoryItem.h"
 #include "MenuItemOption.h"
 
-Customer::Customer(QObject *parent, quint32 id, quint32 ticketId, QString name) :
-    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_name(name), m_currentOrderItemId(0)
+Customer::Customer(QObject *parent, quint32 id, quint32 ticketId, QString name, QString loyaltyMemberId) :
+    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_name(name), m_loyaltyMemberId(loyaltyMemberId), m_currentOrderItemId(0)
 {
 }
 
@@ -26,6 +26,18 @@ void Customer::setName(QString name) {
     }
 }
 
+void Customer::setLoyaltyMemberId(QString id) {
+    if(m_loyaltyMemberId != id) {
+        m_loyaltyMemberId = id;
+        logPropertyChanged(m_loyaltyMemberId, "loyaltyMemberId");
+        loyaltyMemberIdChanged(m_loyaltyMemberId);
+        isLoyaltyMemberChanged(isLoyaltyMember());
+    }
+}
+
+bool Customer::isLoyaltyMember() {
+    return m_loyaltyMemberId != "";
+}
 
 float Customer::foodTotal() {
     float sum = 0;
@@ -190,7 +202,7 @@ void Customer::removeOrderItem(OrderItem *orderItem) {
 }
 
 QString Customer::serialize() const {
-    return QString::number(m_id) + ":" + QString::number(m_ticketId) + ":" + m_name;
+    return QString::number(m_id) + ":" + QString::number(m_ticketId) + ":" + m_name + ":" + m_loyaltyMemberId;
 }
 
 Customer* Customer::deserialize(QString serialized, QObject *parent)
@@ -200,8 +212,12 @@ Customer* Customer::deserialize(QString serialized, QObject *parent)
     quint32 id = split[0].toInt();
     quint32 ticketId = split[1].toInt();
     QString name = split[2];
+    QString loyaltyMemberId = "";
+    if(split.length() > 3) {
+        loyaltyMemberId = split[3];
+    }
 
-    Customer *obj = new Customer(parent, id, ticketId, name);
+    Customer *obj = new Customer(parent, id, ticketId, name, loyaltyMemberId);
     return obj;
 }
 

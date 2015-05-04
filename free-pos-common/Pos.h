@@ -4,11 +4,18 @@
 #include <QObject>
 #include <QList>
 #include <QQmlListProperty>
+
+#include<QNetworkAccessManager>
+#include<QUrl>
+#include<QNetworkRequest>
+#include<QNetworkReply>
+
 #include "Menu.h"
 #include "Reconciliation.h"
 #include "Inventory.h"
 #include "InventoryItem.h"
 #include "WeekTracker.h"
+#include "LoyaltyMember.h"
 
 class Pos : public QObject
 {
@@ -20,6 +27,7 @@ class Pos : public QObject
     Q_PROPERTY(Inventory* selectedInventory MEMBER m_selectedInventory READ selectedInventory NOTIFY selectedInventoryChanged)
     Q_PROPERTY(QQmlListProperty<WeekTracker> weeks READ weeks NOTIFY weeksChanged)
     Q_PROPERTY(WeekTracker* selectedWeek MEMBER m_selectedWeek NOTIFY selectedWeekChanged)
+    Q_PROPERTY(QQmlListProperty<LoyaltyMember> loyaltyMembers READ loyaltyMembers NOTIFY loyaltyMembersChanged)
 public:    
 
     static Pos *instance();
@@ -54,6 +62,9 @@ public:
     Q_INVOKABLE WeekTracker* getWeek(QDate date);
 //    Q_INVOKABLE void removeWeek(quint32 id);
 
+    Q_INVOKABLE void getLoyaltyMembers();
+    QQmlListProperty<LoyaltyMember> loyaltyMembers();
+
 signals:
     void menusChanged(QQmlListProperty<Menu>);
     void selectedMenuChanged(Menu*);
@@ -62,8 +73,10 @@ signals:
     void selectedInventoryChanged(Inventory*);
     void selectedWeekChanged(WeekTracker*);
     void weeksChanged(QQmlListProperty<WeekTracker>);
+    void loyaltyMembersChanged(QQmlListProperty<LoyaltyMember>);
 
 public slots:
+    void handleLoyaltyMembers(QNetworkReply * reply);
 
 private:
     static Pos *s_instance;
@@ -77,7 +90,8 @@ private:
 
     WeekTracker *m_selectedWeek;
     QList<WeekTracker*> m_weeks;
-    //quint32 m_weekCurrId;
+
+    QList<LoyaltyMember*> m_loyaltyMembers;
 
     void appendToFile(QString item, QString filename);
 };

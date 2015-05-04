@@ -19,6 +19,8 @@
 #include "EmployeeShift.h"
 #include "EmployeeShiftsSummary.h"
 
+#include "LoyaltyMember.h"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -45,6 +47,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<EmployeeShift>("FreePos", 1, 0, "EmployeeShift");
     qmlRegisterType<EmployeeShiftsSummary>("FreePos", 1, 0, "EmployeeShiftsSummary");
 
+    qmlRegisterType<LoyaltyMember>("FreePos", 1, 0, "LoyaltyMember");
+
     Pos *pos = Pos::instance();
     pos->readHistory("currInventory.txt");
     pos->readHistory("currMenu.txt");
@@ -52,6 +56,8 @@ int main(int argc, char *argv[])
     // Load current week by default
     WeekTracker* week = pos->getWeek(QDate::currentDate());
     pos->setProperty("selectedWeek", QVariant::fromValue(week));
+
+    pos->getLoyaltyMembers();
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("pos", (QObject*)pos);

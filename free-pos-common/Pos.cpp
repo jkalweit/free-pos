@@ -11,6 +11,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonArray>
 #include <QMessageBox>
 #include <QDateTime>
 
@@ -458,4 +459,44 @@ void Pos::addTestData() {
 //            newCat->addMenuItem(itemObj["name"].toString(), itemObj["class"].toString(), itemObj["price"].toString().toFloat());
 //        }
 //    }
+}
+
+void Pos::getLoyaltyMembers() {
+    QNetworkAccessManager *manager =new QNetworkAccessManager(this);
+    //QUrl url("http://coalyard.azure-mobile.net/tables/loyaltymember");
+    QUrl url("http://localhost:12509/tables/loyaltymember");
+    url.setUserName("");
+    url.setPassword("XzknuDmYLwaJCTzznRUnRErOIPjJnq59");
+    connect(manager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(handleLoyaltyMembers(QNetworkReply*)));
+    manager->get(QNetworkRequest(url));
+}
+
+void Pos::handleLoyaltyMembers(QNetworkReply * reply) {
+    QByteArray response = reply->readAll();
+    qDebug() << "Reply: " << response;
+
+    QJsonDocument json = QJsonDocument::fromJson(response);
+    QJsonArray members = json.array();
+
+    this->m_loyaltyMembers.clear();
+    LoyaltyMember *member;
+    foreach (const QJsonValue & value, members) {
+        QJsonObject obj = value.toObject();
+        qDebug() << "Member: " + obj["id"].toString() + " " + obj["firstName"].toString();
+        member = new LoyaltyMember(this,
+                obj["id"].toString(),
+                obj["firstName"].toString(),
+                obj["lastName"].toString(),
+                obj["emailAddress"].toString(),
+                obj["pointsBalance"].toDouble());
+        this->m_loyaltyMembers.append(member);
+    }
+    loyaltyMembersChanged(loyaltyMembers());
+
+    qDebug() << "Members count: " << m_loyaltyMembers.length();
+}
+
+QQmlListProperty<LoyaltyMember> Pos::loyaltyMembers() {
+    return QQmlListProperty<LoyaltyMember>(this, m_loyaltyMembers);
 }

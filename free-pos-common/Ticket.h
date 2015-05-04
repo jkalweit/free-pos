@@ -33,6 +33,9 @@ class Ticket : public SimpleSerializable {
     Q_PROPERTY(float cog READ cog NOTIFY cogChanged)
     //Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
+
+    Q_PROPERTY(bool hasLoyaltyMember READ hasLoyaltyMember NOTIFY hasLoyaltyMemberChanged)
+
 public:
     explicit Ticket(QObject *parent = 0, quint32 id = 0, QString name = "", QDateTime createdStamp = QDateTime(),
                     QString paymentType = "", QDateTime paidStamp = QDateTime(), bool isTogo = false);
@@ -45,7 +48,7 @@ public:
     void setIsTogo(bool togo);
 
 
-    Q_INVOKABLE Customer* addCustomer(QString name);
+    Q_INVOKABLE Customer* addCustomer(QString name, QString loyaltyMemberId = "");
     void addCustomer(Customer *customer);
     QQmlListProperty<Customer> customers();
     Customer* getCustomer(quint32 id);
@@ -54,6 +57,8 @@ public:
     QString customerNames();
     QString longName();
     bool isPaid();
+    bool hasLoyaltyMember();
+
     float foodTotal();
     float taxTotal();
     float barTotal();
@@ -95,6 +100,7 @@ signals:
     void cogChanged(float);
     void marginChanged(float);
 
+    void hasLoyaltyMemberChanged(bool);
 private:
     quint32 m_id;
 //    quint32 m_reconciliationId;

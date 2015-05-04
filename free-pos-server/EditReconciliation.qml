@@ -537,6 +537,16 @@ Rectangle {
     }
 
 
+    LoyaltyMemberSelect {
+        id: loyaltyMemberSelectDialog
+        onMemberSelected: {
+            var ticket = model.addTicket("Bar");
+            ticket.addCustomer(member.firstName + " " + member.lastName, member.id);
+            ticketList.clearNameTextBox();
+            model.selectedTicket = ticket;
+            loyaltyMemberSelectDialog.visible = false;
+        }
+    }
 
     EditCustomerDialog {
         id: editCustomerDialog

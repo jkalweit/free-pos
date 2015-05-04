@@ -36,7 +36,9 @@ SOURCES += \
     WeekTracker.cpp \
     Cost.cpp \
     EmployeeShift.cpp \
-    EmployeeShiftsSummary.cpp
+    EmployeeShiftsSummary.cpp \
+    LoyaltyMember.cpp \
+    WebServiceController.cpp
 
 HEADERS += \
     MenuCategory.h \
@@ -60,7 +62,9 @@ HEADERS += \
     WeekTracker.h \
     Cost.h \
     EmployeeShift.h \
-    EmployeeShiftsSummary.h
+    EmployeeShiftsSummary.h \
+    LoyaltyMember.h \
+    WebServiceController.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

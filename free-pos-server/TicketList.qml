@@ -16,6 +16,9 @@ Rectangle {
     Keys.onDownPressed: tickets.rec.selectedTicket = tickets.rec.getNextTicket(newCustomerName.text.trim(), tickets.showPaid)
     Keys.onUpPressed: tickets.rec.selectedTicket = tickets.rec.getPreviousTicket(newCustomerName.text.trim(), tickets.showPaid)
 
+    function clearNameTextBox() {
+        newCustomerName.text = "";
+    }
 
     Column {
         id: ticketsControls
@@ -27,6 +30,10 @@ Rectangle {
             onClicked: tickets.showPaid = !tickets.showPaid
         }
 
+        RectangleFlashButton {
+            text: "Loyalty Members"
+            onClicked: loyaltyMemberSelectDialog.show()
+        }
 
         TextField {
             id: newCustomerName
@@ -37,7 +44,7 @@ Rectangle {
             onAccepted: {
                 var ticket = rec.addTicket("Bar");
                 ticket.addCustomer(newCustomerName.text);
-                newCustomerName.text = "";
+                clearNameTextBox();
                 rec.selectedTicket = ticket;
             }
 
@@ -66,7 +73,7 @@ Rectangle {
                 RectangleFlashButton {
                     text: modelData.customerNames
                     flashColor: "#FFFFFF"
-                    color:  modelData.isPaid ? "#888888" : "#26a69a"
+                    color: modelData.isPaid ? "#888888" : (modelData.hasLoyaltyMember ? "#9a26a6" : "#26a69a")
                     border.color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#777777"
                     border.width: 2
                     textColor: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#212121"

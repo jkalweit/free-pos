@@ -9,13 +9,14 @@
 #include "Ticket.h"
 #include "CashDrawer.h"
 #include "EmployeeShift.h"
+#include "WebServiceController.h"
 
 class Reconciliation : public SimpleSerializable {
 
     Q_OBJECT
     Q_PROPERTY(quint32 id MEMBER m_id NOTIFY idChanged)
-    Q_PROPERTY(QDate date MEMBER m_date NOTIFY dateChanged)
-    Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)    
+    Q_PROPERTY(QDate date MEMBER m_date READ date NOTIFY dateChanged)
+    Q_PROPERTY(QString name MEMBER m_name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString note MEMBER m_note WRITE setNote NOTIFY noteChanged)
     Q_PROPERTY(QDateTime openedStamp MEMBER m_openedStamp NOTIFY openedStampChanged)
     Q_PROPERTY(QDateTime closedStamp MEMBER m_closedStamp NOTIFY closedStampChanged)
@@ -61,6 +62,9 @@ public:
     void readHistory();
     void appendToHistory(QString item);
 
+    QDate date();
+    QString name();
+
     void setName(QString name);
     void setNote(QString note);
 
@@ -98,6 +102,7 @@ public:
 
     Q_INVOKABLE bool hasOpenTickets();    
     Q_INVOKABLE bool closeRec();
+    Q_INVOKABLE void sendRecToWebService();
     Q_INVOKABLE bool isOpen();
 
     float cog();
@@ -182,6 +187,8 @@ private:
 
     QList<EmployeeShift*> m_shifts;
     quint32 m_shiftCurrId;
+
+    WebServiceController m_webService;
 
 private slots:
     void fireCogChanged();

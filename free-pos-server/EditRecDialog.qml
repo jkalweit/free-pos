@@ -303,6 +303,15 @@ DialogModal {
                     }
 
                     Button {
+                        width: 50
+                        text: "Test"
+                        onClicked: {
+                            saveData();
+                            model.sendRecToWebService();
+                        }
+                    }
+
+                    Button {
                         width: 100
                         text: "Close Rec"
                         enabled: model ? model.isOpen : false

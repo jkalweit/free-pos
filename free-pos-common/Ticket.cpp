@@ -50,6 +50,15 @@ bool Ticket::isPaid() {
     return m_paymentType != "";
 }
 
+bool Ticket::hasLoyaltyMember() {
+    for(int i=0; i<m_customers.length(); i++) {
+        if(m_customers[i]->isLoyaltyMember()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Ticket::cyclePaymentType() {
 
     if(m_paymentType == "") {
@@ -95,8 +104,8 @@ void Ticket::fireNamesChanged() {
     longNameChanged(longName());
 }
 
-Customer* Ticket::addCustomer(QString name) {
-    Customer *obj = new Customer(this, ++m_currentCustomerId, m_id, name.toUpper());
+Customer* Ticket::addCustomer(QString name, QString loyaltyMemberId) {
+    Customer *obj = new Customer(this, ++m_currentCustomerId, m_id, name.toUpper(), loyaltyMemberId);
     addCustomer(obj);
     return obj;
 }
@@ -123,6 +132,7 @@ void Ticket::addCustomer(Customer *customer) {
     customersChanged(customers());
     customerNamesChanged(customerNames());
     longNameChanged(longName());
+    hasLoyaltyMemberChanged(hasLoyaltyMember());
     fireCogChanged();
     fireTotalsChanged();
 }

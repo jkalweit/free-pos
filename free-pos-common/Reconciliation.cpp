@@ -238,6 +238,7 @@ void Reconciliation::appendToHistory(QString item) {
     }
 }
 
+
 CashDrawer* Reconciliation::beginningDrawer() {
     return m_beginningDrawer;
 }
@@ -275,6 +276,14 @@ void Reconciliation::addTicket(Ticket *ticket) {
     m_tickets.append(ticket);
     appendToHistory("AddTicket:" + ticket->serialize());
     ticketsChanged(tickets());
+}
+
+QDate Reconciliation::date() {
+    return m_date;
+}
+
+QString Reconciliation::name() {
+    return m_name;
 }
 
 void Reconciliation::setName(QString name) {
@@ -585,15 +594,23 @@ bool Reconciliation::closeRec() {
         return false;
     }
 
-    m_closedStamp = QDateTime::currentDateTime();    
-    logPropertyChanged(m_closedStamp, "closedStamp");    
+    m_closedStamp = QDateTime::currentDateTime();
+    logPropertyChanged(m_closedStamp, "closedStamp");
     qDebug() << "Closed rec: " << m_closedStamp.toString("MM/dd/yyyy hh:mmAP");
 
     closedStampChanged(m_closedStamp);
     isOpenChanged(isOpen());
 
+    sendRecToWebService();
+
     return !isOpen();
+
 }
+
+void Reconciliation::sendRecToWebService() {
+    m_webService.sendReconciliation(this);
+}
+
 
 bool Reconciliation::isOpen() {
     return m_closedStamp.isNull();

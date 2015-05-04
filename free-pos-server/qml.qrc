@@ -23,5 +23,6 @@
         <file>EmployeeShiftsView.qml</file>
         <file>EmployeeShiftsEdit.qml</file>
         <file>EmployeeShiftsByWeek.qml</file>
+        <file>LoyaltyMemberSelect.qml</file>
     </qresource>
 </RCC>

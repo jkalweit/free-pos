@@ -238,7 +238,7 @@ QList<EmployeeShiftsSummary*> WeekTracker::getEmployeeShiftsSummariesList() {
         qDebug() << "Shift: " << shift->name();
         for(EmployeeShiftsSummary *summary : summaries) {
             qDebug() << "   Checking: " << summary->name();
-            if(summary->name() == shift->name() && summary->wage() == shift->wage()) {
+            if(summary->name() == shift->name()) { // && summary->wage() == shift->wage()) {
                 qDebug() << "       found: " << summary->name() << " " << summary->wage();
                 existingSummary = summary;
             }
@@ -267,7 +267,8 @@ void WeekTracker::printEmployeeShiftsSummaries() {
     QList<EmployeeShiftsSummary*> summaries = getEmployeeShiftsSummariesList();
     qDebug() << "Printing " << summaries.count() << " summaries....";
     for(EmployeeShiftsSummary *summary : summaries) {
-        qDebug() <<  "$" + english.toString(summary->wage(), 'f', 2) << " " << english.toString(summary->hours(), 'f', 2) << summary->name();
+        //qDebug() <<  "$" + english.toString(summary->wage(), 'f', 2) << " " << english.toString(summary->hours(), 'f', 2) << summary->name();
+        qDebug() << english.toString(summary->hours(), 'f', 2) << summary->name();
         //qDebug() << " $" << QString::number(summary->wage(), "f", 2) << " " << QString::number(summary->hours(), "f", 2) << summary->name();
         for(EmployeeShift *shift : summary->shiftsList()) {
             qDebug() << "                   " << english.toString(shift->scheduledOrActualHours(), 'f', 2) << "   " << shift->startFormatted() + "-" + shift->endFormatted() << QDate::shortDayName(shift->date().dayOfWeek()) << shift->shiftName() << shift->note();
