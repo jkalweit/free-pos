@@ -302,14 +302,14 @@ DialogModal {
                         }
                     }
 
-                    Button {
-                        width: 50
-                        text: "Test"
-                        onClicked: {
-                            saveData();
-                            model.sendRecToWebService();
-                        }
-                    }
+//                    Button {
+//                        width: 50
+//                        text: "Test"
+//                        onClicked: {
+//                            saveData();
+//                            model.sendRecToWebService();
+//                        }
+//                    }
 
                     Button {
                         width: 100

@@ -30,10 +30,11 @@ Rectangle {
             onClicked: tickets.showPaid = !tickets.showPaid
         }
 
-        RectangleFlashButton {
-            text: "Loyalty Members"
-            onClicked: loyaltyMemberSelectDialog.show()
-        }
+//        RectangleFlashButton {
+//            text: "Loyalty Members"
+//            onClicked: loyaltyMemberSelectDialog.show()
+//        }
+
 
         TextField {
             id: newCustomerName

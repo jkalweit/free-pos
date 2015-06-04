@@ -463,8 +463,8 @@ void Pos::addTestData() {
 
 void Pos::getLoyaltyMembers() {
     QNetworkAccessManager *manager =new QNetworkAccessManager(this);
-    //QUrl url("http://coalyard.azure-mobile.net/tables/loyaltymember");
-    QUrl url("http://localhost:12509/tables/loyaltymember");
+    QUrl url("http://coalyard.azure-mobile.net/tables/loyaltymember");
+    //QUrl url("http://localhost:12509/tables/loyaltymember");
     url.setUserName("");
     url.setPassword("XzknuDmYLwaJCTzznRUnRErOIPjJnq59");
     connect(manager, SIGNAL(finished(QNetworkReply*)),

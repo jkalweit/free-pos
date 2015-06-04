@@ -20,8 +20,8 @@ WebServiceController::WebServiceController(QObject *parent) :
 
 void WebServiceController::sendReconciliation(Reconciliation *rec) {
 
-    //QUrl url("http://coalyard.azure-mobile.net/tables/");
-    QUrl url("http://localhost:12509/tables/Reconciliation");
+    QUrl url("http://coalyard.azure-mobile.net/tables/Reconciliation");
+    //QUrl url("http://localhost:12509/tables/Reconciliation");
     url.setUserName("");
     url.setPassword("XzknuDmYLwaJCTzznRUnRErOIPjJnq59");
 

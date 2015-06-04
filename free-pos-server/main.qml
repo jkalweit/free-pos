@@ -18,10 +18,6 @@ ApplicationWindow {
 
 
 
-
-
-
-
     WeeksView {
         width: parent.width
         height: parent.height
