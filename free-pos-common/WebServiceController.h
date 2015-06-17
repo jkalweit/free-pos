@@ -6,6 +6,7 @@
 #include <QNetworkReply>
 
 class Reconciliation;
+class Ticket;
 
 class WebServiceController : public QObject
 {
@@ -14,6 +15,7 @@ public:
     explicit WebServiceController(QObject *parent = 0);
 
     void sendReconciliation(Reconciliation *rec);
+    void sendKitchenOrder(Ticket *ticket);
 
 signals:
 
