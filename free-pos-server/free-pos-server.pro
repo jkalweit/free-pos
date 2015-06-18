@@ -6,7 +6,8 @@ QT += qml quick widgets printsupport
 
 SOURCES += main.cpp \
     FreePosServer.cpp \
-    SimpleServer.cpp
+    SimpleServer.cpp \
+    singleapplication.cpp
 
 RESOURCES += qml.qrc
 
@@ -18,7 +19,8 @@ include(deployment.pri)
 
 HEADERS += \
     FreePosServer.h \
-    SimpleServer.h
+    SimpleServer.h \
+    singleapplication.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../free-pos-common/release/ -lfree-pos-common
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../free-pos-common/debug/ -lfree-pos-common
