@@ -21,9 +21,11 @@
 
 #include "LoyaltyMember.h"
 
+#include "singleapplication.h"
+
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    SingleApplication app(argc, argv);
 
     qmlRegisterType<Menu>("FreePos", 1, 0, "Menu");
     qmlRegisterType<MenuCategory>("FreePos", 1, 0, "MenuCategory");
