@@ -137,6 +137,10 @@ void Ticket::addCustomer(Customer *customer) {
     fireTotalsChanged();
 }
 
+QList<Customer*> Ticket::customersList() {
+    return m_customers;
+}
+
 QQmlListProperty<Customer> Ticket::customers() {    
     return QQmlListProperty<Customer>(this, m_customers);
 }
@@ -210,9 +214,12 @@ float Ticket::margin() {
 
 
 
-
-
 void Ticket::printKitchen() {
+
+    //TODO
+    m_webService.sendKitchenOrder(this);
+
+    return;
 
     QPrinter printer;
 
@@ -449,6 +456,8 @@ void Ticket::printReceipt() {
     painter.end();
 
 }
+
+
 
 QString Ticket::serialize() const {
     QStringList vals;

@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QUuid>
 
 #include "Reconciliation.h"
 #include "Ticket.h"
@@ -47,27 +48,71 @@ void WebServiceController::sendReconciliation(Reconciliation *rec) {
 
 void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
+//    QUrl url("http://localhost:56881/tables/KitchenOrder");
     QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
-    //QUrl url("http://localhost:56881/tables/KitchenOrder");
     url.setUserName("");
-    url.setPassword("XzknuDmYLwaJCTzznRUnRErOIPjJnq59");
+    url.setPassword("THWNiNTAOaSAviPfKJwUlmHHxeuDdM42");
 
-//    QUrlQuery postData;
+
+
+    //QUrlQuery postData;
 //    postData.addQueryItem("salesDate", rec->date().toString());
 //    postData.addQueryItem("description", rec->name());
 //    postData.addQueryItem("foodSales", QString::number(rec->foodTotal() + rec->taxTotal()));
 //    postData.addQueryItem("barSales", QString::number(rec->barTotal()));
 
-//    QNetworkRequest request(url);
-//    request.setHeader(QNetworkRequest::ContentTypeHeader,
-//        "application/x-www-form-urlencoded");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-//    m_manager = new QNetworkAccessManager(this);
-//    connect(m_manager, SIGNAL(finished(QNetworkReply*)),
-//            this, SLOT(handleSimpleReply(QNetworkReply*)));
-//    qDebug() << "Sending request: " << postData.toString(QUrl::FullyEncoded).toUtf8();
-//    m_manager->post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
-//    qDebug() << "Sent request!";
+    m_manager = new QNetworkAccessManager(this);
+    connect(m_manager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(handleSimpleReply(QNetworkReply*)));
+
+    QByteArray orderGuid = QUuid().createUuid().toByteArray();
+
+
+    QByteArray data = "{";
+    data += "id: '" + orderGuid + "',";
+    data += "isTogo: '" + ticket->property("isTogo").toByteArray() + "',";
+    QList<Customer*> customers = ticket->customersList();
+    Customer *firstCustomer = customers[0];
+    data += "name: '" + firstCustomer->property("name").toByteArray() + "',";
+    data += "location: '" + ticket->property("name").toByteArray() + "',";
+    data += "kitchenOrderItems: [";
+    int count = 0;
+    for(Customer *c : ticket->customersList()) {
+        for(OrderItem *i : c->orderItemsList()) {
+            QByteArray itemGuid = QUuid().createUuid().toByteArray();
+            if(i->property("type").toByteArray() == "Food") {
+                if(count > 0) data += ",";
+                data += "{";
+                    data += "id: '" + itemGuid + "',";
+                    data += "kitchenOrderId: '" + orderGuid + "',";
+                    data += "description: '" + i->property("name").toByteArray() + "',";
+                    data += "note: '" + i->property("note").toByteArray() + "',";
+                    data += "quantity: " + i->property("quantity").toByteArray() + ",";
+                        data += "kitchenOrderItemOptions: [";
+                        int itemCount = 0;
+                        for(OrderItemOption *o : i->orderItemOptionsList()){
+                            if(itemCount > 0) data += ",";
+                            data += "{";
+                            data += "id: '" + QUuid().createUuid().toByteArray() + "',";
+                            data += "kitchenOrderItemId: '" + itemGuid + "',";
+                            data += "description: '" + o->property("name").toByteArray() + ": " + o->property("menuItemName").toByteArray() + "'";
+                            data += "}";
+                            itemCount++;
+                        }
+                        data += "]";
+                data += "}";
+                count++;
+            }
+        }
+    }
+    data += "]";
+    data += "}";
+    qDebug() << "Sending request: " << data;
+    m_manager->post(request, data);
+    qDebug() << "Sent request!";
 }
 
 

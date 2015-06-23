@@ -8,6 +8,7 @@
 #include <QQmlListProperty>
 #include "SimpleSerializable.h"
 #include "Customer.h"
+#include "WebServiceController.h"
 
 class Ticket : public SimpleSerializable {
 
@@ -50,6 +51,7 @@ public:
 
     Q_INVOKABLE Customer* addCustomer(QString name, QString loyaltyMemberId = "");
     void addCustomer(Customer *customer);
+    QList<Customer*> customersList();
     QQmlListProperty<Customer> customers();
     Customer* getCustomer(quint32 id);
 
@@ -101,6 +103,9 @@ signals:
     void marginChanged(float);
 
     void hasLoyaltyMemberChanged(bool);
+
+    Q_INVOKABLE void sendRecToWebService();
+
 private:
     quint32 m_id;
 //    quint32 m_reconciliationId;
@@ -112,6 +117,7 @@ private:
     bool m_isTogo;
     QList<Customer*> m_customers;
 
+    WebServiceController m_webService;
 
 private slots:
     void fireCogChanged();
