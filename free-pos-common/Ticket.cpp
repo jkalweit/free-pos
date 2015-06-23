@@ -213,13 +213,14 @@ float Ticket::margin() {
 }
 
 
+void Ticket::sendKitchen() {
 
-void Ticket::printKitchen() {
-
-    //TODO
     m_webService.sendKitchenOrder(this);
 
     return;
+}
+
+void Ticket::printKitchen() {
 
     QPrinter printer;
 

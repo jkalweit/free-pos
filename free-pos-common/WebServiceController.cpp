@@ -79,12 +79,12 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
     data += "name: '" + firstCustomer->property("name").toByteArray() + "',";
     data += "location: '" + ticket->property("name").toByteArray() + "',";
     data += "kitchenOrderItems: [";
-    int count = 0;
+    int itemCount = 0;
     for(Customer *c : ticket->customersList()) {
         for(OrderItem *i : c->orderItemsList()) {
             QByteArray itemGuid = QUuid().createUuid().toByteArray();
-            if(i->property("type").toByteArray() == "Food") {
-                if(count > 0) data += ",";
+            if(!i->property("deleted").toBool() && i->property("type").toString() != "Alcohol" && !i->isSubmitted()) {
+                if(itemCount > 0) data += ",";
                 data += "{";
                     data += "id: '" + itemGuid + "',";
                     data += "kitchenOrderId: '" + orderGuid + "',";
@@ -92,27 +92,31 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
                     data += "note: '" + i->property("note").toByteArray() + "',";
                     data += "quantity: " + i->property("quantity").toByteArray() + ",";
                         data += "kitchenOrderItemOptions: [";
-                        int itemCount = 0;
-                        for(OrderItemOption *o : i->orderItemOptionsList()){
-                            if(itemCount > 0) data += ",";
-                            data += "{";
-                            data += "id: '" + QUuid().createUuid().toByteArray() + "',";
-                            data += "kitchenOrderItemId: '" + itemGuid + "',";
-                            data += "description: '" + o->property("name").toByteArray() + ": " + o->property("menuItemName").toByteArray() + "'";
-                            data += "}";
-                            itemCount++;
-                        }
+//                        int optionCount = 0;
+//                        for(OrderItemOption *o : i->orderItemOptionsList()){
+//                            if(optionCount > 0) data += ",";
+//                            data += "{";
+//                            data += "id: '" + QUuid().createUuid().toByteArray() + "',";
+//                            data += "kitchenOrderItemId: '" + itemGuid + "',";
+//                            data += "description: '" + o->property("name").toByteArray() + ": " + o->property("menuItemName").toByteArray() + "'";
+//                            data += "}";
+//                            optionCount++;
+//                        }
                         data += "]";
                 data += "}";
-                count++;
+                itemCount++;
             }
         }
     }
     data += "]";
     data += "}";
-    qDebug() << "Sending request: " << data;
-    m_manager->post(request, data);
-    qDebug() << "Sent request!";
+    if(itemCount > 0) {
+        qDebug() << "Sending request: " << data;
+        m_manager->post(request, data);
+        qDebug() << "Sent request!";
+    } else {
+        qDebug() << "No items to send. Not sending request.";
+    }
 }
 
 

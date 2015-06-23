@@ -72,6 +72,7 @@ public:
     float margin();
 
 
+    Q_INVOKABLE void sendKitchen();
     Q_INVOKABLE void printKitchen();
     Q_INVOKABLE void printReceipt();
 

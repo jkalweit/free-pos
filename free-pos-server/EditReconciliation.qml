@@ -230,19 +230,39 @@ Rectangle {
 
                         }
 
-                        RectangleFlash {
-                            width: parent.width
-                            height: printKitchen.height + 30
-                            onClicked: {
-                                model.selectedTicket.printKitchen();
+                        Row {
+
+                            RectangleFlash {
+                                width: ticketControls.width / 2
+                                height: printKitchen.height + 30
+                                onClicked: {
+                                    model.selectedTicket.printKitchen();
+                                }
+
+                                customContent: Text{
+                                    id: printKitchen
+                                    text: "Print Kitch"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
                             }
 
-                            customContent: Text{
-                                id: printKitchen
-                                text: "Print Kitchen"
-                                anchors.verticalCenter: parent.verticalCenter
+                            RectangleFlash {
+                                width: ticketControls.width / 2
+                                height: sendKitchen.height + 30
+                                onClicked: {
+                                    model.selectedTicket.sendKitchen();
+                                    model.selectedTicket.printKitchen();
+                                }
+
+                                customContent: Text{
+                                    id: sendKitchen
+                                    text: "Send Kitch"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
                             }
                         }
+
+
 
                         RectangleFlash {
                             width: parent.width
