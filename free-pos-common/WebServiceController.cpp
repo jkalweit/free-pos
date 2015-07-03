@@ -48,10 +48,10 @@ void WebServiceController::sendReconciliation(Reconciliation *rec) {
 
 void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
-//    QUrl url("http://localhost:56881/tables/KitchenOrder");
-    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
-    url.setUserName("");
-    url.setPassword("THWNiNTAOaSAviPfKJwUlmHHxeuDdM42");
+    QUrl url("http://localhost:56881/tables/KitchenOrder");
+//    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
+//    url.setUserName("");
+//    url.setPassword("THWNiNTAOaSAviPfKJwUlmHHxeuDdM42");
 
 
 
@@ -88,6 +88,7 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
                 data += "{";
                     data += "id: '" + itemGuid + "',";
                     data += "kitchenOrderId: '" + orderGuid + "',";
+                    data += "addedToOrderAt: '" + i->property("createdStamp").toDateTime().toString("yyyy-MM-ddThh:mm:ss.zzz") + "',";
                     data += "description: '" + i->property("name").toByteArray() + "',";
                     data += "note: '" + i->property("note").toByteArray() + "',";
                     data += "quantity: " + i->property("quantity").toByteArray() + ",";
@@ -121,5 +122,11 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
 
 void WebServiceController::handleSimpleReply(QNetworkReply *reply){
-    qDebug() << "Simple reply: " << reply->readAll();
+    QByteArray text = reply->readAll();
+    if(text == "") {
+        qDebug() << "Failed to send request: " << text;
+    } else {
+        qDebug() << "Success: " << text;
+    }
+
 }
