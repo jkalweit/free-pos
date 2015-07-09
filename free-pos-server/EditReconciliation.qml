@@ -1,5 +1,8 @@
 import QtQuick 2.3
 import QtQuick.Controls 1.2
+import QtQuick.Dialogs 1.2
+import QtMultimedia 5.0
+
 
 Rectangle {
     id: container
@@ -579,6 +582,43 @@ Rectangle {
     EditRecDialog {
         id: editRecDialog
         model: container.model
+    }
+
+
+    SoundEffect {
+        id: alertSound
+        source: "qrc:/airhorn.wav"
+        volume: 1
+    }
+
+    Dialog {
+        id: messageDialog
+        visible: pos.isDialogMessageShown
+        title: "Attention!"
+
+        onVisibleChanged: {
+            if(this.visible && alertSound.status) {
+                console.log("Playing alert sound...");
+                console.log("Status: " + alertSound.status);
+                alertSound.play();
+            }else {
+                console.log("Not playing sound.")
+            }
+        }
+
+        contentItem: Rectangle {
+            color: "#B71C1C"
+            implicitWidth: 400
+            implicitHeight: 400
+            Text {
+                id: message
+                text: pos.dialogMessage
+                color: "white"
+                font.pixelSize: 16
+                font.bold: true
+                anchors.centerIn: parent
+            }
+        }
     }
 
 }

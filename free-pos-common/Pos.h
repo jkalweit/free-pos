@@ -28,6 +28,9 @@ class Pos : public QObject
     Q_PROPERTY(QQmlListProperty<WeekTracker> weeks READ weeks NOTIFY weeksChanged)
     Q_PROPERTY(WeekTracker* selectedWeek MEMBER m_selectedWeek NOTIFY selectedWeekChanged)
     Q_PROPERTY(QQmlListProperty<LoyaltyMember> loyaltyMembers READ loyaltyMembers NOTIFY loyaltyMembersChanged)
+
+    Q_PROPERTY(QString dialogMessage MEMBER m_dialogMessage NOTIFY dialogMessageChanged)
+    Q_PROPERTY(bool isDialogMessageShown MEMBER m_isDialogMessageShown NOTIFY isDialogMessageShownChanged)
 public:    
 
     static Pos *instance();
@@ -65,6 +68,8 @@ public:
     Q_INVOKABLE void getLoyaltyMembers();
     QQmlListProperty<LoyaltyMember> loyaltyMembers();
 
+    void showDialogMessage(QString message);
+
 signals:
     void menusChanged(QQmlListProperty<Menu>);
     void selectedMenuChanged(Menu*);
@@ -74,6 +79,8 @@ signals:
     void selectedWeekChanged(WeekTracker*);
     void weeksChanged(QQmlListProperty<WeekTracker>);
     void loyaltyMembersChanged(QQmlListProperty<LoyaltyMember>);
+    void isDialogMessageShownChanged(bool);
+    void dialogMessageChanged(QString);
 
 public slots:
     void handleLoyaltyMembers(QNetworkReply * reply);
@@ -92,6 +99,10 @@ private:
     QList<WeekTracker*> m_weeks;
 
     QList<LoyaltyMember*> m_loyaltyMembers;
+
+    bool m_isDialogMessageShown;
+
+    QString m_dialogMessage;
 
     void appendToFile(QString item, QString filename);
 };

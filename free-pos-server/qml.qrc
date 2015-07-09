@@ -24,5 +24,6 @@
         <file>EmployeeShiftsEdit.qml</file>
         <file>EmployeeShiftsByWeek.qml</file>
         <file>LoyaltyMemberSelect.qml</file>
+        <file>airhorn.wav</file>
     </qresource>
 </RCC>

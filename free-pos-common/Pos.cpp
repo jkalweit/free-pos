@@ -33,7 +33,7 @@ Pos* Pos::instance()
 
 
 Pos::Pos(QObject *parent) :
-    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr), m_selectedInventory(nullptr), m_selectedWeek(nullptr) //, m_weekCurrId(0)
+    QObject(parent), m_isHistoryDisabled(false), m_selectedMenu(nullptr), m_selectedRec(nullptr), m_selectedInventory(nullptr), m_selectedWeek(nullptr), m_isDialogMessageShown(false) //, m_weekCurrId(0)
 {
 }
 
@@ -499,4 +499,11 @@ void Pos::handleLoyaltyMembers(QNetworkReply * reply) {
 
 QQmlListProperty<LoyaltyMember> Pos::loyaltyMembers() {
     return QQmlListProperty<LoyaltyMember>(this, m_loyaltyMembers);
+}
+
+void Pos::showDialogMessage(QString message) {
+
+    this->setProperty("dialogMessage", message);
+    this->setProperty("isDialogMessageShown", false);
+    this->setProperty("isDialogMessageShown", true);
 }

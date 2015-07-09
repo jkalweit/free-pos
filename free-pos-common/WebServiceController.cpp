@@ -13,7 +13,7 @@
 
 #include "Reconciliation.h"
 #include "Ticket.h"
-
+#include "Pos.h"
 
 WebServiceController::WebServiceController(QObject *parent) :
     QObject(parent)
@@ -123,10 +123,11 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
 void WebServiceController::handleSimpleReply(QNetworkReply *reply){
     QByteArray text = reply->readAll();
-    if(text == "") {
-        qDebug() << "Failed to send request: " << text;
-    } else {
+    if(text.startsWith("{\"location\":")) {
         qDebug() << "Success: " << text;
+    } else {        
+        QString message = "Failed to send request.\n\n" + text;
+        qDebug() << message;
+        Pos::instance()->showDialogMessage(message);
     }
-
 }
