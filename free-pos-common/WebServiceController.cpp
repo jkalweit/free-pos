@@ -48,10 +48,10 @@ void WebServiceController::sendReconciliation(Reconciliation *rec) {
 
 void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
-    QUrl url("http://localhost:56881/tables/KitchenOrder");
-//    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
-//    url.setUserName("");
-//    url.setPassword("THWNiNTAOaSAviPfKJwUlmHHxeuDdM42");
+//    QUrl url("http://localhost:56881/tables/KitchenOrder");
+    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
+    url.setUserName("");
+    url.setPassword("THWNiNTAOaSAviPfKJwUlmHHxeuDdM42");
 
 
 
