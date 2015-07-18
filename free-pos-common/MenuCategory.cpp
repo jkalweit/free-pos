@@ -63,7 +63,12 @@ MenuItem* MenuCategory::getMenuItem(quint32 id) {
 }
 
 
+bool compareMenuItems(MenuItem *a, MenuItem *b) {
+    return a->property("name").toString() < b->property("name").toString();
+}
+
 QQmlListProperty<MenuItem> MenuCategory::menuItems() {
+    std::sort(m_menuItems.begin(), m_menuItems.end(), compareMenuItems);
     return QQmlListProperty<MenuItem>(this, m_menuItems);
 }
 

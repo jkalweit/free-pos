@@ -78,6 +78,7 @@ Rectangle {
                     border.color: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#777777"
                     border.width: 2
                     textColor: rec.selectedTicket && (rec.selectedTicket.id === modelData.id) ? "#DDDDDD" : "#212121"
+                    verticalMargin: 10
                     visible: {
                         if(!tickets.showPaid && modelData.isPaid)
                             return false;

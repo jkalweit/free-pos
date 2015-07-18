@@ -29,7 +29,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.topMargin: 2
         anchors.bottom: parent.bottom
-        width: 200
+        width: 250
 
         onTicketSelected: {
             rec.selectedTicket = ticket;
@@ -235,22 +235,22 @@ Rectangle {
 
                         Row {
 
-                            RectangleFlash {
-                                width: ticketControls.width / 2
-                                height: printKitchen.height + 30
-                                onClicked: {
-                                    model.selectedTicket.printKitchen();
-                                }
+//                            RectangleFlash {
+//                                width: ticketControls.width / 2
+//                                height: printKitchen.height + 30
+//                                onClicked: {
+//                                    model.selectedTicket.printKitchen();
+//                                }
 
-                                customContent: Text{
-                                    id: printKitchen
-                                    text: "Print Kitch"
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                            }
+//                                customContent: Text{
+//                                    id: printKitchen
+//                                    text: "Print Kitch"
+//                                    anchors.verticalCenter: parent.verticalCenter
+//                                }
+//                            }
 
                             RectangleFlash {
-                                width: ticketControls.width / 2
+                                width: ticketControls.width
                                 height: sendKitchen.height + 30
                                 onClicked: {
                                     model.selectedTicket.sendKitchen();
@@ -259,7 +259,7 @@ Rectangle {
 
                                 customContent: Text{
                                     id: sendKitchen
-                                    text: "Send Kitch"
+                                    text: "Send Kitchen"
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
@@ -404,7 +404,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: 400
+        width: 500
 
         onMenuItemSelected: {
             if(model && model.selectedTicket) {
@@ -420,7 +420,7 @@ Rectangle {
         width: 200
         height: 200
         anchors.right: container.right
-        anchors.rightMargin: 400
+        anchors.rightMargin: menuView.width
         anchors.bottom: container.bottom
         opacity: 0.80
         Column {

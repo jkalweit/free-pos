@@ -1,5 +1,6 @@
 #include "Menu.h"
 
+#include <algorithm>
 #include <QDebug>
 #include "Pos.h"
 
@@ -31,7 +32,12 @@ MenuCategory* Menu::getMenuCategory(quint32 id) {
     return nullptr;
 }
 
+bool compareMenuCategories(MenuCategory *a, MenuCategory *b) {
+    return a->property("name").toString() < b->property("name").toString();
+}
+
 QQmlListProperty<MenuCategory> Menu::categories() {
+    std::sort(m_categories.begin(), m_categories.end(), compareMenuCategories);
     return QQmlListProperty<MenuCategory>(this, m_categories);
 }
 

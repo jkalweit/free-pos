@@ -81,11 +81,10 @@ Rectangle {
         model: menu && menu.selectedCategory ? menu.selectedCategory.menuItems : 0
         clip: true
 
-        delegate: RectangleFlash {
+        delegate: RectangleFlashButton {
             id: menuItemContainer
             width: container.width
-
-            height: menuItemName.height + 40
+            verticalMargin: 10
             border.color: menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
             border.width: 2
             color:  modelData.isDisabled ? "#AAAAAA" : "#9575cd"
@@ -101,6 +100,8 @@ Rectangle {
                 return modelData.name.toUpperCase().indexOf(filter) > -1;
             }
 
+            hidden: !container.editMode && modelData.isDisabled;
+
             onBeforeFlash: {
                 newMenuItemName.text = "";
                 container.menu.selectedCategory.selectedItem = modelData;
@@ -113,7 +114,7 @@ Rectangle {
                 Text {
                     id: menuItemName
                     text: modelData.name
-                    color: modelData.hasInventory ? "#FFFFFF" : "#DD0000"
+                    color: "#FFFFFF" //modelData.hasInventory ? "#FFFFFF" : "#DD0000"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     //anchors.leftMargin: 5
@@ -127,30 +128,30 @@ Rectangle {
                         horizontalAlignment: Text.AlignRight
                         color: "#000000"
                     }
-                    Text {
-                        text: modelData.cost.toFixed(2)
-                        anchors.right: parent.right
-                        horizontalAlignment: Text.AlignRight
-                        color: {
-                            var priceRatio = modelData.cost / modelData.price;
-                            if (priceRatio > 1 || priceRatio < 0) // negative price ratio is because of negative price, ie discount
-                                priceRatio = 1;
-                            return Qt.rgba(priceRatio, 0.1, 0.1, 1);
-                        }
-                    }
-                    Text {
-                        text: modelData.margin.toFixed(2)
-                        anchors.right: parent.right
-                        horizontalAlignment: Text.AlignRight
-                        color: {
-                            var priceRatio = modelData.margin / modelData.price;
-                            var marginRatio = modelData.margin / 7;
-                            var green = priceRatio > marginRatio ? priceRatio : marginRatio;
-                            if (green > 1)
-                                green = 1;
-                            return Qt.rgba(0.1, green, 0.1, 1);
-                        }
-                    }
+//                    Text {
+//                        text: modelData.cost.toFixed(2)
+//                        anchors.right: parent.right
+//                        horizontalAlignment: Text.AlignRight
+//                        color: {
+//                            var priceRatio = modelData.cost / modelData.price;
+//                            if (priceRatio > 1 || priceRatio < 0) // negative price ratio is because of negative price, ie discount
+//                                priceRatio = 1;
+//                            return Qt.rgba(priceRatio, 0.1, 0.1, 1);
+//                        }
+//                    }
+//                    Text {
+//                        text: modelData.margin.toFixed(2)
+//                        anchors.right: parent.right
+//                        horizontalAlignment: Text.AlignRight
+//                        color: {
+//                            var priceRatio = modelData.margin / modelData.price;
+//                            var marginRatio = modelData.margin / 7;
+//                            var green = priceRatio > marginRatio ? priceRatio : marginRatio;
+//                            if (green > 1)
+//                                green = 1;
+//                            return Qt.rgba(0.1, green, 0.1, 1);
+//                        }
+//                    }
                 }
             }
         }
