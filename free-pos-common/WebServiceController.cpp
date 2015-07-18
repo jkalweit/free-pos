@@ -93,16 +93,30 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
                     data += "note: '" + i->property("note").toByteArray() + "',";
                     data += "quantity: " + i->property("quantity").toByteArray() + ",";
                         data += "kitchenOrderItemOptions: [";
-//                        int optionCount = 0;
-//                        for(OrderItemOption *o : i->orderItemOptionsList()){
-//                            if(optionCount > 0) data += ",";
-//                            data += "{";
-//                            data += "id: '" + QUuid().createUuid().toByteArray() + "',";
-//                            data += "kitchenOrderItemId: '" + itemGuid + "',";
-//                            data += "description: '" + o->property("name").toByteArray() + ": " + o->property("menuItemName").toByteArray() + "'";
-//                            data += "}";
-//                            optionCount++;
-//                        }
+                        int optionCount = 0;
+                        for(OrderItemOption *o : i->orderItemOptionsList()){
+                            if(optionCount > 0) data += ",";
+                            data += "{";
+                            data += "id: '" + QUuid().createUuid().toByteArray() + "',";
+                            data += "kitchenOrderItemId: '" + itemGuid + "',";
+                            data += "type: 'Side',",
+                            data += "description: '" + o->property("name").toByteArray() + ": " + o->property("menuItemName").toByteArray() + "'";
+                            data += "}";
+                            optionCount++;
+                        }
+                        for(OrderItemInventoryItem *inv : i->orderItemInventoryItemsList()){
+                            if(inv->isAdded() || inv->isRemoved()) {
+                                if(optionCount > 0) data += ",";
+                                data += "{";
+                                data += "id: '" + QUuid().createUuid().toByteArray() + "',";
+                                data += "kitchenOrderItemId: '" + itemGuid + "',";
+                                data += "description: '" + inv->property("name").toByteArray() + "',";
+                                if(inv->isAdded()) data += "type: 'Add'";
+                                else if(inv->isRemoved()) data += "type: 'Remove'";
+                                data += "}";
+                                optionCount++;
+                            }
+                        }
                         data += "]";
                 data += "}";
                 itemCount++;
