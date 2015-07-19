@@ -125,23 +125,31 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
     }
     data += "]";
     data += "}";
+    QString message;
     if(itemCount > 0) {
-        qDebug() << "Sending request: " << data;
+        message = "Sending request: " + data;
+        qDebug() << message;
         m_manager->post(request, data);
         qDebug() << "Sent request!";
     } else {
-        qDebug() << "No items to send. Not sending request.";
+        message = "No items to send. Not sending request.";
+        qDebug() << message;
     }
+
+    Pos::instance()->appendToWebServiceLog(message);
 }
 
 
 void WebServiceController::handleSimpleReply(QNetworkReply *reply){
     QByteArray text = reply->readAll();
+    QString message = "Success: " + text;
     if(text.startsWith("{\"location\":")) {
-        qDebug() << "Success: " << text;
+        qDebug() << message;
     } else {        
-        QString message = "Failed to send request.\n\n" + text;
+        message = "Failed to send request.\n\n" + text;
         qDebug() << message;
         Pos::instance()->showDialogMessage(message);
     }
+
+    Pos::instance()->appendToWebServiceLog(message);
 }

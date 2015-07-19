@@ -54,6 +54,7 @@ public:
     void appendToInventoryHistory(QString item);
     void appendToTrackerHistory(QString item);
     void appendToFixedCostHistory(QString item);
+    void appendToWebServiceLog(QString item);
     void addTestData();
 
     Q_INVOKABLE WeekTracker* previousWeek();

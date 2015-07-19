@@ -262,6 +262,10 @@ void Pos::appendToFixedCostHistory(QString item) {
     appendToFile(item, "currFixedCost.txt");
 }
 
+void Pos::appendToWebServiceLog(QString item) {
+    appendToFile(QDateTime::currentDateTime().toString() +": " + item + "\n\n", "webServiceLog.txt");
+}
+
 void Pos::appendToFile(QString item, QString filename) {
     if(!m_isHistoryDisabled) {
         QFile file("./data/" + filename);
