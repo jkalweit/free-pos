@@ -126,7 +126,7 @@ OrderItem* Customer::addOrderItem(MenuItem* menuItem, float quantity, QString no
                                          menuItem->property("name").toString(),
                                          menuItem->property("type").toString(),
                                          QDateTime::currentDateTime(),
-                                         menuItem->property("price").toFloat(), quantity, note, false);
+                                         menuItem->property("price").toFloat(), quantity, note, false, QDateTime(), menuItem->isHiddenFromKitchen(), menuItem->prepType());
 
     addOrderItem(orderItem);
     if(menuItem->property("type").toString() == "Alcohol" && !orderItem->isSubmitted()) {

@@ -2,8 +2,8 @@
 
 #include <QMetaProperty>
 
-OrderItemOption::OrderItemOption(QObject *parent, quint32 ticketId, quint32 customerId, quint32 orderItemId, quint32 id, quint32 optionMenuCategoryId, QString name, QString menuItemName, float cost) :
-    SimpleSerializable(parent), m_ticketId(ticketId), m_customerId(customerId), m_orderItemId(orderItemId), m_id(id), m_optionMenuCategoryId(optionMenuCategoryId), m_name(name), m_menuItemName(menuItemName), m_cost(cost)
+OrderItemOption::OrderItemOption(QObject *parent, quint32 ticketId, quint32 customerId, quint32 orderItemId, quint32 id, quint32 optionMenuCategoryId, QString name, QString menuItemName, float cost, QString prepType) :
+    SimpleSerializable(parent), m_ticketId(ticketId), m_customerId(customerId), m_orderItemId(orderItemId), m_id(id), m_optionMenuCategoryId(optionMenuCategoryId), m_name(name), m_menuItemName(menuItemName), m_cost(cost), m_prepType(prepType)
 {
 }
 
@@ -31,6 +31,10 @@ float OrderItemOption::cost() {
     return m_cost;
 }
 
+QString OrderItemOption::prepType() {
+    return m_prepType;
+}
+
 void OrderItemOption::setName(QString name) {
     if(m_name != name.trimmed()) {
         m_name = name.trimmed();
@@ -55,10 +59,22 @@ void OrderItemOption::setCost(float cost) {
     }
 }
 
+void OrderItemOption::setPrepType(QString prepType) {
+    if(m_prepType != prepType){
+        m_prepType = prepType;
+        logPropertyChanged(m_prepType, "prepType");
+        prepTypeChanged(m_prepType);
+    }
+}
+
+
+
+
+
 
 QString OrderItemOption::serialize() const {
     QStringList vals;
-    vals << QString::number(m_ticketId) << QString::number(m_customerId) << QString::number(m_orderItemId) << QString::number(m_id) << QString::number(m_optionMenuCategoryId) << m_name << m_menuItemName << QString::number(m_cost);
+    vals << QString::number(m_ticketId) << QString::number(m_customerId) << QString::number(m_orderItemId) << QString::number(m_id) << QString::number(m_optionMenuCategoryId) << m_name << m_menuItemName << QString::number(m_cost) << m_prepType;
     return serializeList(vals);
 }
 
@@ -75,6 +91,11 @@ OrderItemOption* OrderItemOption::deserialize(QString serialized, QObject *paren
     QString menuItemName = split[6];
     float cost = split[7].toFloat();
 
-    OrderItemOption *obj = new OrderItemOption(parent, ticketId, customerId, orderItemId, id, optionMenuCategoryId, name, menuItemName, cost);
+    QString prepType = "";
+    if(split.length() > 8) {
+        prepType = split[8];
+    }
+
+    OrderItemOption *obj = new OrderItemOption(parent, ticketId, customerId, orderItemId, id, optionMenuCategoryId, name, menuItemName, cost, prepType);
     return obj;
 }

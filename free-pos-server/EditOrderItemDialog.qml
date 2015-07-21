@@ -420,6 +420,7 @@ DialogModal {
                 height: 600
                 onMenuItemSelected: {
                     selectOrderItemOption.orderItemOption.menuItemName = menuItem.name;
+                    selectOrderItemOption.orderItemOption.prepType = menuItem.prepType;
                     selectOrderItemOption.orderItemOption.cost = menuItem.cost;
                     selectOrderItemOption.visible = false;
                 }

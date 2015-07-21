@@ -4,8 +4,8 @@
 #include <QDebug>
 #include "Pos.h"
 
-MenuItem::MenuItem(QObject *parent, quint32 id, quint32 menuCategoryId, QString name, QString type, float price, bool isDisabled) :
-    SimpleSerializable(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name), m_type(type), m_price(price), m_isDisabled(isDisabled), m_currentMenuItemInventoryItemId(0), m_currentMenuItemOptionId(0)
+MenuItem::MenuItem(QObject *parent, quint32 id, quint32 menuCategoryId, QString name, QString type, float price, bool isDisabled, bool isHiddenFromKitchen, QString prepType) :
+    SimpleSerializable(parent), m_id(id), m_menuCategoryId(menuCategoryId), m_name(name), m_type(type), m_price(price), m_isDisabled(isDisabled), m_currentMenuItemInventoryItemId(0), m_currentMenuItemOptionId(0), m_isHiddenFromKitchen(isHiddenFromKitchen), m_prepType(prepType)
 {
 }
 
@@ -46,6 +46,16 @@ void MenuItem::setIsDisabled(bool isDisabled) {
     }
 }
 
+void MenuItem::setPrepType(QString prepType) {
+    if(m_prepType != prepType){
+        m_prepType = prepType;
+        logMenuPropertyChanged(m_prepType, "prepType");
+        prepTypeChanged(m_prepType);
+    }
+}
+
+
+
 bool MenuItem::hasInventory() {
     return m_menuItemInventoryItems.length() > 0;
 }
@@ -74,6 +84,16 @@ float MenuItem::costWithoutOptions() {
 float MenuItem::margin() {
     return m_price - cost();
 }
+
+bool MenuItem::isHiddenFromKitchen() {
+    return m_isHiddenFromKitchen;
+}
+
+QString MenuItem::prepType() {
+    return m_prepType;
+}
+
+
 
 void MenuItem::fireCostChanged() {
     costChanged(cost());
@@ -240,7 +260,7 @@ void MenuItem::removeMenuItemOption(quint32 menuItemOptionId) {
 
 QString MenuItem::serialize() const {
     QStringList vals;
-    vals << QString::number(m_id) << QString::number(m_menuCategoryId) << m_name << m_type << QString::number(m_price) << QString::number(m_isDisabled);
+    vals << QString::number(m_id) << QString::number(m_menuCategoryId) << m_name << m_type << QString::number(m_price) << QString::number(m_isDisabled) << QString::number(m_isHiddenFromKitchen) << m_prepType;
     return serializeList(vals);
 }
 
@@ -257,7 +277,16 @@ MenuItem* MenuItem::deserialize(QString serialized, QObject *parent)
     if(split.length() > 5) {
         isDisabled = split[5].toInt();
     }
+    bool isHiddenFromKitchen = false;
+    if(split.length() > 6) {
+        isHiddenFromKitchen = split[6].toInt();
+    }
 
-    MenuItem *obj = new MenuItem(parent, id, menuCategoryId, name, type, price, isDisabled);
+    QString prepType = "";
+    if(split.length() > 7) {
+        prepType = split[7];
+    }
+
+    MenuItem *obj = new MenuItem(parent, id, menuCategoryId, name, type, price, isDisabled, isHiddenFromKitchen, prepType);
     return obj;
 }

@@ -26,6 +26,8 @@ class OrderItem : public SimpleSerializable {
 
     Q_PROPERTY(bool isSubmitted READ isSubmitted NOTIFY isSubmittedChanged)
     Q_PROPERTY(bool isAlcohol READ isAlcohol NOTIFY isAlcoholChanged)
+    Q_PROPERTY(bool isHiddenFromKitchen MEMBER m_isHiddenFromKitchen READ isHiddenFromKitchen NOTIFY isHiddenFromKitchenChanged)
+    Q_PROPERTY(QString prepType MEMBER m_prepType READ prepType WRITE setPrepType NOTIFY prepTypeChanged)
 
     Q_PROPERTY(float subTotal READ subTotal NOTIFY subTotalChanged)
     Q_PROPERTY(float tax READ tax NOTIFY taxChanged)
@@ -38,7 +40,7 @@ class OrderItem : public SimpleSerializable {
     Q_PROPERTY(QQmlListProperty<OrderItemInventoryItem> orderItemInventoryItems READ orderItemInventoryItems NOTIFY orderItemInventoryItemsChanged)
     Q_PROPERTY(QQmlListProperty<OrderItemOption> orderItemOptions READ orderItemOptions NOTIFY orderItemOptionsChanged)
 public:
-    explicit OrderItem(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, quint32 customerId = 0, QString name = "", QString type = "", QDateTime createdStamp = QDateTime(), float price = 0, float quantity = 0, QString note = "", bool deleted = false, QDateTime submittedStamp = QDateTime());
+    explicit OrderItem(QObject *parent = 0, quint32 id = 0, quint32 ticketId = 0, quint32 customerId = 0, QString name = "", QString type = "", QDateTime createdStamp = QDateTime(), float price = 0, float quantity = 0, QString note = "", bool deleted = false, QDateTime submittedStamp = QDateTime(), bool isHiddenFromKitchen = false, QString prepType = "");
 
     virtual QStringList updatePrefix();
 
@@ -50,9 +52,12 @@ public:
     void setNote(QString note);
     void setDeleted(bool deleted);
     void setSubmittedStamp(QDateTime submittedStamp);
+    void setPrepType(QString prepType);
 
     bool isSubmitted();
     bool isAlcohol();
+    bool isHiddenFromKitchen();
+    QString prepType();
 
     Q_INVOKABLE void cycleSubmittedStamp();
 
@@ -100,6 +105,8 @@ signals:
 
     void isAlcoholChanged(bool);
     void isSubmittedChanged(bool);
+    void isHiddenFromKitchenChanged(bool);
+    void prepTypeChanged(QString);
 
     void subTotalChanged(float);
     void taxChanged(float);
@@ -117,13 +124,15 @@ private:
     quint32 m_ticketId;
     quint32 m_customerId;
     QString m_name;
-    QString m_type;
+    QString m_type;    
     QDateTime m_createdStamp;
     float m_price;
     float m_quantity;
     QString m_note;
     bool m_deleted;
     QDateTime m_submittedStamp;
+    bool m_isHiddenFromKitchen;
+    QString m_prepType;
 
     QList<OrderItemInventoryItem*> m_orderItemInventoryItems;
     quint32 m_currentOrderItemInventoryItemId;

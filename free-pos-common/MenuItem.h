@@ -16,6 +16,8 @@ class MenuItem : public SimpleSerializable
     Q_PROPERTY(QString type MEMBER m_type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(float price MEMBER m_price WRITE setPrice NOTIFY priceChanged)
     Q_PROPERTY(bool isDisabled MEMBER m_isDisabled WRITE setIsDisabled NOTIFY isDisabledChanged)
+    Q_PROPERTY(bool isHiddenFromKitchen MEMBER m_isHiddenFromKitchen READ isHiddenFromKitchen NOTIFY isHiddenFromKitchenChanged)
+    Q_PROPERTY(QString prepType MEMBER m_prepType READ prepType WRITE setPrepType NOTIFY prepTypeChanged)
 
     Q_PROPERTY(QQmlListProperty<MenuItemInventoryItem> menuItemInventoryItems READ menuItemInventoryItems NOTIFY menuItemInventoryItemsChanged)
     Q_PROPERTY(QQmlListProperty<MenuItemOption> menuItemOptions READ menuItemOptions NOTIFY menuItemOptionsChanged)
@@ -24,7 +26,7 @@ class MenuItem : public SimpleSerializable
     Q_PROPERTY(float cost READ cost NOTIFY costChanged)
     Q_PROPERTY(float margin READ margin NOTIFY marginChanged)
 public:
-    explicit MenuItem(QObject *parent = 0, quint32 id = 0, quint32 m_menuCategoryId = 0, QString name = "", QString type = "", float price = 0, bool isDisabled = false);
+   explicit MenuItem(QObject *parent = 0, quint32 id = 0, quint32 m_menuCategoryId = 0, QString name = "", QString type = "", float price = 0, bool isDisabled = false, bool isHiddenFromKitchen = false, QString prepType = "");
 
     virtual QStringList updatePrefix();
 
@@ -33,11 +35,14 @@ public:
     void setType(QString type);
     void setPrice(float price);
     void setIsDisabled(bool isDisabled);
+    void setPrepType(QString prepType);
 
     bool hasInventory();
     float cost();
     float costWithoutOptions();
     float margin();
+    bool isHiddenFromKitchen();
+    QString prepType();
 
     Q_INVOKABLE float getCumulativeCostUpToOption(quint32 menuItemOptionId);
     Q_INVOKABLE float getCumulativeCostUpToInventoryItem(quint32 inventoryItemId);
@@ -65,6 +70,8 @@ signals:
     void typeChanged(QString);
     void priceChanged(float);
     void isDisabledChanged(bool);
+    void isHiddenFromKitchenChanged(bool);
+    void prepTypeChanged(QString);
 
     void menuItemInventoryItemsChanged(QQmlListProperty<MenuItemInventoryItem>);
     void menuItemOptionsChanged(QQmlListProperty<MenuItemOption>);
@@ -74,15 +81,17 @@ signals:
     void marginChanged(float);
 
 public slots:
-    void fireCostChanged();
+    void fireCostChanged();    
 
 private:
     quint32 m_id;
     quint32 m_menuCategoryId;
     QString m_name;
-    QString m_type;
+    QString m_type;    
     float m_price;
     bool m_isDisabled;
+    bool m_isHiddenFromKitchen;
+    QString m_prepType;
 
     quint32 m_currentMenuItemInventoryItemId;
     QList<MenuItemInventoryItem*> m_menuItemInventoryItems;

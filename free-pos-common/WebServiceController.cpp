@@ -48,10 +48,10 @@ void WebServiceController::sendReconciliation(Reconciliation *rec) {
 
 void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
-//    QUrl url("http://localhost:56881/tables/KitchenOrder");
-    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
-    url.setUserName("");
-    url.setPassword("THWNiNTAOaSAviPfKJwUlmHHxeuDdM42");
+    QUrl url("http://localhost:56881/tables/KitchenOrder");
+//    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
+//    url.setUserName("");
+//    url.setPassword("THWNiNTAOaSAviPfKJwUlmHHxeuDdM42");
 
 
 
@@ -91,6 +91,8 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
                     data += "addedToOrderAt: '" + i->property("createdStamp").toDateTime().toString("yyyy-MM-ddThh:mm:ss.zzz") + "',";
                     data += "description: '" + i->property("name").toByteArray() + "',";
                     data += "note: '" + i->property("note").toByteArray() + "',";
+                    data += "type: '" + i->property("type").toByteArray() + "',";
+                    data += "prepType: '" + i->prepType() + "',";
                     data += "quantity: " + i->property("quantity").toByteArray() + ",";
                         data += "kitchenOrderItemOptions: [";
                         int optionCount = 0;
@@ -99,7 +101,9 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
                             data += "{";
                             data += "id: '" + QUuid().createUuid().toByteArray() + "',";
                             data += "kitchenOrderItemId: '" + itemGuid + "',";
-                            data += "type: 'Side',",
+                            data += "sortOrder: " + QString::number(optionCount) + ",";
+                            data += "type: 'Option',",
+                            data += "prepType: '" + o->prepType() + "',";
                             data += "description: '" + o->property("name").toByteArray() + ": " + o->property("menuItemName").toByteArray() + "'";
                             data += "}";
                             optionCount++;
@@ -110,6 +114,7 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
                                 data += "{";
                                 data += "id: '" + QUuid().createUuid().toByteArray() + "',";
                                 data += "kitchenOrderItemId: '" + itemGuid + "',";
+                                data += "sortOrder: " + QString::number(optionCount) + ",";
                                 data += "description: '" + inv->property("name").toByteArray() + "',";
                                 if(inv->isAdded()) data += "type: 'Add'";
                                 else if(inv->isRemoved()) data += "type: 'Remove'";

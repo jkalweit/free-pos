@@ -143,16 +143,26 @@ ApplicationWindow {
         id: editMenuItem
         property var menuItem
         property bool isItemDisabled
+        property bool isItemHiddenFromKitchen
+        property var prepTypeList: [ "", "Server", "Grill", "Fryer", "Expediter", "Bar" ]
 
         onVisibleChanged: {
             if(editMenuItem.visible) {
 
                 editMenuItem.menuItem = editMenuItem.menuItem;
                 editMenuItem.isItemDisabled = editMenuItem.menuItem.isDisabled;
+                editMenuItem.isItemHiddenFromKitchen = editMenuItem.menuItem.isHiddenFromKitchen
                 if(editMenuItem.menuItem.type === "Alcohol") {
                     editType.currentIndex = 1;
                 } else {
                     editType.currentIndex = 0;
+                }
+
+                var prepTypeList = editMenuItem.prepTypeList;
+                for(var i = 0; i < prepTypeList.length; i++) {
+                    if(editMenuItem.menuItem.prepType === prepTypeList[i]) {
+                        editPrepType.currentIndex = i;
+                    }
                 }
             }
         }
@@ -162,7 +172,12 @@ ApplicationWindow {
                 editMenuItem.menuItem.name = editMenuItemName.text;
                 editMenuItem.menuItem.price = editMenuItemPrice.text;
                 editMenuItem.menuItem.isDisabled = editMenuItem.isItemDisabled;
+                editMenuItem.menuItem.isHiddenFromKitchen = editMenuItem.isItemHiddenFromKitchen;
                 editMenuItem.menuItem.type = editType.currentText;
+                console.log('prepType: ' + editMenuItem.menuItem.prepType);
+                console.log('editPrepType: ' + editPrepType.currentText);
+                editMenuItem.menuItem.prepType = editPrepType.currentText;
+                console.log('prepType: ' + editMenuItem.menuItem.prepType);
             }
             editMenuItem.visible = false;
         }
@@ -193,6 +208,14 @@ ApplicationWindow {
             RectangleFlashButton {
                 text: "Is Disabled: " + (editMenuItem.isItemDisabled ? "Yes" : "No")
                 onClicked: editMenuItem.isItemDisabled = !editMenuItem.isItemDisabled
+            }
+            RectangleFlashButton {
+                text: "Is Hidden From Kitchen: " + (editMenuItem.isItemHiddenFromKitchen ? "Yes" : "No")
+                onClicked: editMenuItem.isItemHiddenFromKitchen = !editMenuItem.isItemHiddenFromKitchen
+            }
+            ComboBox {
+                id: editPrepType
+                model: editMenuItem.prepTypeList
             }
             Row {
                 Button {

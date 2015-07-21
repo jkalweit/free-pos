@@ -3,8 +3,8 @@
 #include "OrderItem.h"
 #include "Pos.h"
 
-OrderItem::OrderItem(QObject *parent, quint32 id, quint32 ticketId, quint32 customerId, QString name, QString type, QDateTime createdStamp, float price, float quantity, QString note, bool deleted, QDateTime submittedStamp) :
-    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted), m_submittedStamp(submittedStamp), m_currentOrderItemInventoryItemId(0), m_currentOrderItemOptionId(0)
+OrderItem::OrderItem(QObject *parent, quint32 id, quint32 ticketId, quint32 customerId, QString name, QString type, QDateTime createdStamp, float price, float quantity, QString note, bool deleted, QDateTime submittedStamp, bool isHiddenFromKitchen, QString prepType) :
+    SimpleSerializable(parent), m_id(id), m_ticketId(ticketId), m_customerId(customerId), m_name(name), m_type(type), m_createdStamp(createdStamp), m_price(price), m_quantity(quantity), m_note(note), m_deleted(deleted), m_submittedStamp(submittedStamp), m_currentOrderItemInventoryItemId(0), m_currentOrderItemOptionId(0), m_isHiddenFromKitchen(isHiddenFromKitchen), m_prepType(prepType)
 {
 }
 
@@ -81,6 +81,16 @@ void OrderItem::setSubmittedStamp(QDateTime submittedStamp) {
     }
 }
 
+void OrderItem::setPrepType(QString prepType) {
+    if(m_prepType != prepType){
+        m_prepType = prepType;
+        logPropertyChanged(m_prepType, "prepType");
+        prepTypeChanged(m_prepType);
+    }
+}
+
+
+
 bool OrderItem::isSubmitted() {
     return m_submittedStamp.isValid();
 }
@@ -95,6 +105,14 @@ void OrderItem::cycleSubmittedStamp() {
 
 bool OrderItem::isAlcohol() {
     return m_type == "Alcohol";
+}
+
+bool OrderItem::isHiddenFromKitchen() {
+    return m_isHiddenFromKitchen;
+}
+
+QString OrderItem::prepType() {
+    return m_prepType;
 }
 
 
@@ -277,7 +295,7 @@ void OrderItem::removeOrderItemInventoryItem(quint32 id) {
 
 OrderItemOption* OrderItem::addOrderItemOption(quint32 optionMenuCategoryId) {
     QString name = Pos::instance()->selectedMenu()->getMenuCategory(optionMenuCategoryId)->property("name").toString();
-    OrderItemOption *item = new OrderItemOption(this, m_ticketId, m_customerId, m_id, ++m_currentOrderItemOptionId, optionMenuCategoryId, "", 0);
+    OrderItemOption *item = new OrderItemOption(this, m_ticketId, m_customerId, m_id, ++m_currentOrderItemOptionId, optionMenuCategoryId, name, "", 0);
     addOrderItemOption(item);
     return item;
 }
@@ -341,7 +359,7 @@ OrderItemOption* OrderItem::getOrderItemOption(quint32 id) {
 
 QString OrderItem::serialize() const {
     QStringList vals;
-    vals << QString::number(m_id) << QString::number(m_ticketId) << QString::number(m_customerId) << m_name << m_type << m_createdStamp.toString() << QString::number(m_price) << QString::number(m_quantity) << m_note << QString::number(m_deleted) << m_submittedStamp.toString();
+    vals << QString::number(m_id) << QString::number(m_ticketId) << QString::number(m_customerId) << m_name << m_type << m_createdStamp.toString() << QString::number(m_price) << QString::number(m_quantity) << m_note << QString::number(m_deleted) << m_submittedStamp.toString() << QString::number(m_isHiddenFromKitchen) << m_prepType;
     return serializeList(vals);
 }
 
@@ -365,7 +383,17 @@ OrderItem* OrderItem::deserialize(QString serialized, QObject *parent)
         submittedStamp = QDateTime::fromString(split[10]);
     }
 
-    OrderItem *obj = new OrderItem(parent, id, ticketId, customerId, name, type, createdStamp, price, quantity, note, deleted, submittedStamp);
+    bool isHiddenFromKitchen = false;
+    if(split.length() > 11) {
+        isHiddenFromKitchen = split[11].toInt();
+    }
+
+    QString prepType = "";
+    if(split.length() > 12) {
+        prepType = split[12];
+    }
+
+    OrderItem *obj = new OrderItem(parent, id, ticketId, customerId, name, type, createdStamp, price, quantity, note, deleted, submittedStamp, isHiddenFromKitchen, prepType);
     return obj;
 }
 
