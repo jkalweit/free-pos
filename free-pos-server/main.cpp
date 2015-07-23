@@ -25,6 +25,8 @@
 
 int main(int argc, char *argv[])
 {
+    Pos::instance()->appendToWebServiceLog("Starting up...");
+
     SingleApplication app(argc, argv);
 
     qmlRegisterType<Menu>("FreePos", 1, 0, "Menu");
@@ -55,16 +57,23 @@ int main(int argc, char *argv[])
     pos->readHistory("currInventory.txt");
     pos->readHistory("currMenu.txt");
 
+    Pos::instance()->appendToWebServiceLog("Here1...");
+
     // Load current week by default
     WeekTracker* week = pos->getWeek(QDate::currentDate());
     pos->setProperty("selectedWeek", QVariant::fromValue(week));
 
+    Pos::instance()->appendToWebServiceLog("Here2...");
+
     pos->getLoyaltyMembers();
+
+    Pos::instance()->appendToWebServiceLog("Here3...");
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("pos", (QObject*)pos);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
+    Pos::instance()->appendToWebServiceLog("Here4...");
 
 //    server.openDb();
 //    server.createDb();

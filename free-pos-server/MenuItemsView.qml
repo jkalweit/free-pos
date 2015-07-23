@@ -84,7 +84,7 @@ Rectangle {
         delegate: RectangleFlashButton {
             id: menuItemContainer
             width: container.width
-            verticalMargin: 10
+            verticalMargin: 15
             border.color: menu.selectedCategory && menu.selectedCategory.selectedItem && (menu.selectedCategory.selectedItem.id === modelData.id) ? "#DDDDDD" : "#777777"
             border.width: 2
             color:  modelData.isDisabled ? "#AAAAAA" : "#9575cd"

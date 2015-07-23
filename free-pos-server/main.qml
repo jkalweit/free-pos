@@ -159,8 +159,10 @@ ApplicationWindow {
                 }
 
                 var prepTypeList = editMenuItem.prepTypeList;
+                console.log("Finding prep type: " + editMenuItem.menuItem.prepType + " " + prepTypeList.length);
                 for(var i = 0; i < prepTypeList.length; i++) {
                     if(editMenuItem.menuItem.prepType === prepTypeList[i]) {
+                        console.log("Setting prep type index: " + i);
                         editPrepType.currentIndex = i;
                     }
                 }

@@ -57,7 +57,7 @@ Rectangle {
             textColor: menu.selectedCategory && (menu.selectedCategory.id === modelData.id) ? "#DDDDDD" : "#000000"
             flashColor: "#FFFFFF"
             text: modelData.name
-            verticalMargin: 10
+            verticalMargin: 15
 
             visible: {
                 if(!container.editMode && modelData.isDisabled)
