@@ -48,7 +48,7 @@ void WebServiceController::sendReconciliation(Reconciliation *rec) {
 
 void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
-    QUrl url("http://192.168.1.253:1337/api/kitchen_orders");
+    QUrl url("http://localhost:1337/api/kitchen_orders");
 //    QUrl url("http://localhost:56881/tables/KitchenOrder");
 //    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
 //    url.setUserName("");
@@ -74,7 +74,7 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
     QByteArray data = "{";
     //data += "id: '" + orderGuid + "',";
-    data += "\"isTogo\": \"" + ticket->property("isTogo").toByteArray() + "\",";
+    data += "\"isTogo\": " + ticket->property("isTogo").toByteArray() + ",";
     QList<Customer*> customers = ticket->customersList();
     Customer *firstCustomer = customers[0];
     data += "\"name\": \"" + firstCustomer->property("name").toByteArray() + "\",";
