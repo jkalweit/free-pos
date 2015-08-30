@@ -49,7 +49,7 @@ void WebServiceController::sendReconciliation(Reconciliation *rec) {
 void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
       //QUrl url("http://192.168.5.253:1337/api/kitchen_orders");
-      QUrl url("http://localhost:1337/api/kitchen_orders");
+      QUrl url("http://192.168.5.5:1337/api/kitchen/orders");
 //    QUrl url("http://localhost:56881/tables/KitchenOrder");
 //    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
 //    url.setUserName("");
