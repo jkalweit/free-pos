@@ -51,8 +51,20 @@ float Customer::foodTotal() {
     return sum;
 }
 
+float Customer::taxableTotal() {
+    float sum = 0;
+    QString type;
+    for(OrderItem *o : m_orderItems) {
+        type = o->property("type").toString();
+        if(!o->isAlcohol() && type != "Food - Tax Included") {
+            sum += o->subTotal();
+        }
+    }
+    return sum;
+}
+
 float Customer::taxTotal() {
-    return foodTotal() * 0.09;
+    return taxableTotal() * 0.09;
 }
 
 float Customer::barTotal() {

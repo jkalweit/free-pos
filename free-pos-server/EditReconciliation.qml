@@ -198,7 +198,7 @@ Rectangle {
 
                                         onClicked: {
                                             editOrderItemDialog.rec = container.model
-                                            editOrderItemDialog.customer = customer.model
+                                            //editOrderItemDialog.customer = customer.model
                                             editOrderItemDialog.show(model)
                                         }
                                     }
@@ -359,30 +359,30 @@ Rectangle {
                                 }
                             }
                         }
-                        Rectangle {
-                            width: parent.width
-                            height: 15
-                            Text {
-                                text: "Cost:"
-                                anchors.left: parent.left
-                            }
-                            Text {
-                                text: model.selectedTicket ? model.selectedTicket.cog.toFixed(2) + "+" + model.selectedTicket.actualTax.toFixed(2) : ""
-                                anchors.right: parent.right
-                            }
-                        }
-                        Rectangle {
-                            width: parent.width
-                            height: 15
-                            Text {
-                                text: "Margin:"
-                                anchors.left: parent.left
-                            }
-                            Text {
-                                text: model.selectedTicket ? model.selectedTicket.margin.toFixed(2) : ""
-                                anchors.right: parent.right
-                            }
-                        }
+//                        Rectangle {
+//                            width: parent.width
+//                            height: 15
+//                            Text {
+//                                text: "Cost:"
+//                                anchors.left: parent.left
+//                            }
+//                            Text {
+//                                text: model.selectedTicket ? model.selectedTicket.cog.toFixed(2) + "+" + model.selectedTicket.actualTax.toFixed(2) : ""
+//                                anchors.right: parent.right
+//                            }
+//                        }
+//                        Rectangle {
+//                            width: parent.width
+//                            height: 15
+//                            Text {
+//                                text: "Margin:"
+//                                anchors.left: parent.left
+//                            }
+//                            Text {
+//                                text: model.selectedTicket ? model.selectedTicket.margin.toFixed(2) : ""
+//                                anchors.right: parent.right
+//                            }
+//                        }
                     }
                 }
             }
@@ -408,7 +408,12 @@ Rectangle {
 
         onMenuItemSelected: {
             if(model && model.selectedTicket) {
-                model.selectedTicket.customers[0].addOrderItem(menuItem, 1, "");
+                var orderItem = model.selectedTicket.customers[0].addOrderItem(menuItem, 1, "");
+                if(orderItem.type !== 'Alcohol') {
+                    editOrderItemDialog.rec = container.model
+                    //editOrderItemDialog.customer = customer.model
+                    editOrderItemDialog.show(orderItem)
+                }
             }
         }
     }
