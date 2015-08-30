@@ -48,7 +48,8 @@ void WebServiceController::sendReconciliation(Reconciliation *rec) {
 
 void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 
-      QUrl url("http://192.168.1.253:1337/api/kitchen_orders");
+      //QUrl url("http://192.168.5.253:1337/api/kitchen_orders");
+      QUrl url("http://localhost:1337/api/kitchen_orders");
 //    QUrl url("http://localhost:56881/tables/KitchenOrder");
 //    QUrl url("http://rmscoalyard.azure-mobile.net/tables/KitchenOrder");
 //    url.setUserName("");
@@ -69,40 +70,41 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
     connect(m_manager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(handleSimpleReply(QNetworkReply*)));
 
-    QByteArray orderGuid = QUuid().createUuid().toByteArray();
+    //QByteArray orderGuid = QUuid().createUuid().toByteArray();
 
 
     QByteArray data = "{";
+    data += "\"key\": \"" + QDateTime::currentDateTimeUtc().toString("yyyy-MM-ddThh:mm:ss.zzzZ") + "\",";
     //data += "id: '" + orderGuid + "',";
     data += "\"isTogo\": " + ticket->property("isTogo").toByteArray() + ",";
     QList<Customer*> customers = ticket->customersList();
     Customer *firstCustomer = customers[0];
     data += "\"name\": \"" + firstCustomer->property("name").toByteArray() + "\",";
     data += "\"location\": \"" + ticket->property("name").toByteArray() + "\",";
-    data += "\"kitchenOrderItems\": [";
+    data += "\"items\": [";
     int itemCount = 0;
     for(Customer *c : ticket->customersList()) {
         for(OrderItem *i : c->orderItemsList()) {
-            QByteArray itemGuid = QUuid().createUuid().toByteArray();
+            //QByteArray itemGuid = QUuid().createUuid().toByteArray();
             if(!i->property("deleted").toBool() && i->property("type").toString() != "Alcohol" && !i->isSubmitted()) {
                 if(itemCount > 0) data += ",";
                 data += "{";
                     //data += "\"id\": \"" + itemGuid + "\",";
                     //data += "\"kitchenOrderId\": \"" + orderGuid + "\",";
-                    data += "\"addedToOrderAt\": \"" + i->property("createdStamp").toDateTime().toString("yyyy-MM-ddThh:mm:ss.zzz") + "\",";
+                    data += "\"key\": \"" + i->property("createdStamp").toDateTime().toString("yyyy-MM-ddThh:mm:ss.zzzZ") + "\",";
                     data += "\"description\": \"" + i->property("name").toByteArray() + "\",";
                     data += "\"note\": \"" + i->property("note").toByteArray() + "\",";
                     data += "\"type\": \"" + i->property("type").toByteArray() + "\",";
                     data += "\"prepType\": \"" + i->prepType() + "\",";
                     data += "\"quantity\": " + i->property("quantity").toByteArray() + ",";
-                        data += "\"kitchenOrderItemOptions\": [";
+                        data += "\"options\": [";
                         int optionCount = 0;
                         for(OrderItemOption *o : i->orderItemOptionsList()){
                             if(optionCount > 0) data += ",";
                             data += "{";
 //                            data += "\"id\": \"" + QUuid().createUuid().toByteArray() + "\",";
 //                            data += "\"kitchenOrderItemId\": \"" + itemGuid + "\",";
-                            data += "\"sortOrder\": " + QString::number(optionCount) + ",";
+                            data += "\"key\": " + QString::number(optionCount) + ",";
                             data += "\"type\": \"Option\",",
                             data += "\"prepType\": \"" + o->prepType() + "\",";
                             data += "\"description\": \"" + o->property("name").toByteArray() + ": " + o->property("menuItemName").toByteArray() + "\"";
@@ -115,7 +117,7 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
                                 data += "{";
 //                                data += "\"id\": \"" + QUuid().createUuid().toByteArray() + "\",";
 //                                data += "\"kitchenOrderItemId: \"" + itemGuid + "\",";
-                                data += "\"sortOrder\": " + QString::number(optionCount) + ",";
+                                data += "\"key\": " + QString::number(optionCount) + ",";
                                 data += "\"description\": \"" + inv->property("name").toByteArray() + "\",";
                                 if(inv->isAdded()) data += "\"type\": \"Add\"";
                                 else if(inv->isRemoved()) data += "\"type\": \"Remove\"";
@@ -150,7 +152,7 @@ void WebServiceController::sendKitchenOrder(Ticket *ticket) {
 void WebServiceController::handleSimpleReply(QNetworkReply *reply){
     QByteArray text = reply->readAll();
     QString message = "Success: " + text;
-    if(text.startsWith("{\"ok\":1")) {
+    if(text.startsWith("Ok")) {
         qDebug() << message;
     } else {        
         message = "Failed to send request.\n\n" + text;

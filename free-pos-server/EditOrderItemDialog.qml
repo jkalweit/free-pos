@@ -6,7 +6,7 @@ DialogModal {
     id: container
     title: "Edit Order Item"
     property var rec
-    property var customer
+    //property var customer
     property var model //OrderItem
 
     function show(orderItem) {

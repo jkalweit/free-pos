@@ -154,6 +154,8 @@ ApplicationWindow {
                 editMenuItem.isItemHiddenFromKitchen = editMenuItem.menuItem.isHiddenFromKitchen
                 if(editMenuItem.menuItem.type === "Alcohol") {
                     editType.currentIndex = 1;
+                } else if(editMenuItem.menuItem.type === "Food - Tax Included") {
+                    editType.currentIndex = 2;
                 } else {
                     editType.currentIndex = 0;
                 }
@@ -204,7 +206,7 @@ ApplicationWindow {
             }
             ComboBox {
                 id: editType
-                model: [ "Food", "Alcohol" ]
+                model: [ "Food", "Alcohol", "Food - Tax Included" ]
             }
 
             RectangleFlashButton {

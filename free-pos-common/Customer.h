@@ -39,6 +39,7 @@ public:
     bool isLoyaltyMember();
 
     float foodTotal();
+    float taxableTotal();
     float taxTotal();
     float barTotal();
     float total();

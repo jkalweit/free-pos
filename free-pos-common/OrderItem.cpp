@@ -147,7 +147,7 @@ float OrderItem::subTotal() {
 }
 
 float OrderItem::tax() {
-    if(m_type == "Alcohol") {
+    if(m_type == "Alcohol" || m_type == "Food - Tax Included") {
         return 0;
     } else {
         return subTotal() * 0.09;
